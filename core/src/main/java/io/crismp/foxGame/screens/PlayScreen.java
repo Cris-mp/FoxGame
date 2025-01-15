@@ -5,26 +5,19 @@ import com.badlogic.gdx.Input;
 import com.badlogic.gdx.Screen;
 import com.badlogic.gdx.graphics.GL20;
 import com.badlogic.gdx.graphics.OrthographicCamera;
-import com.badlogic.gdx.maps.MapObject;
-import com.badlogic.gdx.maps.objects.RectangleMapObject;
 import com.badlogic.gdx.maps.tiled.TiledMap;
 import com.badlogic.gdx.maps.tiled.TmxMapLoader;
 import com.badlogic.gdx.maps.tiled.renderers.OrthogonalTiledMapRenderer;
-import com.badlogic.gdx.math.Rectangle;
 import com.badlogic.gdx.math.Vector2;
-import com.badlogic.gdx.physics.box2d.Body;
-import com.badlogic.gdx.physics.box2d.BodyDef;
 import com.badlogic.gdx.physics.box2d.Box2DDebugRenderer;
-import com.badlogic.gdx.physics.box2d.FixtureDef;
-import com.badlogic.gdx.physics.box2d.PolygonShape;
 import com.badlogic.gdx.physics.box2d.World;
 import com.badlogic.gdx.utils.viewport.FitViewport;
-
 import com.badlogic.gdx.utils.viewport.Viewport;
 
 import io.crismp.foxGame.FoxGame;
 import io.crismp.foxGame.Scenes.Hud;
 import io.crismp.foxGame.Sprites.Foxy;
+import io.crismp.foxGame.Tools.B2WorldCreator;
 
 public class PlayScreen implements Screen {
     private FoxGame game;
@@ -40,7 +33,7 @@ public class PlayScreen implements Screen {
     private OrthogonalTiledMapRenderer renderer;
 
     // Creacion de mundo (Fisicas y cuerpos)
-    private World world;
+    private World world;                  
     private Box2DDebugRenderer b2dr;
 
     Foxy player;
@@ -51,7 +44,7 @@ public class PlayScreen implements Screen {
         // mantiene el ratio de aspecto virtual a pesar de la pantalla
         gamePort = new FitViewport(FoxGame.V_WIDTH / FoxGame.PPM, FoxGame.V_HEIGHT / FoxGame.PPM, gamecam);
 
-        // Crea los marcadores de fase y visa //TODO: Ampliar en futuro
+        // Crea los marcadores de fase y vista //TODO: Ampliar en futuro
         hud = new Hud(game.batch);
 
         // Carga nuestro mapa y configurar nuestro renderizador de mapas
@@ -66,76 +59,11 @@ public class PlayScreen implements Screen {
         world = new World(new Vector2(0, -10), true);
         b2dr = new Box2DDebugRenderer();
 
+		//Pasamos al creador de mundo el mundo y el mapa
+		new B2WorldCreator(world, map);
+
         // creamos a foxy
         player = new Foxy(world, map);
-
-        // --------Esto lo pondremos en sus clases despues--------------
-
-        BodyDef bdef = new BodyDef();
-        PolygonShape shape = new PolygonShape();
-        FixtureDef fdef = new FixtureDef();
-        Body body;
-
-        for (MapObject object : map.getLayers().get("suelos").getObjects().getByType(RectangleMapObject.class)) {
-            Rectangle rectangle = ((RectangleMapObject) object).getRectangle();
-            // Definimos el cuerpo
-            bdef = new BodyDef();
-            // Determinamos si el objeto es estatico o dinamico
-            bdef.type = BodyDef.BodyType.StaticBody;
-            // Posicionamos el cuerpo
-            bdef.position.set((rectangle.getX() + rectangle.getWidth() / 2) / FoxGame.PPM,
-                    (rectangle.getY() + rectangle.getHeight() / 2) / FoxGame.PPM);
-            // Se crea el cuerpo en el mundo
-            body = world.createBody(bdef);
-            // damos tamaño a la forma
-            shape.setAsBox((rectangle.getWidth() / 2) / FoxGame.PPM, (rectangle.getHeight() / 2) / FoxGame.PPM);
-            // definimos la forma
-            fdef.shape = shape;
-            fdef.friction = 0;
-            // la añadimos al cuerpo
-            body.createFixture(fdef);
-        }
-        ;
-
-        for (MapObject object : map.getLayers().get("escaleras").getObjects().getByType(RectangleMapObject.class)) {
-            Rectangle rectangle = ((RectangleMapObject) object).getRectangle();
-            // Definimos el cuerpo
-            bdef = new BodyDef();
-            // Determinamos si el objeto es estatico o dinamico
-            bdef.type = BodyDef.BodyType.StaticBody;
-            // Posicionamos el cuerpo
-            bdef.position.set((rectangle.getX() + rectangle.getWidth() / 2) / FoxGame.PPM,
-                    (rectangle.getY() + rectangle.getHeight() / 2) / FoxGame.PPM);
-            // Se crea el cuerpo en el mundo
-            body = world.createBody(bdef);
-            // damos tamaño a la forma
-            shape.setAsBox((rectangle.getWidth() / 2) / FoxGame.PPM, (rectangle.getHeight() / 2) / FoxGame.PPM);
-            // definimos la forma
-            fdef.shape = shape;
-            // la añadimos al cuerpo
-            body.createFixture(fdef);
-        }
-        ;
-
-        for (MapObject object : map.getLayers().get("zarzas").getObjects().getByType(RectangleMapObject.class)) {
-            Rectangle rectangle = ((RectangleMapObject) object).getRectangle();
-            // Definimos el cuerpo
-            bdef = new BodyDef();
-            // Determinamos si el objeto es estatico o dinamico
-            bdef.type = BodyDef.BodyType.StaticBody;
-            // Posicionamos el cuerpo
-            bdef.position.set((rectangle.getX() + rectangle.getWidth() / 2) / FoxGame.PPM,
-                    (rectangle.getY() + rectangle.getHeight() / 2) / FoxGame.PPM);
-            // Se crea el cuerpo en el mundo
-            body = world.createBody(bdef);
-            // damos tamaño a la forma
-            shape.setAsBox((rectangle.getWidth() / 2) / FoxGame.PPM, (rectangle.getHeight() / 2) / FoxGame.PPM);
-            // definimos la forma
-            fdef.shape = shape;
-            // la añadimos al cuerpo
-            body.createFixture(fdef);
-        }
-        ;
 
     }
 
@@ -145,16 +73,24 @@ public class PlayScreen implements Screen {
     }
 
     public void handleInput(float dt) {
-        //TODO: creo que el linear impilse no es el mas adecuado aqui,
-        if (Gdx.input.isKeyPressed(Input.Keys.D) && player.body.getLinearVelocity().x <= 2) {
-            player.body.applyLinearImpulse(new Vector2(0.1f, 0), player.body.getWorldCenter(), true);
+		player.velX = 0;
+        if (Gdx.input.isKeyPressed(Input.Keys.D)) {
+            player.velX = 0.5f;
         }
-        if (Gdx.input.isKeyPressed(Input.Keys.A) && player.body.getLinearVelocity().x <= 2) {
-            player.body.applyLinearImpulse(new Vector2(-0.01f, 0), player.body.getWorldCenter(), true);
+        if (Gdx.input.isKeyPressed(Input.Keys.A)) {
+            player.velX = -0.5f;
         }
-        if (Gdx.input.isKeyJustPressed(Input.Keys.SPACE)) {
-            player.body.applyLinearImpulse(new Vector2(0, 4f), player.body.getPosition(), true);
+        if (Gdx.input.isKeyJustPressed(Input.Keys.SPACE) && player.jumpCounter < 2) {
+            float force = player.body.getMass() * 2;
+            player.body.setLinearVelocity(player.body.getLinearVelocity().x, 0);
+            player.body.applyLinearImpulse(new Vector2(0, force), player.body.getPosition(), true);
+            player.jumpCounter++;
         }
+        // reseteamos el contador de salto
+        if (player.body.getLinearVelocity().y == 0) {
+            player.jumpCounter = 0;
+        }
+        player.body.setLinearVelocity(player.velX * player.speed, player.body.getLinearVelocity().y < 15 ? player.body.getLinearVelocity().y : 15);
 
     }
 
@@ -215,6 +151,11 @@ public class PlayScreen implements Screen {
 
     @Override
     public void dispose() {
+		map.dispose();
+		renderer.dispose();
+		world.dispose();
+		b2dr.dispose();
+		hud.dispose();
 
     }
 

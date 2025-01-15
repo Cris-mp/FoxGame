@@ -13,36 +13,43 @@ import com.badlogic.gdx.physics.box2d.World;
 
 import io.crismp.foxGame.FoxGame;
 
-public class Foxy extends Sprite{
-    public World world;
-    public Body body;
-    public TiledMap map;
+public class Foxy extends Sprite {
+	public World world;
+	public Body body;
+	public TiledMap map;
+	public float velX, velY, speed;
+	public int jumpCounter;
 
-    public Foxy(World world,TiledMap map){
-        this.world = world;
-        this.map=map;
-        defineFoxy();
-    }
+	public Foxy(World world, TiledMap map) {
+		this.world = world;
+		this.map = map;
+		this.velX = 0;
+		this.velY = 0;
+		this.speed = 2f;
+		this.jumpCounter = 0;
 
-    public void defineFoxy(){
-        BodyDef bdef = new BodyDef();
+		defineFoxy();
+	}
 
-        for(MapObject object: map.getLayers().get("player").getObjects().getByType(RectangleMapObject.class)){
-            Rectangle rectangle = ((RectangleMapObject)object).getRectangle();
-            //Posicionamos el cuerpo
-            bdef.position.set((rectangle.getX())/FoxGame.PPM, (rectangle.getY())/FoxGame.PPM);  
-        };
-        bdef.type = BodyDef.BodyType.DynamicBody;
-        body = world.createBody(bdef);
+	public void defineFoxy() {
+		BodyDef bdef = new BodyDef();
 
-        FixtureDef fdef = new FixtureDef();
-        CircleShape shape = new CircleShape();
-        shape.setRadius(5/FoxGame.PPM);
+		for (MapObject object : map.getLayers().get("player").getObjects().getByType(RectangleMapObject.class)) {
+			Rectangle rectangle = ((RectangleMapObject) object).getRectangle();
+			// Posicionamos el cuerpo
+			bdef.position.set((rectangle.getX()) / FoxGame.PPM, (rectangle.getY()) / FoxGame.PPM);
+		}
+		
+		bdef.type = BodyDef.BodyType.DynamicBody;
+		body = world.createBody(bdef);
 
-        fdef.shape=shape;
-        body.createFixture(fdef);
+		FixtureDef fdef = new FixtureDef();
+		CircleShape shape = new CircleShape();
+		shape.setRadius(5 / FoxGame.PPM);
 
-    }
+		fdef.shape = shape;
+		body.createFixture(fdef);
 
-    
+	}
+
 }
