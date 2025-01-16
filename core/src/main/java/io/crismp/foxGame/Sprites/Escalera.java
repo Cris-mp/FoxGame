@@ -8,6 +8,5 @@ public class Escalera extends InteractiveTiledObject {
 	
 	public Escalera(World world, TiledMap map, Rectangle bounds){
 		super(world,map,bounds);
-		
 	}
 }

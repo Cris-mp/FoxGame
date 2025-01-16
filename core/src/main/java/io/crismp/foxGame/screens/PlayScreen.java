@@ -75,13 +75,14 @@ public class PlayScreen implements Screen {
     public void handleInput(float dt) {
 		player.velX = 0;
         if (Gdx.input.isKeyPressed(Input.Keys.D)) {
-            player.velX = 0.5f;
+            player.velX = 30f*dt;
         }
         if (Gdx.input.isKeyPressed(Input.Keys.A)) {
-            player.velX = -0.5f;
+            player.velX = -30f*dt;
         }
-        if (Gdx.input.isKeyJustPressed(Input.Keys.SPACE) && player.jumpCounter < 2) {
-            float force = player.body.getMass() * 2;
+        if (Gdx.input.isKeyJustPressed(Input.Keys.SPACE) && player.jumpCounter < 2) {//aqui no uso el dt porque no se como
+            float force = player.body.getMass()*2.5f;
+        
             player.body.setLinearVelocity(player.body.getLinearVelocity().x, 0);
             player.body.applyLinearImpulse(new Vector2(0, force), player.body.getPosition(), true);
             player.jumpCounter++;
@@ -90,7 +91,9 @@ public class PlayScreen implements Screen {
         if (player.body.getLinearVelocity().y == 0) {
             player.jumpCounter = 0;
         }
-        player.body.setLinearVelocity(player.velX * player.speed, player.body.getLinearVelocity().y < 15 ? player.body.getLinearVelocity().y : 15);
+        player.body.setLinearVelocity(player.velX * player.speed, player.body.getLinearVelocity().y < 15? player.body.getLinearVelocity().y : 15);
+        
+       
 
     }
 
@@ -98,6 +101,8 @@ public class PlayScreen implements Screen {
         handleInput(dt);
 
         world.step(1 / 60f, 6, 2);
+
+        player.update(dt);
 
         gamecam.position.x = player.body.getPosition().x;
 
@@ -122,6 +127,12 @@ public class PlayScreen implements Screen {
 
         // renderizamos el Box2DDebugLines
         b2dr.render(world, gamecam.combined);
+
+        //
+        game.batch.setProjectionMatrix(gamecam.combined);
+        game.batch.begin();
+        player.draw(game.batch);
+        game.batch.end();
 
         // Configura el batch para centrar la camara del HUD
         game.batch.setProjectionMatrix(hud.stage.getCamera().combined);
