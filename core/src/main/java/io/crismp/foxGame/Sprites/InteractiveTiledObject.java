@@ -2,6 +2,7 @@ package io.crismp.foxGame.Sprites;
 
 import com.badlogic.gdx.physics.box2d.Body;
 import com.badlogic.gdx.physics.box2d.BodyDef;
+import com.badlogic.gdx.physics.box2d.Filter;
 import com.badlogic.gdx.physics.box2d.Fixture;
 import com.badlogic.gdx.physics.box2d.FixtureDef;
 import com.badlogic.gdx.physics.box2d.PolygonShape;
@@ -51,5 +52,10 @@ public abstract class InteractiveTiledObject {
     }
 
     public abstract void onHeadHit();
+    public void setCategoryFilter(short filterBit){
+        Filter filter = new Filter();
+        filter.categoryBits = filterBit;
+        fixture.setFilterData(filter);
+    }
 
 }

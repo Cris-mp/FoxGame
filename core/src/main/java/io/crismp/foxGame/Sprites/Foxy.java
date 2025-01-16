@@ -13,6 +13,7 @@ import com.badlogic.gdx.physics.box2d.Body;
 import com.badlogic.gdx.physics.box2d.BodyDef;
 import com.badlogic.gdx.physics.box2d.CircleShape;
 import com.badlogic.gdx.physics.box2d.EdgeShape;
+import com.badlogic.gdx.physics.box2d.Fixture;
 import com.badlogic.gdx.physics.box2d.FixtureDef;
 import com.badlogic.gdx.physics.box2d.World;
 import com.badlogic.gdx.utils.Array;
@@ -41,11 +42,17 @@ public class Foxy extends Sprite {
 	public TiledMap map;
 	public float velX, velY, speed;
 	public int jumpCounter;
-	public Boolean inLadder;
+	public Boolean onLadder;
 
 	public Texture img;
 
-	
+	public Boolean getOnLadder() {
+		return onLadder;
+	}
+
+	public void setOnLadder(Boolean inLadder) {
+		this.onLadder = inLadder;
+	}
 
 	public Foxy(World world, TiledMap map) {
 		super(new Texture("player/zorrito.png"), 16, 16);
@@ -55,7 +62,7 @@ public class Foxy extends Sprite {
 		this.velY = 0;
 		this.speed = 2f;
 		this.jumpCounter = 0;
-		
+		this.onLadder=false;
 
 		// animaciones
 		currenState = State.STANDING;
@@ -172,9 +179,12 @@ public class Foxy extends Sprite {
 		FixtureDef fdef = new FixtureDef();
 		CircleShape shape = new CircleShape();
 		shape.setRadius(5 / FoxGame.PPM);
+		fdef.filter.categoryBits=FoxGame.FOX_BIT;
+		fdef.filter.maskBits = FoxGame.DEFAULT_BIT|FoxGame.ZARZAS_BIT|FoxGame.LADDER_BIT;
 
 		fdef.shape = shape;
 		body.createFixture(fdef);
+	
 
 
 		//NOTA: sensor en la cabeza de foxy, no rompe ladrillos pero creo que sera util para dubir a las plataformas

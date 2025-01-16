@@ -94,6 +94,10 @@ public class PlayScreen implements Screen {
         if (player.body.getLinearVelocity().y == 0) {
             player.jumpCounter = 0;
         }
+        System.out.println(player.getOnLadder());
+        if(player.getOnLadder() && Gdx.input.isKeyJustPressed(Input.Keys.W)){
+            player.body.setLinearVelocity(0, player.velY = -30f*dt);
+        }
 
      
         
