@@ -19,7 +19,7 @@ import io.crismp.foxGame.FoxGame;
 
 public class Foxy extends Sprite {
 	public enum State {
-		FALLING, JUMPING, STANDING, RUNNIG, CLIMBING
+		FALLING, JUMPING, STANDING, RUNNING, CLIMBING
 	}
 
 	public State currenState;
@@ -60,31 +60,35 @@ public class Foxy extends Sprite {
 		// RUN
 		Array<TextureRegion> frames = new Array<TextureRegion>();
 
-		for (int i = 0; i < 6; i++) {
-			frames.add(new TextureRegion(getTexture(), i * 16, 16, getTexture().getWidth() / 6, getTexture().getHeight() / 6));
+		for (int i = 1; i < 6; i++) {
+			frames.add(new TextureRegion(getTexture(), i * 16 * 2, 16 * 2, getTexture().getWidth() / 6,
+					getTexture().getHeight() / 6));
 		}
 		foxRun = new Animation<>(0.1f, frames);
 		frames.clear();
 
 		// CLIMB
 		for (int i = 0; i < 4; i++) {
-			frames.add(new TextureRegion(getTexture(), i * 16, 16 * 3, getTexture().getWidth() / 6, getTexture().getHeight() / 6));
+			frames.add(new TextureRegion(getTexture(), i * 16 * 2, 16 * 2 * 3, getTexture().getWidth() / 6,
+					getTexture().getHeight() / 6));
 		}
 		foxClimb = new Animation<>(0.1f, frames);
 		frames.clear();
 
 		// STAND
 		for (int i = 0; i < 4; i++) {
-			frames.add(new TextureRegion(getTexture(), i * 16, 0, getTexture().getWidth() / 6, getTexture().getHeight() / 6));
+			frames.add(new TextureRegion(getTexture(), i * 16 * 2, 0, getTexture().getWidth() / 6,
+					getTexture().getHeight() / 6));
 		}
 		foxSt = new Animation<>(0.1f, frames);
 		frames.clear();
 
-		foxJump = new TextureRegion(getTexture(), 0, 16 * 6, getTexture().getWidth() / 6, getTexture().getHeight() / 6);
-		foxFall = new TextureRegion(getTexture(), 16, 16 * 6, getTexture().getWidth() / 6,getTexture().getHeight() / 6);
+		foxJump = new TextureRegion(getTexture(), 0 ,16 * 10, getTexture().getWidth() / 6,
+				getTexture().getHeight() / 6);
+		foxFall = new TextureRegion(getTexture(), 16*2, 16 * 10, getTexture().getWidth() / 6,
+				getTexture().getHeight() / 6);
 		defineFoxy();
 		setBounds(0, 0, 16 / (FoxGame.PPM / 2), 16 / (FoxGame.PPM / 2));
-		
 
 	}
 
@@ -105,7 +109,7 @@ public class Foxy extends Sprite {
 			case FALLING:
 				region = foxFall;
 				break;
-			case RUNNIG:
+			case RUNNING:
 				region = (TextureRegion) foxRun.getKeyFrame(stateTimer, true);
 				break;
 			case CLIMBING:
@@ -120,20 +124,18 @@ public class Foxy extends Sprite {
 		if ((body.getLinearVelocity().x < 0 || !runRight) && !region.isFlipX()) {
 			region.flip(true, false);
 			runRight = false;
-		} else {
-			if ((body.getLinearVelocity().x > 0 || runRight) && region.isFlipX()) {
-				region.flip(false, false);
-				runRight = true;
-			}
+		} else if ((body.getLinearVelocity().x > 0 || runRight) && region.isFlipX()) {
+			region.flip(true, false);
+			runRight = true;
 		}
-		stateTimer = currenState == previoState ? stateTimer + delta :0;
-		previoState=currenState;
+
+		stateTimer = currenState == previoState ? stateTimer + delta : 0;
+		previoState = currenState;
 		return region;
 
 	}
 
 	public State getState() {
-		System.out.println(currenState);
 		if (body.getLinearVelocity().y > 0) {
 			return State.JUMPING;
 		}
@@ -141,10 +143,10 @@ public class Foxy extends Sprite {
 			return State.FALLING;
 		}
 		if (body.getLinearVelocity().x != 0) {
-			return State.RUNNIG;
+			return State.RUNNING;
 		}
 		// if (body.getLinearVelocity().y > 0) {
-		// 	return State.CLIMBING;
+		// return State.CLIMBING;
 		// }
 		return State.STANDING;
 	}

@@ -124,6 +124,6 @@
   <object id="57" x="310.417" y="493.667" width="12" height="17.1667"/>
  </objectgroup>
  <objectgroup color="#ff55ff" id="5" name="player">
-  <object id="71" x="622.667" y="608.667" width="15.3333" height="16.3333"/>
+  <object id="71" x="547.667" y="616.667" width="15.3333" height="16.3333"/>
  </objectgroup>
 </map>
