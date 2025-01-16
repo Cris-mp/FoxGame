@@ -8,9 +8,11 @@ import com.badlogic.gdx.maps.MapObject;
 import com.badlogic.gdx.maps.objects.RectangleMapObject;
 import com.badlogic.gdx.maps.tiled.TiledMap;
 import com.badlogic.gdx.math.Rectangle;
+import com.badlogic.gdx.math.Vector2;
 import com.badlogic.gdx.physics.box2d.Body;
 import com.badlogic.gdx.physics.box2d.BodyDef;
 import com.badlogic.gdx.physics.box2d.CircleShape;
+import com.badlogic.gdx.physics.box2d.EdgeShape;
 import com.badlogic.gdx.physics.box2d.FixtureDef;
 import com.badlogic.gdx.physics.box2d.World;
 import com.badlogic.gdx.utils.Array;
@@ -39,8 +41,11 @@ public class Foxy extends Sprite {
 	public TiledMap map;
 	public float velX, velY, speed;
 	public int jumpCounter;
+	public Boolean inLadder;
 
 	public Texture img;
+
+	
 
 	public Foxy(World world, TiledMap map) {
 		super(new Texture("player/zorrito.png"), 16, 16);
@@ -50,6 +55,7 @@ public class Foxy extends Sprite {
 		this.velY = 0;
 		this.speed = 2f;
 		this.jumpCounter = 0;
+		
 
 		// animaciones
 		currenState = State.STANDING;
@@ -169,6 +175,16 @@ public class Foxy extends Sprite {
 
 		fdef.shape = shape;
 		body.createFixture(fdef);
+
+
+		//NOTA: sensor en la cabeza de foxy, no rompe ladrillos pero creo que sera util para dubir a las plataformas
+		EdgeShape head = new EdgeShape();
+		head.set(new Vector2(-2/FoxGame.PPM,14/FoxGame.PPM), new Vector2(2/FoxGame.PPM,14/FoxGame.PPM));
+		fdef.shape = head;
+		fdef.isSensor=true;
+		body.createFixture(fdef).setUserData("head");
+
+		
 
 	}
 

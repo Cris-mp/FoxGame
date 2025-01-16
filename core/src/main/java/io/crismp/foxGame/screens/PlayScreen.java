@@ -18,6 +18,7 @@ import io.crismp.foxGame.FoxGame;
 import io.crismp.foxGame.Scenes.Hud;
 import io.crismp.foxGame.Sprites.Foxy;
 import io.crismp.foxGame.Tools.B2WorldCreator;
+import io.crismp.foxGame.Tools.WorldContactListener;
 
 public class PlayScreen implements Screen {
     private FoxGame game;
@@ -65,6 +66,8 @@ public class PlayScreen implements Screen {
         // creamos a foxy
         player = new Foxy(world, map);
 
+        world.setContactListener(new WorldContactListener());
+
     }
 
     @Override
@@ -80,7 +83,7 @@ public class PlayScreen implements Screen {
         if (Gdx.input.isKeyPressed(Input.Keys.A)) {
             player.velX = -30f*dt;
         }
-        if (Gdx.input.isKeyJustPressed(Input.Keys.SPACE) && player.jumpCounter < 2) {//aqui no uso el dt porque no se como
+        if (Gdx.input.isKeyJustPressed(Input.Keys.SPACE) && player.jumpCounter < 2) {//TODO:aqui no uso el dt porque no se como
             float force = player.body.getMass()*2.5f;
         
             player.body.setLinearVelocity(player.body.getLinearVelocity().x, 0);
@@ -91,6 +94,9 @@ public class PlayScreen implements Screen {
         if (player.body.getLinearVelocity().y == 0) {
             player.jumpCounter = 0;
         }
+
+     
+        
         player.body.setLinearVelocity(player.velX * player.speed, player.body.getLinearVelocity().y < 15? player.body.getLinearVelocity().y : 15);
         
        

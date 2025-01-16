@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<map version="1.10" tiledversion="1.11.0" orientation="orthogonal" renderorder="right-down" width="45" height="45" tilewidth="16" tileheight="16" infinite="0" nextlayerid="9" nextobjectid="88">
+<map version="1.10" tiledversion="1.11.0" orientation="orthogonal" renderorder="right-down" width="45" height="45" tilewidth="16" tileheight="16" infinite="0" nextlayerid="9" nextobjectid="90">
  <tileset firstgid="1" source="tileset_bosque.tsx"/>
  <imagelayer id="6" name="fondo" offsetx="1.66667" offsety="1" repeatx="1">
   <image source="back.png" width="384" height="240"/>
@@ -94,7 +94,7 @@
   <object id="43" x="479.333" y="608.667" width="16.6667" height="60.6667"/>
   <object id="44" x="497.75" y="643.667" width="13.3333" height="25.3333"/>
   <object id="45" x="514.25" y="656.667" width="12.4167" height="14"/>
-  <object id="46" x="531.667" y="574.167" width="26" height="13.3333"/>
+  <object id="46" x="602.667" y="614.667" width="26" height="13.3333"/>
   <object id="47" x="514.083" y="544.917" width="12.6667" height="14.5"/>
   <object id="48" x="480.667" y="544.417" width="13.1667" height="14.5"/>
   <object id="49" x="513.583" y="512.833" width="18" height="14"/>
@@ -122,8 +122,10 @@
   <object id="55" x="576.833" y="310.833" width="96.4167" height="25.3333"/>
   <object id="56" x="322.667" y="480.75" width="28.6667" height="29.9167"/>
   <object id="57" x="310.417" y="493.667" width="12" height="17.1667"/>
+  <object id="88" x="629.875" y="616.958" width="30.25" height="11.0833"/>
+  <object id="89" x="530.375" y="659.458" width="30.25" height="11.0833"/>
  </objectgroup>
  <objectgroup color="#ff55ff" id="5" name="player">
-  <object id="71" x="547.667" y="616.667" width="15.3333" height="16.3333"/>
+  <object id="71" x="568.667" y="615.167" width="15.3333" height="16.3333"/>
  </objectgroup>
 </map>
