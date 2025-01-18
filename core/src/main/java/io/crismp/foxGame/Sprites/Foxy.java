@@ -13,7 +13,6 @@ import com.badlogic.gdx.physics.box2d.Body;
 import com.badlogic.gdx.physics.box2d.BodyDef;
 import com.badlogic.gdx.physics.box2d.CircleShape;
 import com.badlogic.gdx.physics.box2d.EdgeShape;
-import com.badlogic.gdx.physics.box2d.Fixture;
 import com.badlogic.gdx.physics.box2d.FixtureDef;
 import com.badlogic.gdx.physics.box2d.World;
 import com.badlogic.gdx.utils.Array;
@@ -42,7 +41,7 @@ public class Foxy extends Sprite {
 	public TiledMap map;
 	public float velX, velY, speed;
 	public int jumpCounter;
-	public Boolean onLadder;
+	public static Boolean onLadder;
 
 	public Texture img;
 
@@ -50,8 +49,8 @@ public class Foxy extends Sprite {
 		return onLadder;
 	}
 
-	public void setOnLadder(Boolean inLadder) {
-		this.onLadder = inLadder;
+	public static void setOnLadder(Boolean inLadder) {
+		onLadder = inLadder;
 	}
 
 	public Foxy(World world, TiledMap map) {
@@ -62,7 +61,7 @@ public class Foxy extends Sprite {
 		this.velY = 0;
 		this.speed = 2f;
 		this.jumpCounter = 0;
-		this.onLadder=false;
+		Foxy.onLadder=false;
 
 		// animaciones
 		currenState = State.STANDING;
@@ -82,7 +81,7 @@ public class Foxy extends Sprite {
 
 		// CLIMB
 		for (int i = 0; i < 4; i++) {
-			frames.add(new TextureRegion(getTexture(), i * 16 * 2, 16 * 2 * 3, getTexture().getWidth() / 6,
+			frames.add(new TextureRegion(getTexture(), i * 16 * 2, 16 * 4, getTexture().getWidth() / 6,
 					getTexture().getHeight() / 6));
 		}
 		foxClimb = new Animation<>(0.1f, frames);
@@ -149,7 +148,7 @@ public class Foxy extends Sprite {
 	}
 
 	public State getState() {
-		if (body.getLinearVelocity().y > 0) {
+		if (body.getLinearVelocity().y > 0 && !Foxy.onLadder) {
 			return State.JUMPING;
 		}
 		if (body.getLinearVelocity().y < 0) {
@@ -158,9 +157,9 @@ public class Foxy extends Sprite {
 		if (body.getLinearVelocity().x != 0) {
 			return State.RUNNING;
 		}
-		// if (body.getLinearVelocity().y > 0) {
-		// return State.CLIMBING;
-		// }
+		if (body.getLinearVelocity().y > 0 && Foxy.onLadder) {
+		return State.CLIMBING;
+		}
 		return State.STANDING;
 	}
 

@@ -34,9 +34,7 @@ public class WorldContactListener implements ContactListener {
                     && InteractiveTiledObject.class.isAssignableFrom(object.getUserData().getClass())) {
                 ((InteractiveTiledObject) object.getUserData()).onHeadHit();
                 if (((InteractiveTiledObject) object.getUserData()).getClass().equals(Escalera.class)) {
-                    player = (Foxy) head.getUserData();
-                    player.setOnLadder(true);
-                    Gdx.app.log("true", "Escalera");
+                    Foxy.setOnLadder(true);//NOTE:lo he hecho statico pero no creo que este esto muy bien(si eso lo reparo luego)
                 }
             }
         }
@@ -60,8 +58,8 @@ public class WorldContactListener implements ContactListener {
                     && InteractiveTiledObject.class.isAssignableFrom(object.getUserData().getClass())) {
                 ((InteractiveTiledObject) object.getUserData()).onHeadHit();
                 if (((InteractiveTiledObject) object.getUserData()).getClass().equals(Escalera.class)) {
-                    player = (Foxy) head.getUserData();
-                    player.setOnLadder(false);
+                    
+                    Foxy.setOnLadder(false);
                     Gdx.app.log("false", "Escalera");
                 }
             }
