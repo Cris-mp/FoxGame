@@ -14,7 +14,7 @@
  */
 //Note, the above license and copyright applies to this file only.
 
-package io.crismp.frogGame.lwjgl3;
+package io.crismp.foxGame.lwjgl3;
 
 import org.lwjgl.system.macosx.LibC;
 

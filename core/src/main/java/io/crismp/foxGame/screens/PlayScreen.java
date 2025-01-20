@@ -17,6 +17,7 @@ import io.crismp.foxGame.FoxGame;
 import io.crismp.foxGame.Scenes.Hud;
 import io.crismp.foxGame.Sprites.Foxy;
 import io.crismp.foxGame.Tools.B2WorldCreator;
+import io.crismp.foxGame.Tools.VirtualJoystick;
 import io.crismp.foxGame.Tools.WorldContactListener;
 
 public class PlayScreen implements Screen {
@@ -38,8 +39,11 @@ public class PlayScreen implements Screen {
 
     Foxy player;
 
+    VirtualJoystick joystick;
+
     public PlayScreen(FoxGame game) {
         this.game = game;
+        this.joystick= new VirtualJoystick(0, 0, 2, 1);
         gamecam = new OrthographicCamera();
         // mantiene el ratio de aspecto virtual a pesar de la pantalla
         gamePort = new FitViewport(FoxGame.V_WIDTH / FoxGame.PPM, FoxGame.V_HEIGHT / FoxGame.PPM, gamecam);
@@ -121,7 +125,7 @@ public class PlayScreen implements Screen {
                 gamecam.position.x = player.body.getPosition().x;
             }
         }
-        // Ajuste de posicion de la camara en el eje Y
+        // Ajuste de posicion de la camara en el eje Ya
         if (player.body.getPosition().y < 1.05f) {
             gamecam.position.y = 1.05f;
         } else {
@@ -164,11 +168,14 @@ public class PlayScreen implements Screen {
         game.batch.setProjectionMatrix(hud.stage.getCamera().combined);
         hud.stage.draw();
 
+        joystick.render();
+
     }
 
     @Override
     public void resize(int width, int height) {
         gamePort.update(width, height);
+        joystick.resize(width, height);
     }
 
     public TiledMap getMap(){

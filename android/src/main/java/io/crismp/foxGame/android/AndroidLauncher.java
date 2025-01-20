@@ -1,4 +1,4 @@
-package io.crismp.frogGame.android;
+package io.crismp.foxGame.android;
 
 import android.os.Bundle;
 
