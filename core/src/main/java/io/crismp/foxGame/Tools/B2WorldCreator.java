@@ -13,10 +13,14 @@ import com.badlogic.gdx.physics.box2d.World;
 import io.crismp.foxGame.FoxGame;
 import io.crismp.foxGame.Sprites.Escalera;
 import io.crismp.foxGame.Sprites.Zarzas;
+import io.crismp.foxGame.screens.PlayScreen;
 
 public class B2WorldCreator {
 
-    public B2WorldCreator(World world, TiledMap map) {
+    public B2WorldCreator(PlayScreen screen) {
+
+        World world =screen.getWorld();
+        TiledMap map = screen.getMap();
 
         // Los suelos no son objetos interactivos asi que se quedan aqui
         for (MapObject object : map.getLayers().get("suelos").getObjects().getByType(RectangleMapObject.class)) {
@@ -43,12 +47,12 @@ public class B2WorldCreator {
 
         for (MapObject object : map.getLayers().get("escaleras").getObjects().getByType(RectangleMapObject.class)) {
             Rectangle rectangle = ((RectangleMapObject) object).getRectangle();
-            new Escalera(world, map, rectangle);
+            new Escalera(screen, rectangle);
         }
 
         for (MapObject object : map.getLayers().get("zarzas").getObjects().getByType(RectangleMapObject.class)) {
             Rectangle rectangle = ((RectangleMapObject) object).getRectangle();
-            new Zarzas(world, map, rectangle);
+            new Zarzas(screen, rectangle);
         }
     }
 

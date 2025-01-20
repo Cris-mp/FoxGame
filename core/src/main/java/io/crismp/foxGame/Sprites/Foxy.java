@@ -18,6 +18,7 @@ import com.badlogic.gdx.physics.box2d.World;
 import com.badlogic.gdx.utils.Array;
 
 import io.crismp.foxGame.FoxGame;
+import io.crismp.foxGame.screens.PlayScreen;
 
 public class Foxy extends Sprite {
 	public enum State {
@@ -53,10 +54,10 @@ public class Foxy extends Sprite {
 		onLadder = inLadder;
 	}
 
-	public Foxy(World world, TiledMap map) {
+	public Foxy(PlayScreen screen) {
 		super(new Texture("player/zorrito.png"), 16, 16);
-		this.world = world;
-		this.map = map;
+		this.world =screen.getWorld();
+		this.map = screen.getMap();
 		this.velX = 0;
 		this.velY = 0;
 		this.speed = 2f;
@@ -183,7 +184,7 @@ public class Foxy extends Sprite {
 
 		fdef.shape = shape;
 		body.createFixture(fdef);
-	
+
 
 
 		//NOTA: sensor en la cabeza de foxy, no rompe ladrillos pero creo que sera util para dubir a las plataformas
@@ -193,7 +194,7 @@ public class Foxy extends Sprite {
 		fdef.isSensor=true;
 		body.createFixture(fdef).setUserData("head");
 
-		
+
 
 	}
 

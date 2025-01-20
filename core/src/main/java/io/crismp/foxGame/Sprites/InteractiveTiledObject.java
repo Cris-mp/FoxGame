@@ -9,6 +9,7 @@ import com.badlogic.gdx.physics.box2d.PolygonShape;
 import com.badlogic.gdx.physics.box2d.World;
 
 import io.crismp.foxGame.FoxGame;
+import io.crismp.foxGame.screens.PlayScreen;
 
 import com.badlogic.gdx.maps.tiled.TiledMap;
 import com.badlogic.gdx.maps.tiled.TiledMapTile;
@@ -23,9 +24,9 @@ public abstract class InteractiveTiledObject {
 
     protected Fixture fixture;
 
-    public InteractiveTiledObject(World world, TiledMap map, Rectangle bounds) {
-        this.world = world;
-        this.map = map;
+    public InteractiveTiledObject(PlayScreen screen, Rectangle bounds) {
+        this.world = screen.getWorld();
+        this.map = screen.getMap();
         this.bounds = bounds;
 
         // Definimos el cuerpo

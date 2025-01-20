@@ -60,10 +60,10 @@ public class PlayScreen implements Screen {
         b2dr = new Box2DDebugRenderer();
 
         // Pasamos al creador de mundo el mundo y el mapa
-        new B2WorldCreator(world, map);
+        new B2WorldCreator(this);
 
         // creamos a foxy
-        player = new Foxy(world, map);
+        player = new Foxy(this);
 
         world.setContactListener(new WorldContactListener());
 
@@ -169,6 +169,13 @@ public class PlayScreen implements Screen {
     @Override
     public void resize(int width, int height) {
         gamePort.update(width, height);
+    }
+
+    public TiledMap getMap(){
+        return map;
+    }
+    public World getWorld(){
+        return world;
     }
 
     @Override
