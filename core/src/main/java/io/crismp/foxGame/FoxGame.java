@@ -1,3 +1,5 @@
+//NOTE: PARALLAX: debo renderizar las capas del mapa por separado. Ver:https://libgdx.com/wiki/graphics/2d/tile-maps
+
 package io.crismp.foxGame;
 
 import com.badlogic.gdx.Game;
@@ -22,10 +24,11 @@ public class FoxGame extends Game {
     public static final short ZARZAS_BIT=16;
 
     public SpriteBatch batch;
+    
 
     @Override
     public void create() {
-        batch = new SpriteBatch();
+        batch= new SpriteBatch();
         setScreen(new PlayScreen(this));
     }
 

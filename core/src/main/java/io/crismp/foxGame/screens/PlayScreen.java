@@ -5,8 +5,6 @@ import com.badlogic.gdx.Input;
 import com.badlogic.gdx.Screen;
 import com.badlogic.gdx.graphics.GL20;
 import com.badlogic.gdx.graphics.OrthographicCamera;
-import com.badlogic.gdx.graphics.Texture;
-import com.badlogic.gdx.graphics.Texture3D;
 import com.badlogic.gdx.maps.tiled.TiledMap;
 import com.badlogic.gdx.maps.tiled.TmxMapLoader;
 import com.badlogic.gdx.maps.tiled.renderers.OrthogonalTiledMapRenderer;
@@ -15,12 +13,10 @@ import com.badlogic.gdx.physics.box2d.Box2DDebugRenderer;
 import com.badlogic.gdx.physics.box2d.World;
 import com.badlogic.gdx.utils.viewport.FitViewport;
 import com.badlogic.gdx.utils.viewport.Viewport;
-
 import io.crismp.foxGame.FoxGame;
 import io.crismp.foxGame.Scenes.Hud;
 import io.crismp.foxGame.Sprites.Foxy;
 import io.crismp.foxGame.Tools.B2WorldCreator;
-import io.crismp.foxGame.Tools.ParallaxLayer;
 import io.crismp.foxGame.Tools.WorldContactListener;
 
 public class PlayScreen implements Screen {
@@ -42,10 +38,6 @@ public class PlayScreen implements Screen {
 
     Foxy player;
 
-    private ParallaxLayer[] layers;//this
-    Texture img;
-
-
     public PlayScreen(FoxGame game) {
         this.game = game;
         gamecam = new OrthographicCamera();
@@ -54,12 +46,12 @@ public class PlayScreen implements Screen {
 
         // Crea los marcadores de fase y vista //TODO: Ampliar en futuro
         hud = new Hud(game.batch);
-        
+
         // Carga nuestro mapa y configurar nuestro renderizador de mapas
         mapLoader = new TmxMapLoader();
         map = mapLoader.load("maps/Fase1.tmx");
         renderer = new OrthogonalTiledMapRenderer(map, 1 / FoxGame.PPM);
-        
+
         // Situa la camara para que se centre correctamente el el punto 0
         gamecam.position.set(gamePort.getWorldWidth() / 2, gamePort.getWorldHeight() / 2, 0);
 
@@ -104,7 +96,7 @@ public class PlayScreen implements Screen {
         }
         System.out.println(player.getOnLadder());
         if (player.getOnLadder() && Gdx.input.isKeyPressed(Input.Keys.W)) {
-            player.body.setLinearVelocity(0, player.velY = 30f * dt);
+            player.body.setLinearVelocity(0, player.velY = 30 * dt);
         }
 
         player.body.setLinearVelocity(player.velX * player.speed,
@@ -143,15 +135,6 @@ public class PlayScreen implements Screen {
         gamecam.update();
         // llama al rederer para que se muestre solo el trozo que queremos ver del mundo
         renderer.setView(gamecam);
-
-        //this palla
-        // layers = new ParallaxLayer[2];
-		// layers[0] = new ParallaxLayer(new Texture("maps/back.png"), 0.1f, true, false);
-		// layers[1] = new ParallaxLayer(new Texture("maps/middle.png"), 0.2f, true, false);
-
-        // for (ParallaxLayer layer : layers) {
-		// 	layer.setCamera(gamecam);
-		// }
     }
 
     @Override
@@ -169,20 +152,14 @@ public class PlayScreen implements Screen {
         // renderizamos el Box2DDebugLines
         b2dr.render(world, gamecam.combined);
 
-
         game.batch.setProjectionMatrix(gamecam.combined);
 
-        
-         game.batch.begin();
-        // for (ParallaxLayer layer : layers) {
-        //     layer.render(game.batch);
-		// }
-        
+        game.batch.begin();
+
         player.draw(game.batch);
 
         game.batch.end();
-      
-        
+
         // Configura el batch para centrar la camara del HUD
         game.batch.setProjectionMatrix(hud.stage.getCamera().combined);
         hud.stage.draw();
@@ -216,7 +193,6 @@ public class PlayScreen implements Screen {
         world.dispose();
         b2dr.dispose();
         hud.dispose();
-        img.dispose();//paralla
     }
 
 }

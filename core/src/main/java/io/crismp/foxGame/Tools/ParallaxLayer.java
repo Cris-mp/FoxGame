@@ -35,6 +35,7 @@ public class ParallaxLayer {
         region.setRegionWidth(wrapHorizontally ? (int) camera.viewportWidth : texture.getWidth());
         region.setRegionHeight(wrapVertically ? (int) camera.viewportHeight : texture.getHeight());
         batch.draw(region, camera.position.x - camera.viewportWidth / 2, camera.position.y - camera.viewportHeight / 2);
+
     }
 
 }
