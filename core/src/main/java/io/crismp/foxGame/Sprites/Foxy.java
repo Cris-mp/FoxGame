@@ -152,10 +152,10 @@ public class Foxy extends Sprite {
 		if (body.getLinearVelocity().y > 0 && !Foxy.onLadder) {
 			return State.JUMPING;
 		}
-		if (body.getLinearVelocity().y < 0) {
+		if (body.getLinearVelocity().y < 0 && !Foxy.onLadder) {
 			return State.FALLING;
 		}
-		if (body.getLinearVelocity().x != 0) {
+		if (body.getLinearVelocity().x != 0 && !Foxy.onLadder) {
 			return State.RUNNING;
 		}
 		if (body.getLinearVelocity().y > 0 && Foxy.onLadder) {

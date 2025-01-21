@@ -128,7 +128,7 @@ tasks.register('run', Exec) {
   }
 
   def adb = path + "/platform-tools/adb"
-  commandLine "$adb", 'shell', 'am', 'start', '-n', 'io.crismp.foxGame/io.crismp.foxGame.android.AndroidLauncher'
+  commandLine "$adb", 'shell', 'am', 'start', '-n', '/io.crismp.foxGame.android.AndroidLauncher'
 }
 
 eclipse.project.name = appName + "-android"

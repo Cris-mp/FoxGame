@@ -10,8 +10,6 @@ import com.badlogic.gdx.scenes.scene2d.ui.Table;
 import com.badlogic.gdx.scenes.scene2d.ui.Touchpad;
 import com.badlogic.gdx.scenes.scene2d.ui.Touchpad.TouchpadStyle;
 
-import io.crismp.foxGame.FoxGame;
-
 
 public class VirtualJoystick {
 	private Stage stage;
@@ -19,8 +17,6 @@ public class VirtualJoystick {
 	private Table table;
 	private Texture knobTexture;
 	private Touchpad touchpad;
-	private boolean isJoystickVisible = false;
-    
 
 	public VirtualJoystick(float x, float y, float baseRadius, float knobRadius) {
 		stage = new Stage();
@@ -62,13 +58,11 @@ public class VirtualJoystick {
 				Vector2 stageCoordinates = stage.screenToStageCoordinates(new Vector2(screenX, screenY));
 				table.setPosition(stageCoordinates.x - touchpad.getWidth() / 2,
 						stageCoordinates.y - touchpad.getHeight() / 2);
-				isJoystickVisible = true;
 				return true;
 			}
 
 			@Override
 			public boolean touchUp(int screenX, int screenY, int pointer, int button) {
-				isJoystickVisible = false;
 				table.setPosition(Gdx.graphics.getWidth() / 2 - touchpad.getWidth(),
 						Gdx.graphics.getHeight() / 2 - touchpad.getHeight());
 				return true;
