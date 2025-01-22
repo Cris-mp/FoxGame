@@ -1,5 +1,5 @@
 package io.crismp.foxGame.Sprites;
-
+//#region imports
 import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.graphics.g2d.Animation;
 import com.badlogic.gdx.graphics.g2d.Sprite;
@@ -16,6 +16,8 @@ import com.badlogic.gdx.physics.box2d.EdgeShape;
 import com.badlogic.gdx.physics.box2d.FixtureDef;
 import com.badlogic.gdx.physics.box2d.World;
 import com.badlogic.gdx.utils.Array;
+
+//#endregion
 
 import io.crismp.foxGame.FoxGame;
 import io.crismp.foxGame.screens.PlayScreen;
@@ -106,9 +108,7 @@ public class Foxy extends Sprite {
 	}
 
 	public void update(float dt) {
-		setPosition(body.getPosition().x - getWidth() / 2, body.getPosition().y - getHeight() / 6);// NOTE: no entiendo
-																									// porque tine que
-																									// ser un 4
+		setPosition(body.getPosition().x - getWidth() / 2, body.getPosition().y - getHeight() / 6);
 		setRegion(getFrame(dt));
 	}
 

@@ -1,9 +1,9 @@
 package io.crismp.foxGame.screens;
 
+import com.badlogic.gdx.Application.ApplicationType;
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.Input;
 import com.badlogic.gdx.Screen;
-import com.badlogic.gdx.Application.ApplicationType;
 import com.badlogic.gdx.graphics.GL20;
 import com.badlogic.gdx.graphics.OrthographicCamera;
 import com.badlogic.gdx.maps.tiled.TiledMap;
@@ -44,7 +44,7 @@ public class PlayScreen implements Screen {
 
     public PlayScreen(FoxGame game) {
         this.game = game;
-        this.joystick= new VirtualJoystick(0, 0, 2, 1);
+        this.joystick = new VirtualJoystick(0, 0, 2, 1);
         gamecam = new OrthographicCamera();
         // mantiene el ratio de aspecto virtual a pesar de la pantalla
         gamePort = new FitViewport(FoxGame.V_WIDTH / FoxGame.PPM, FoxGame.V_HEIGHT / FoxGame.PPM, gamecam);
@@ -80,63 +80,79 @@ public class PlayScreen implements Screen {
     }
 
     public void handleInput(float dt) {
-        if (joystick.isJumpPressed() && player.jumpCounter < 2) {// TODO:aqui no uso el dt porque no
-                                                                                     // se como
-            player.body.applyLinearImpulse(new Vector2(0, 1), player.body.getPosition(), true);
-            player.jumpCounter++;
-        }
-        // reseteamos el contador de salto
-        if (player.body.getLinearVelocity().y == 0) {
-            player.jumpCounter = 0;
-        }
-        System.out.println(player.getOnLadder());
-        if (player.getOnLadder() && joystick.getDirection().y>0) {
-            player.body.setLinearVelocity(0, player.velY = 1);
-        }
-
-        player.body.setLinearVelocity(joystick.getDirection().x,
-        player.body.getLinearVelocity().y < 15 ? player.body.getLinearVelocity().y : 15);
-
-
-
-        //if(Gdx.app.getType()==ApplicationType.Android){
-            System.out.println(player.getOnLadder());
-        if (player.getOnLadder() && joystick.getDirection().y>0) {
-            player.body.setLinearVelocity(0, player.velY = 30 * dt);
-        }
-
-        player.body.setLinearVelocity(joystick.getDirection().x,
-        player.body.getLinearVelocity().y < 15 ? player.body.getLinearVelocity().y : 15);
-
-
-        // }else{
-        // player.velX = 0;
-        // if (Gdx.input.isKeyPressed(Input.Keys.D)) {
-        //     player.velX = 30f * dt;
-        // }
-        // if (Gdx.input.isKeyPressed(Input.Keys.A)) {
-        //     player.velX = -30f * dt;
-        // }
-        // if (Gdx.input.isKeyJustPressed(Input.Keys.SPACE) && player.jumpCounter < 2) {// TODO:aqui no uso el dt porque no
-        //                                                                              // se como
-        //     float force = player.body.getMass() * 2.5f;
-
-        //     player.body.setLinearVelocity(player.body.getLinearVelocity().x, 0);
-        //     player.body.applyLinearImpulse(new Vector2(0, force), player.body.getPosition(), true);
-        //     player.jumpCounter++;
+        // if (joystick.isJumpPressed() && player.jumpCounter < 2) {// TODO:aqui no uso
+        // el dt porque no
+        // // se como
+        // player.body.applyLinearImpulse(new Vector2(0, 4f),
+        // player.body.getWorldCenter(), true);
+        // player.jumpCounter++;
         // }
         // // reseteamos el contador de salto
         // if (player.body.getLinearVelocity().y == 0) {
-        //     player.jumpCounter = 0;
+        // player.jumpCounter = 0;
         // }
         // System.out.println(player.getOnLadder());
-        // if (player.getOnLadder() && Gdx.input.isKeyPressed(Input.Keys.W)) {
-        //     player.body.setLinearVelocity(0, player.velY = 30 * dt);
+        // if (player.getOnLadder() && joystick.getDirection().y>0) {
+        // player.body.setLinearVelocity(0, player.velY = 1);
         // }
 
-        // player.body.setLinearVelocity(player.velX * player.speed,
-        // player.body.getLinearVelocity().y < 15 ? player.body.getLinearVelocity().y : 15);
-        // }
+        // player.body.setLinearVelocity(joystick.getDirection().x,
+        // player.body.getLinearVelocity().y < 15 ? player.body.getLinearVelocity().y :
+        // 15);
+
+        if (Gdx.app.getType() == ApplicationType.Android) {
+
+            if (joystick.isJumpPressed() && player.jumpCounter < 2) {// TODO:aqui no uso el dt porque no                                                 // se como
+                float force;
+                if(dt>5){
+                    force = player.body.getMass() * 2.5f;
+                }else{
+                    force = player.body.getMass() * 1.25f;
+                }
+                player.body.applyLinearImpulse(new Vector2(0, force), player.body.getWorldCenter(), true);
+                player.jumpCounter++;
+            }
+            // reseteamos el contador de salto
+            if (player.body.getLinearVelocity().y == 0) {
+                player.jumpCounter = 0;
+            }
+
+            if (player.getOnLadder() && joystick.getDirection().y > 0) {
+                player.body.setLinearVelocity(0, player.velY = 30 * dt);
+            }
+
+            player.body.setLinearVelocity(joystick.getDirection().x,
+                    player.body.getLinearVelocity().y < 15 ? player.body.getLinearVelocity().y : 15);
+
+        } else {
+            player.velX = 0;
+            if (Gdx.input.isKeyPressed(Input.Keys.D)) {
+                player.velX = 30f * dt;
+            }
+            if (Gdx.input.isKeyPressed(Input.Keys.A)) {
+                player.velX = -30f * dt;
+            }
+            if (Gdx.input.isKeyJustPressed(Input.Keys.SPACE) && player.jumpCounter < 2) {// TODO:aqui no uso el dt
+                                                                                         // porque no
+                                                                                         // se como
+                float force = player.body.getMass() * 2.5f;
+
+                player.body.setLinearVelocity(player.body.getLinearVelocity().x, 0);
+                player.body.applyLinearImpulse(new Vector2(0, force), player.body.getWorldCenter(), true);
+                player.jumpCounter++;
+            }
+            // reseteamos el contador de salto
+            if (player.body.getLinearVelocity().y == 0) {
+                player.jumpCounter = 0;
+            }
+            System.out.println(player.getOnLadder());
+            if (player.getOnLadder() && Gdx.input.isKeyPressed(Input.Keys.W)) {
+                player.body.setLinearVelocity(0, player.velY = 30 * dt);
+            }
+
+            player.body.setLinearVelocity(player.velX * player.speed,
+                    player.body.getLinearVelocity().y < 15 ? player.body.getLinearVelocity().y : 15);
+        }
 
     }
 
@@ -200,8 +216,8 @@ public class PlayScreen implements Screen {
         game.batch.setProjectionMatrix(hud.stage.getCamera().combined);
         hud.stage.draw();
 
-        //if(Gdx.app.getType()==ApplicationType.Android)
-        joystick.render();
+        if (Gdx.app.getType() == ApplicationType.Android)
+            joystick.render();
 
     }
 
@@ -211,10 +227,11 @@ public class PlayScreen implements Screen {
         joystick.resize(width, height);
     }
 
-    public TiledMap getMap(){
+    public TiledMap getMap() {
         return map;
     }
-    public World getWorld(){
+
+    public World getWorld() {
         return world;
     }
 
