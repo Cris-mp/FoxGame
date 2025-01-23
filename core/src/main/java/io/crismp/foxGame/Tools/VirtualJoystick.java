@@ -11,8 +11,9 @@ import com.badlogic.gdx.scenes.scene2d.ui.Skin;
 import com.badlogic.gdx.scenes.scene2d.ui.Table;
 import com.badlogic.gdx.scenes.scene2d.ui.Touchpad;
 import com.badlogic.gdx.scenes.scene2d.ui.Touchpad.TouchpadStyle;
+import com.badlogic.gdx.scenes.scene2d.utils.ClickListener;
 
-public class VirtualJoystick {
+public class VirtualJoystick{
 	private Stage stage;
 	private Table table;
 	// joystick
@@ -42,17 +43,18 @@ public class VirtualJoystick {
 		touchpad = new Touchpad(10, touchpadStyle);
 		table.add(touchpad);
 		Gdx.input.setInputProcessor(stage);
-		
+
 		Image up=new Image(new Texture("joystick/Butto.png"));
 		Image down =new Image(new Texture("joystick/Butto-pressed.png"));
 		jumpImage = up;
 		jumpImage.setSize(20, 20);
-		jumpImage.addListener(new InputListener() {
+		jumpImage.addListener(new ClickListener() {
 
 			@Override
 			public boolean touchDown(InputEvent event, float x, float y, int pointer, int button) {
 				jumpPressed=true;
 				jumpImage=down;
+                System.out.println("toudown"+jumpPressed);
 				return true;
 			}
 
@@ -60,6 +62,7 @@ public class VirtualJoystick {
 			public void touchUp(InputEvent event, float x, float y, int pointer, int button) {
 				jumpImage=up;
 				jumpPressed=false;
+                System.out.println("touchup"+jumpPressed);
 			}
 
 		});

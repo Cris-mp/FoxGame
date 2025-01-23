@@ -102,12 +102,12 @@ public class PlayScreen implements Screen {
 
         if (Gdx.app.getType() == ApplicationType.Android) {
 
-            if (joystick.isJumpPressed() && player.jumpCounter < 2) {// TODO:aqui no uso el dt porque no                                                 // se como
+            if (joystick.isJumpPressed() && player.jumpCounter < 2) {// TODO:aqui no uso el dt porque no se como
                 float force;
                 if(dt>5){
                     force = player.body.getMass() * 2.5f;
                 }else{
-                    force = player.body.getMass() * 1.25f;
+                    force = player.body.getMass() * 1.50f;
                 }
                 player.body.applyLinearImpulse(new Vector2(0, force), player.body.getWorldCenter(), true);
                 player.jumpCounter++;
@@ -118,10 +118,21 @@ public class PlayScreen implements Screen {
             }
 
             if (player.getOnLadder() && joystick.getDirection().y > 0) {
-                player.body.setLinearVelocity(0, player.velY = 30 * dt);
+                float force;
+                if(dt>5){
+                    force = player.body.getMass() * 2.5f;
+                }else{
+                    force = player.body.getMass() * 0.5f;
+                }
+                player.body.setLinearVelocity(0, player.velY = force);
             }
-
-            player.body.setLinearVelocity(joystick.getDirection().x,
+            float vel;
+                if(dt>5){
+                    vel = player.body.getMass() * 2.5f;
+                }else{
+                    vel = player.body.getMass() * 1.75f;
+                }
+            player.body.setLinearVelocity(joystick.getDirection().x/vel,
                     player.body.getLinearVelocity().y < 15 ? player.body.getLinearVelocity().y : 15);
 
         } else {
