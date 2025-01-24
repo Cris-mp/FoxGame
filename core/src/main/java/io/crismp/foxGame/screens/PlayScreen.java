@@ -17,6 +17,7 @@ import com.badlogic.gdx.utils.viewport.Viewport;
 import io.crismp.foxGame.FoxGame;
 import io.crismp.foxGame.Scenes.Hud;
 import io.crismp.foxGame.Sprites.Foxy;
+import io.crismp.foxGame.Sprites.Zarigueya;
 import io.crismp.foxGame.Tools.B2WorldCreator;
 import io.crismp.foxGame.Tools.VirtualJoystick;
 import io.crismp.foxGame.Tools.WorldContactListener;
@@ -38,7 +39,8 @@ public class PlayScreen implements Screen {
     private World world;
     private Box2DDebugRenderer b2dr;
 
-    Foxy player;
+    private Foxy player;
+    private Zarigueya zarigueya;
 
     VirtualJoystick joystick;
 
@@ -69,6 +71,7 @@ public class PlayScreen implements Screen {
 
         // creamos a foxy
         player = new Foxy(this);
+        zarigueya=new Zarigueya(this, .32f,.32f);
 
         world.setContactListener(new WorldContactListener());
 
@@ -80,40 +83,25 @@ public class PlayScreen implements Screen {
     }
 
     public void handleInput(float dt) {
-        // if (joystick.isJumpPressed() && player.jumpCounter < 2) {// TODO:aqui no uso
-        // el dt porque no
-        // // se como
-        // player.body.applyLinearImpulse(new Vector2(0, 4f),
-        // player.body.getWorldCenter(), true);
-        // player.jumpCounter++;
-        // }
-        // // reseteamos el contador de salto
-        // if (player.body.getLinearVelocity().y == 0) {
-        // player.jumpCounter = 0;
-        // }
-        // System.out.println(player.getOnLadder());
-        // if (player.getOnLadder() && joystick.getDirection().y>0) {
-        // player.body.setLinearVelocity(0, player.velY = 1);
-        // }
-
-        // player.body.setLinearVelocity(joystick.getDirection().x,
-        // player.body.getLinearVelocity().y < 15 ? player.body.getLinearVelocity().y :
-        // 15);
 
         if (Gdx.app.getType() == ApplicationType.Android) {
-
+            player.jumpCounter = 0;
             if (joystick.isJumpPressed() && player.jumpCounter < 2) {// TODO:aqui no uso el dt porque no se como
                 float force;
+                System.out.println(player.jumpCounter);
+                joystick.setJumpPressed(false);
                 if(dt>5){
                     force = player.body.getMass() * 2.5f;
                 }else{
                     force = player.body.getMass() * 1.50f;
                 }
-                player.body.applyLinearImpulse(new Vector2(0, force), player.body.getWorldCenter(), true);
+                player.body.applyForceToCenter(0, 175f, true);
                 player.jumpCounter++;
+                System.out.println(player.jumpCounter);
             }
             // reseteamos el contador de salto
-            if (player.body.getLinearVelocity().y == 0) {
+            if (player.body.getLinearVelocity().y == 0 && player.jumpCounter!=0) {
+                System.out.println(player.jumpCounter);
                 player.jumpCounter = 0;
             }
 
@@ -173,6 +161,7 @@ public class PlayScreen implements Screen {
         world.step(1 / 60f, 6, 2);
 
         player.update(dt);
+        //zarigueya.update(dt);
 
         // Ajuste de posicion de la camara en el eje X
         if (player.body.getPosition().x > 5.20f) {
@@ -220,6 +209,7 @@ public class PlayScreen implements Screen {
         game.batch.begin();
 
         player.draw(game.batch);
+        //zarigueya.draw(game.batch);
 
         game.batch.end();
 
@@ -230,6 +220,8 @@ public class PlayScreen implements Screen {
         if (Gdx.app.getType() == ApplicationType.Android)
             joystick.render();
 
+            System.out.println(zarigueya.getX());
+            System.out.println(player.getX());
     }
 
     @Override

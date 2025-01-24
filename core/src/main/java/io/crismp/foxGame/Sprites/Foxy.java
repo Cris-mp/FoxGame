@@ -180,7 +180,7 @@ public class Foxy extends Sprite {
 		CircleShape shape = new CircleShape();
 		shape.setRadius(5 / FoxGame.PPM);
 		fdef.filter.categoryBits=FoxGame.FOX_BIT;
-		fdef.filter.maskBits = FoxGame.DEFAULT_BIT|FoxGame.ZARZAS_BIT|FoxGame.LADDER_BIT;
+		fdef.filter.maskBits = FoxGame.GROUND_BIT|FoxGame.ZARZAS_BIT|FoxGame.LADDER_BIT|FoxGame.OBJECT_BIT|FoxGame.ENEMY_BIT;
 
 		fdef.shape = shape;
 		body.createFixture(fdef);

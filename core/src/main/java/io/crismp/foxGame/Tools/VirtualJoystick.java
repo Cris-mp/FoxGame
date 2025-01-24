@@ -11,7 +11,6 @@ import com.badlogic.gdx.scenes.scene2d.ui.Skin;
 import com.badlogic.gdx.scenes.scene2d.ui.Table;
 import com.badlogic.gdx.scenes.scene2d.ui.Touchpad;
 import com.badlogic.gdx.scenes.scene2d.ui.Touchpad.TouchpadStyle;
-import com.badlogic.gdx.scenes.scene2d.utils.ClickListener;
 
 public class VirtualJoystick{
 	private Stage stage;
@@ -21,13 +20,14 @@ public class VirtualJoystick{
 	private Texture knobTexture;
 	private Touchpad touchpad;
 	// botones
-	boolean jumpPressed;
+	private boolean jumpPressed;
 	public Image jumpImage;
 
 	public VirtualJoystick(float x, float y, float baseRadius, float knobRadius) {
 
 		stage = new Stage();
 		table = new Table();
+		jumpPressed=false;
 		table.bottom();
 		table.setFillParent(true);
 		table.pad(20);
@@ -44,11 +44,11 @@ public class VirtualJoystick{
 		table.add(touchpad);
 		Gdx.input.setInputProcessor(stage);
 
-		Image up=new Image(new Texture("joystick/Butto.png"));
-		Image down =new Image(new Texture("joystick/Butto-pressed.png"));
+		Image up=new Image(new Texture("joystick/boton.png"));
+		Image down =new Image(new Texture("joystick/botonPress.png"));
 		jumpImage = up;
 		jumpImage.setSize(20, 20);
-		jumpImage.addListener(new ClickListener() {
+		jumpImage.addListener(new InputListener() {
 
 			@Override
 			public boolean touchDown(InputEvent event, float x, float y, int pointer, int button) {
@@ -81,7 +81,9 @@ public class VirtualJoystick{
 
 		return new Vector2(knobPercentX, knobPercentY);
 	}
-
+	public void setJumpPressed(boolean bool) {
+		jumpPressed=bool;
+	}
 	public boolean isJumpPressed() {
 		return jumpPressed;
 	}

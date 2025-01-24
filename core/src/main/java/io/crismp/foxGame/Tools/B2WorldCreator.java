@@ -40,6 +40,7 @@ public class B2WorldCreator {
             shape.setAsBox((rectangle.getWidth() / 2) / FoxGame.PPM, (rectangle.getHeight() / 2) / FoxGame.PPM);
             // definimos la forma
             fdef.shape = shape;
+            fdef.filter.categoryBits=FoxGame.OBJECT_BIT;//para diferenciar que choca contra objetos
             fdef.friction = 0;
             // la añadimos al cuerpo
             body.createFixture(fdef);
