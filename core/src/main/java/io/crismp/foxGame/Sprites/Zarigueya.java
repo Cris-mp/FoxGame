@@ -5,8 +5,8 @@ import com.badlogic.gdx.graphics.g2d.Animation;
 import com.badlogic.gdx.graphics.g2d.TextureRegion;
 import com.badlogic.gdx.maps.MapObject;
 import com.badlogic.gdx.maps.objects.RectangleMapObject;
-import com.badlogic.gdx.maps.tiled.TiledMap;
 import com.badlogic.gdx.math.Rectangle;
+import com.badlogic.gdx.physics.box2d.Body;
 import com.badlogic.gdx.physics.box2d.BodyDef;
 import com.badlogic.gdx.physics.box2d.CircleShape;
 import com.badlogic.gdx.physics.box2d.FixtureDef;
@@ -23,6 +23,7 @@ public class Zarigueya extends Enemy {
 	private Animation<TextureRegion> zarWalk;
     private Texture zar;
 
+	public Body head;
 
 
 
@@ -59,6 +60,7 @@ public class Zarigueya extends Enemy {
 
 		bdef.type = BodyDef.BodyType.DynamicBody;
 		body = world.createBody(bdef);
+		
 
 		FixtureDef fdef = new FixtureDef();
 		CircleShape shape = new CircleShape();
@@ -68,6 +70,32 @@ public class Zarigueya extends Enemy {
 
 		fdef.shape = shape;
 		body.createFixture(fdef);
+
+		//TODO: intentanto definir la cabeza
+
+		BodyDef bdefhead = new BodyDef();
+
+		for (MapObject object : map.getLayers().get("zarigueya").getObjects().getByType(RectangleMapObject.class)) {
+			Rectangle rectangle = ((RectangleMapObject) object).getRectangle();
+			// Posicionamos el cuerpo
+			bdefhead.position.set((rectangle.getX() / FoxGame.PPM)-0.1f, (rectangle.getY() / FoxGame.PPM)+0.1f);
+		}
+
+		bdefhead.type = BodyDef.BodyType.DynamicBody;
+		head = world.createBody(bdefhead);
+		head.setGravityScale(0);
+		
+
+		FixtureDef fdefhead = new FixtureDef();
+		CircleShape shapehead = new CircleShape();
+		shapehead.setRadius(4 / FoxGame.PPM);
+		fdefhead.filter.categoryBits=FoxGame.ENEMY_BIT;
+		fdefhead.filter.maskBits = FoxGame.GROUND_BIT|FoxGame.ZARZAS_BIT|FoxGame.LADDER_BIT|FoxGame.OBJECT_BIT|FoxGame.FOX_BIT;
+
+		fdefhead.shape = shapehead;
+		head.createFixture(fdefhead);
+
+		head = world.createBody(bdefhead);
     }
     
 }

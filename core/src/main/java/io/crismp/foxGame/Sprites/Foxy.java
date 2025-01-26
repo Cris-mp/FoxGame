@@ -167,11 +167,8 @@ public class Foxy extends Sprite {
 	public void defineFoxy() {
 		BodyDef bdef = new BodyDef();
 
-		for (MapObject object : map.getLayers().get("player").getObjects().getByType(RectangleMapObject.class)) {
-			Rectangle rectangle = ((RectangleMapObject) object).getRectangle();
-			// Posicionamos el cuerpo
-			bdef.position.set((rectangle.getX()) / FoxGame.PPM, (rectangle.getY()) / FoxGame.PPM);
-		}
+		Rectangle rectangle = ((RectangleMapObject)map.getLayers().get("player").getObjects().get(0)).getRectangle();
+		bdef.position.set((rectangle.getX()) / FoxGame.PPM, (rectangle.getY()) / FoxGame.PPM);
 
 		bdef.type = BodyDef.BodyType.DynamicBody;
 		body = world.createBody(bdef);
