@@ -16,6 +16,7 @@ import com.badlogic.gdx.utils.viewport.FitViewport;
 import com.badlogic.gdx.utils.viewport.Viewport;
 import io.crismp.foxGame.FoxGame;
 import io.crismp.foxGame.Scenes.Hud;
+import io.crismp.foxGame.Sprites.Enemy;
 import io.crismp.foxGame.Sprites.Foxy;
 import io.crismp.foxGame.Sprites.Zarigueya;
 import io.crismp.foxGame.Tools.B2WorldCreator;
@@ -38,9 +39,9 @@ public class PlayScreen implements Screen {
     // Creacion de mundo (Fisicas y cuerpos)
     private World world;
     private Box2DDebugRenderer b2dr;
+    private B2WorldCreator creator;
 
     private Foxy player;
-    private Zarigueya zarigueya;
 
     VirtualJoystick joystick;
 
@@ -67,12 +68,11 @@ public class PlayScreen implements Screen {
         b2dr = new Box2DDebugRenderer();
 
         // Pasamos al creador de mundo el mundo y el mapa
-        new B2WorldCreator(this);
+        creator = new B2WorldCreator(this);
 
         // creamos a foxy
         player = new Foxy(this);
-        zarigueya=new Zarigueya(this, .32f,.32f);
-
+        
         world.setContactListener(new WorldContactListener());
 
     }
@@ -88,7 +88,7 @@ public class PlayScreen implements Screen {
             player.jumpCounter = 0;
             if (joystick.isJumpPressed() && player.jumpCounter < 2) {// TODO:aqui no uso el dt porque no se como
                 float force;
-                System.out.println(player.jumpCounter);
+               
                 joystick.setJumpPressed(false);
                 if(dt>5){
                     force = player.body.getMass() * 2.5f;
@@ -97,11 +97,11 @@ public class PlayScreen implements Screen {
                 }
                 player.body.applyForceToCenter(0, 175f, true);
                 player.jumpCounter++;
-                System.out.println(player.jumpCounter);
+               
             }
             // reseteamos el contador de salto
             if (player.body.getLinearVelocity().y == 0 && player.jumpCounter!=0) {
-                System.out.println(player.jumpCounter);
+               
                 player.jumpCounter = 0;
             }
 
@@ -144,7 +144,7 @@ public class PlayScreen implements Screen {
             if (player.body.getLinearVelocity().y == 0) {
                 player.jumpCounter = 0;
             }
-            System.out.println(player.getOnLadder());
+        
             if (player.getOnLadder() && Gdx.input.isKeyPressed(Input.Keys.W)) {
                 player.body.setLinearVelocity(0, player.velY = 30 * dt);
             }
@@ -161,7 +161,10 @@ public class PlayScreen implements Screen {
         world.step(1 / 60f, 6, 2);
 
         player.update(dt);
-        //zarigueya.update(dt);
+        
+        for(Enemy enemy : creator.getZarigueyas()){
+            enemy.update(dt);
+        }
 
         // Ajuste de posicion de la camara en el eje X
         if (player.body.getPosition().x > 5.20f) {
@@ -207,10 +210,10 @@ public class PlayScreen implements Screen {
         game.batch.setProjectionMatrix(gamecam.combined);
 
         game.batch.begin();
-
         player.draw(game.batch);
-        //zarigueya.draw(game.batch);
-
+        for(Enemy enemy : creator.getZarigueyas()){
+            enemy.draw(game.batch);;
+        }
         game.batch.end();
 
         // Configura el batch para centrar la camara del HUD
@@ -219,9 +222,6 @@ public class PlayScreen implements Screen {
 
         if (Gdx.app.getType() == ApplicationType.Android)
             joystick.render();
-
-            System.out.println(zarigueya.getX());
-            System.out.println(player.getX());
     }
 
     @Override
@@ -240,17 +240,14 @@ public class PlayScreen implements Screen {
 
     @Override
     public void pause() {
-
     }
 
     @Override
     public void resume() {
-
     }
 
     @Override
     public void hide() {
-
     }
 
     @Override

@@ -7,6 +7,8 @@ import com.badlogic.gdx.physics.box2d.ContactListener;
 import com.badlogic.gdx.physics.box2d.Fixture;
 import com.badlogic.gdx.physics.box2d.Manifold;
 
+import io.crismp.foxGame.FoxGame;
+import io.crismp.foxGame.Sprites.Enemy;
 import io.crismp.foxGame.Sprites.Escalera;
 import io.crismp.foxGame.Sprites.Foxy;
 import io.crismp.foxGame.Sprites.InteractiveTiledObject;
@@ -22,6 +24,30 @@ public class WorldContactListener implements ContactListener {
         Fixture fixA = contact.getFixtureA();
         Fixture fixB = contact.getFixtureB();
 
+        int cDef = fixA.getFilterData().categoryBits | fixB.getFilterData().categoryBits;
+
+        switch (cDef) {
+            case FoxGame.ENEMY_HEAD_BIT | FoxGame.FOX_BIT:
+                if (fixA.getFilterData().categoryBits == FoxGame.ENEMY_HEAD_BIT)
+                    ((Enemy) fixA.getUserData()).hitOnHead();
+                else 
+                    ((Enemy) fixB.getUserData()).hitOnHead();
+                break;
+            case FoxGame.ENEMY_BIT | FoxGame.OBSTACLE_BIT:
+            case FoxGame.ENEMY_BIT | FoxGame.WALL_BIT:
+                if (fixA.getFilterData().categoryBits == FoxGame.ENEMY_BIT)
+                    ((Enemy) fixA.getUserData()).reverseVelocity(true, false);
+                    
+                else
+                    ((Enemy) fixB.getUserData()).reverseVelocity(true, false);
+
+                break;
+            case FoxGame.FOX_BIT | FoxGame.ENEMY_BIT:
+                Gdx.app.log("FOXY","DIED");
+            default:
+                break;
+        }
+
         // si colisiona con la cabeza
         if (fixA.getUserData() == "head" || fixB.getUserData() == "head") {
             // vemos cual es el elemento cabeza
@@ -34,10 +60,12 @@ public class WorldContactListener implements ContactListener {
                     && InteractiveTiledObject.class.isAssignableFrom(object.getUserData().getClass())) {
                 ((InteractiveTiledObject) object.getUserData()).onHeadHit();
                 if (((InteractiveTiledObject) object.getUserData()).getClass().equals(Escalera.class)) {
-                    Foxy.setOnLadder(true);//NOTE:lo he hecho statico pero no creo que este esto muy bien(si eso lo reparo luego)
+                    Foxy.setOnLadder(true);// NOTE:lo he hecho statico pero no creo que este esto muy bien(si eso lo
+                                           // reparo luego)
                 }
             }
         }
+
     }
 
     // desconexion
@@ -58,7 +86,7 @@ public class WorldContactListener implements ContactListener {
                     && InteractiveTiledObject.class.isAssignableFrom(object.getUserData().getClass())) {
                 ((InteractiveTiledObject) object.getUserData()).onHeadHit();
                 if (((InteractiveTiledObject) object.getUserData()).getClass().equals(Escalera.class)) {
-                    
+
                     Foxy.setOnLadder(false);
                     Gdx.app.log("false", "Escalera");
                 }

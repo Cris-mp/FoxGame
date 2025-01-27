@@ -4,7 +4,6 @@ import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.graphics.g2d.Animation;
 import com.badlogic.gdx.graphics.g2d.Sprite;
 import com.badlogic.gdx.graphics.g2d.TextureRegion;
-import com.badlogic.gdx.maps.MapObject;
 import com.badlogic.gdx.maps.objects.RectangleMapObject;
 import com.badlogic.gdx.maps.tiled.TiledMap;
 import com.badlogic.gdx.math.Rectangle;
@@ -177,7 +176,7 @@ public class Foxy extends Sprite {
 		CircleShape shape = new CircleShape();
 		shape.setRadius(5 / FoxGame.PPM);
 		fdef.filter.categoryBits=FoxGame.FOX_BIT;
-		fdef.filter.maskBits = FoxGame.GROUND_BIT|FoxGame.ZARZAS_BIT|FoxGame.LADDER_BIT|FoxGame.OBJECT_BIT|FoxGame.ENEMY_BIT;
+		fdef.filter.maskBits = FoxGame.GROUND_BIT|FoxGame.FLOOR_BIT|FoxGame.WALL_BIT|FoxGame.OBSTACLE_BIT|FoxGame.ENEMY_BIT|FoxGame.ZARZAS_BIT|FoxGame.LADDER_BIT;
 
 		fdef.shape = shape;
 		body.createFixture(fdef);
