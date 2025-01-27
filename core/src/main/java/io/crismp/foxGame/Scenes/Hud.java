@@ -18,14 +18,14 @@ public class Hud implements Disposable{
     private Viewport viewport;
 
     private Integer life;
-    
+
     Label lblLife;
     Label lblFase;
 
     public Hud(SpriteBatch sb){
         life=2;
 
-        viewport = new FitViewport(FoxGame.V_WIDTH,FoxGame.V_HEIGHT,new OrthographicCamera());
+        viewport = new FitViewport(FoxGame.V_WIDTH*2,FoxGame.V_HEIGHT*2,new OrthographicCamera());
         stage = new Stage(viewport,sb);
 
         Table table =new Table();

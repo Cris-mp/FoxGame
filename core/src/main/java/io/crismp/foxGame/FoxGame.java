@@ -24,9 +24,11 @@ public class FoxGame extends Game {
     public static final short ZARZAS_BIT=16;
     public static final short OBJECT_BIT=32;
     public static final short ENEMY_BIT=64;
+    public static final short ENEMY_HEAD_BIT=124;
+
 
     public SpriteBatch batch;
-    
+
 
     @Override
     public void create() {
