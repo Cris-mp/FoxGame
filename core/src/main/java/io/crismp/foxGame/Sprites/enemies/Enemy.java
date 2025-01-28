@@ -1,4 +1,4 @@
-package io.crismp.foxGame.Sprites;
+package io.crismp.foxGame.Sprites.enemies;
 
 
 import com.badlogic.gdx.graphics.g2d.Sprite;
@@ -8,7 +8,7 @@ import com.badlogic.gdx.math.Vector2;
 import com.badlogic.gdx.physics.box2d.Body;
 import com.badlogic.gdx.physics.box2d.World;
 
-import io.crismp.foxGame.screens.PlayScreen;
+import io.crismp.foxGame.Screens.PlayScreen;
 
 public abstract class Enemy extends Sprite{
     protected World world;

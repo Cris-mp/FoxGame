@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<map version="1.10" tiledversion="1.11.0" orientation="orthogonal" renderorder="right-down" compressionlevel="1" width="45" height="45" tilewidth="16" tileheight="16" infinite="0" nextlayerid="18" nextobjectid="235">
+<map version="1.10" tiledversion="1.11.0" orientation="orthogonal" renderorder="right-down" compressionlevel="1" width="45" height="45" tilewidth="16" tileheight="16" infinite="0" nextlayerid="18" nextobjectid="239">
  <tileset firstgid="1" source="tileset_bosque.tsx"/>
  <layer id="1" name="mapa" width="45" height="45" locked="1">
   <data encoding="csv">
@@ -167,8 +167,8 @@
   </object>
  </objectgroup>
  <objectgroup color="#aaff3a" id="2" name="escaleras">
-  <object id="1" x="497.625" y="544.042" width="12.9167" height="95.6875"/>
-  <object id="2" x="145.167" y="512" width="13.4167" height="127.5"/>
+  <object id="236" x="496" y="544" width="15.3333" height="94"/>
+  <object id="237" x="144" y="512" width="16" height="127.813"/>
  </objectgroup>
  <objectgroup color="#550000" id="3" name="suelos">
   <object id="46" x="602.667" y="614.667" width="26" height="13.3333"/>
@@ -224,7 +224,8 @@
   <object id="188" x="208" y="416" width="16" height="32"/>
   <object id="232" x="288" y="352" width="16" height="16"/>
   <object id="233" x="448" y="336" width="16" height="16"/>
-  <object id="234" x="288" y="512" width="16" height="16"/>
+  <object id="234" x="160" y="512" width="16" height="16"/>
+  <object id="238" x="304" y="512" width="16" height="16"/>
  </objectgroup>
  <objectgroup color="#ff0000" id="4" name="zarzas">
   <object id="88" x="629.875" y="616.958" width="30.25" height="11.0833"/>

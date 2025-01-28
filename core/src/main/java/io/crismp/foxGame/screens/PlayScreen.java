@@ -1,4 +1,4 @@
-package io.crismp.foxGame.screens;
+package io.crismp.foxGame.Screens;
 
 import com.badlogic.gdx.Application.ApplicationType;
 import com.badlogic.gdx.Gdx;
@@ -16,9 +16,8 @@ import com.badlogic.gdx.utils.viewport.FitViewport;
 import com.badlogic.gdx.utils.viewport.Viewport;
 import io.crismp.foxGame.FoxGame;
 import io.crismp.foxGame.Scenes.Hud;
-import io.crismp.foxGame.Sprites.Enemy;
 import io.crismp.foxGame.Sprites.Foxy;
-import io.crismp.foxGame.Sprites.Zarigueya;
+import io.crismp.foxGame.Sprites.enemies.Enemy;
 import io.crismp.foxGame.Tools.B2WorldCreator;
 import io.crismp.foxGame.Tools.VirtualJoystick;
 import io.crismp.foxGame.Tools.WorldContactListener;
@@ -72,7 +71,7 @@ public class PlayScreen implements Screen {
 
         // creamos a foxy
         player = new Foxy(this);
-        
+
         world.setContactListener(new WorldContactListener());
 
     }
@@ -87,21 +86,21 @@ public class PlayScreen implements Screen {
         if (Gdx.app.getType() == ApplicationType.Android) {
             player.jumpCounter = 0;
             if (joystick.isJumpPressed() && player.jumpCounter < 2) {// TODO:aqui no uso el dt porque no se como
-                float force;
-               
-                joystick.setJumpPressed(false);
-                if(dt>5){
-                    force = player.body.getMass() * 2.5f;
-                }else{
-                    force = player.body.getMass() * 1.50f;
-                }
+                // float force;
+
+                // joystick.setJumpPressed(false);
+                // if(dt>5){
+                //     force = player.body.getMass() * 2.5f;
+                // }else{
+                //     force = player.body.getMass() * 1.50f;
+                // }
                 player.body.applyForceToCenter(0, 175f, true);
                 player.jumpCounter++;
-               
+
             }
             // reseteamos el contador de salto
             if (player.body.getLinearVelocity().y == 0 && player.jumpCounter!=0) {
-               
+
                 player.jumpCounter = 0;
             }
 
@@ -144,7 +143,7 @@ public class PlayScreen implements Screen {
             if (player.body.getLinearVelocity().y == 0) {
                 player.jumpCounter = 0;
             }
-        
+
             if (player.getOnLadder() && Gdx.input.isKeyPressed(Input.Keys.W)) {
                 player.body.setLinearVelocity(0, player.velY = 30 * dt);
             }
@@ -161,7 +160,7 @@ public class PlayScreen implements Screen {
         world.step(1 / 60f, 6, 2);
 
         player.update(dt);
-        
+
         for(Enemy enemy : creator.getZarigueyas()){
             enemy.update(dt);
         }

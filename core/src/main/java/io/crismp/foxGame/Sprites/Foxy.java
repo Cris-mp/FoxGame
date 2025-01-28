@@ -19,7 +19,7 @@ import com.badlogic.gdx.utils.Array;
 //#endregion
 
 import io.crismp.foxGame.FoxGame;
-import io.crismp.foxGame.screens.PlayScreen;
+import io.crismp.foxGame.Screens.PlayScreen;
 
 public class Foxy extends Sprite {
 	public enum State {

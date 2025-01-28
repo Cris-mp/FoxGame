@@ -8,10 +8,10 @@ import com.badlogic.gdx.physics.box2d.Fixture;
 import com.badlogic.gdx.physics.box2d.Manifold;
 
 import io.crismp.foxGame.FoxGame;
-import io.crismp.foxGame.Sprites.Enemy;
-import io.crismp.foxGame.Sprites.Escalera;
+import io.crismp.foxGame.Sprites.enemies.Enemy;
+import io.crismp.foxGame.Sprites.tileObjects.Escalera;
+import io.crismp.foxGame.Sprites.tileObjects.InteractiveTiledObject;
 import io.crismp.foxGame.Sprites.Foxy;
-import io.crismp.foxGame.Sprites.InteractiveTiledObject;
 
 //Que ocurre cuando dos accesorios de Box2D chocan entre si
 public class WorldContactListener implements ContactListener {
@@ -30,14 +30,14 @@ public class WorldContactListener implements ContactListener {
             case FoxGame.ENEMY_HEAD_BIT | FoxGame.FOX_BIT:
                 if (fixA.getFilterData().categoryBits == FoxGame.ENEMY_HEAD_BIT)
                     ((Enemy) fixA.getUserData()).hitOnHead();
-                else 
+                else
                     ((Enemy) fixB.getUserData()).hitOnHead();
                 break;
             case FoxGame.ENEMY_BIT | FoxGame.OBSTACLE_BIT:
             case FoxGame.ENEMY_BIT | FoxGame.WALL_BIT:
                 if (fixA.getFilterData().categoryBits == FoxGame.ENEMY_BIT)
                     ((Enemy) fixA.getUserData()).reverseVelocity(true, false);
-                    
+
                 else
                     ((Enemy) fixB.getUserData()).reverseVelocity(true, false);
 

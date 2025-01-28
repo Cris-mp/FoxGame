@@ -5,7 +5,7 @@ package io.crismp.foxGame;
 import com.badlogic.gdx.Game;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 
-import io.crismp.foxGame.screens.PlayScreen;
+import io.crismp.foxGame.Screens.PlayScreen;
 
 /**
  * {@link com.badlogic.gdx.ApplicationListener} implementation shared by all
@@ -27,7 +27,7 @@ public class FoxGame extends Game {
     public static final short ENEMY_HEAD_BIT=124;
     public static final short LADDER_BIT=248;
     public static final short ZARZAS_BIT=496;
-   
+
     public SpriteBatch batch;
 
 

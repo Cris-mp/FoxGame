@@ -13,10 +13,10 @@ import com.badlogic.gdx.physics.box2d.PolygonShape;
 import com.badlogic.gdx.physics.box2d.World;
 
 import io.crismp.foxGame.FoxGame;
-import io.crismp.foxGame.Sprites.Escalera;
-import io.crismp.foxGame.Sprites.Zarigueya;
-import io.crismp.foxGame.Sprites.Zarzas;
-import io.crismp.foxGame.screens.PlayScreen;
+import io.crismp.foxGame.Screens.PlayScreen;
+import io.crismp.foxGame.Sprites.enemies.Zarigueya;
+import io.crismp.foxGame.Sprites.tileObjects.Escalera;
+import io.crismp.foxGame.Sprites.tileObjects.Zarzas;
 
 public class B2WorldCreator {
     World world;
@@ -27,7 +27,7 @@ public class B2WorldCreator {
 
         world =screen.getWorld();
         TiledMap map = screen.getMap();
-        
+
       //suelos
         for (MapObject object : map.getLayers().get("suelos").getObjects().getByType(RectangleMapObject.class)) {
             define(object,FoxGame.GROUND_BIT);
@@ -57,7 +57,7 @@ public class B2WorldCreator {
             zarigueyas.add(new Zarigueya(screen,rectangle));
         }
     }
-    
+
     public ArrayList<Zarigueya> getZarigueyas(){
         return zarigueyas;
     }

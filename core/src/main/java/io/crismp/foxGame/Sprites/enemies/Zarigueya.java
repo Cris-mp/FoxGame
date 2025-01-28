@@ -1,11 +1,9 @@
-package io.crismp.foxGame.Sprites;
+package io.crismp.foxGame.Sprites.enemies;
 
 import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.graphics.g2d.Animation;
 import com.badlogic.gdx.graphics.g2d.Batch;
 import com.badlogic.gdx.graphics.g2d.TextureRegion;
-import com.badlogic.gdx.maps.MapObject;
-import com.badlogic.gdx.maps.objects.RectangleMapObject;
 import com.badlogic.gdx.math.Rectangle;
 import com.badlogic.gdx.math.Vector2;
 import com.badlogic.gdx.physics.box2d.BodyDef;
@@ -13,7 +11,7 @@ import com.badlogic.gdx.physics.box2d.FixtureDef;
 import com.badlogic.gdx.physics.box2d.PolygonShape;
 import com.badlogic.gdx.utils.Array;
 import io.crismp.foxGame.FoxGame;
-import io.crismp.foxGame.screens.PlayScreen;
+import io.crismp.foxGame.Screens.PlayScreen;
 
 public class Zarigueya extends Enemy {
     public enum State {
@@ -32,11 +30,11 @@ public class Zarigueya extends Enemy {
 
     private boolean setToDestroy;
     private boolean destroyed;
-   
+
 
     public Zarigueya(PlayScreen screen, Rectangle rect) {
         super(screen,rect);
-       
+
         zar = new Texture("enemies/opossum.png");
 
         Array<TextureRegion> frames = new Array<TextureRegion>();
@@ -63,14 +61,14 @@ public class Zarigueya extends Enemy {
     }
 
     public void update(float dt) {
-        // TODO: problema al hacer la animacion de muerte
+        //FIXME problema al hacer la animacion de muerte
         stateTimer += dt;
         setRegion(getFrame(dt));
 
         if (setToDestroy && !destroyed) {
                 world.destroyBody(body);
                 destroyed = true;
-                stateTimer = 0; 
+                stateTimer = 0;
         } else if (!destroyed) {
             body.setLinearVelocity(velocity);
             setPosition(body.getPosition().x - getWidth() / 2, body.getPosition().y - getHeight() / 3);
@@ -81,9 +79,9 @@ public class Zarigueya extends Enemy {
     protected void defineEnenmy() {
         BodyDef bdef = new BodyDef();
 
-        
+
             bdef.position.set((rect.getX()) / FoxGame.PPM, (rect.getY()) / FoxGame.PPM);
-        
+
 
         bdef.type = BodyDef.BodyType.DynamicBody;
         body = world.createBody(bdef);
@@ -117,7 +115,6 @@ public class Zarigueya extends Enemy {
         if (!destroyed || stateTimer < 1) {
             super.draw(batch);
         }
-
     }
 
     @Override
@@ -158,5 +155,4 @@ public class Zarigueya extends Enemy {
             return State.WALK;
         }
     }
-
 }

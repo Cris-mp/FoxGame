@@ -1,10 +1,10 @@
-package io.crismp.foxGame.Sprites;
+package io.crismp.foxGame.Sprites.tileObjects;
 
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.math.Rectangle;
 
 import io.crismp.foxGame.FoxGame;
-import io.crismp.foxGame.screens.PlayScreen;
+import io.crismp.foxGame.Screens.PlayScreen;
 
 public class Escalera extends InteractiveTiledObject {
 
