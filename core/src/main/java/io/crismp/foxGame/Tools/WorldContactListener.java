@@ -9,8 +9,7 @@ import com.badlogic.gdx.physics.box2d.Manifold;
 
 import io.crismp.foxGame.FoxGame;
 import io.crismp.foxGame.Sprites.enemies.Enemy;
-import io.crismp.foxGame.Sprites.tileObjects.Escalera;
-import io.crismp.foxGame.Sprites.tileObjects.InteractiveTiledObject;
+import io.crismp.foxGame.Sprites.items.Item;
 import io.crismp.foxGame.Sprites.Foxy;
 
 //Que ocurre cuando dos accesorios de Box2D chocan entre si
@@ -25,6 +24,9 @@ public class WorldContactListener implements ContactListener {
         Fixture fixB = contact.getFixtureB();
 
         int cDef = fixA.getFilterData().categoryBits | fixB.getFilterData().categoryBits;
+        System.out.println(fixA.getFilterData().categoryBits);
+        System.out.println(fixB.getFilterData().categoryBits);
+        System.out.println("cdef:" + cDef);
 
         switch (cDef) {
             case FoxGame.ENEMY_HEAD_BIT | FoxGame.FOX_BIT:
@@ -42,28 +44,22 @@ public class WorldContactListener implements ContactListener {
                     ((Enemy) fixB.getUserData()).reverseVelocity(true, false);
 
                 break;
+            case FoxGame.FOX_BIT | FoxGame.ITEM_BIT:
+                if (fixA.getFilterData().categoryBits == FoxGame.ITEM_BIT)
+                    ((Item) fixA.getUserData()).use((Foxy) fixB.getUserData());
+                else
+                    ((Item) fixB.getUserData()).use((Foxy) fixA.getUserData());
+                break;
             case FoxGame.FOX_BIT | FoxGame.ENEMY_BIT:
-                Gdx.app.log("FOXY","DIED");
+                Gdx.app.log("FOXY", "DIED");
+
+            case FoxGame.FOX_BIT | FoxGame.LADDER_BIT:
+                if (fixA.getFilterData().categoryBits == FoxGame.LADDER_BIT ||
+                        fixB.getFilterData().categoryBits == FoxGame.LADDER_BIT) {
+                    Foxy.setOnLadder(true);
+                }
             default:
                 break;
-        }
-
-        // si colisiona con la cabeza
-        if (fixA.getUserData() == "head" || fixB.getUserData() == "head") {
-            // vemos cual es el elemento cabeza
-            Fixture head = fixA.getUserData() == "head" ? fixA : fixB;
-            Fixture object = head == fixB ? fixA : fixB;
-
-            // vemos con que objeto estamos colisionando --> si no es nulo y se le puede
-            // asignar la clase InteractiveTiledobject
-            if (object.getUserData() != null
-                    && InteractiveTiledObject.class.isAssignableFrom(object.getUserData().getClass())) {
-                ((InteractiveTiledObject) object.getUserData()).onHeadHit();
-                if (((InteractiveTiledObject) object.getUserData()).getClass().equals(Escalera.class)) {
-                    Foxy.setOnLadder(true);// NOTE:lo he hecho statico pero no creo que este esto muy bien(si eso lo
-                                           // reparo luego)
-                }
-            }
         }
 
     }
@@ -74,23 +70,11 @@ public class WorldContactListener implements ContactListener {
         Fixture fixA = contact.getFixtureA();
         Fixture fixB = contact.getFixtureB();
 
-        // si colisiona con la cabeza
-        if (fixA.getUserData() == "head" || fixB.getUserData() == "head") {
-            // vemos cual es el elemento cabeza
-            Fixture head = fixA.getUserData() == "head" ? fixA : fixB;
-            Fixture object = head == fixB ? fixA : fixB;
+        int cDef = fixA.getFilterData().categoryBits | fixB.getFilterData().categoryBits;
 
-            // vemos con que objeto estamos colisionando --> si no es nulo y se le puede
-            // asignar la clase InteractiveTiledobject
-            if (object.getUserData() != null
-                    && InteractiveTiledObject.class.isAssignableFrom(object.getUserData().getClass())) {
-                ((InteractiveTiledObject) object.getUserData()).onHeadHit();
-                if (((InteractiveTiledObject) object.getUserData()).getClass().equals(Escalera.class)) {
-
-                    Foxy.setOnLadder(false);
-                    Gdx.app.log("false", "Escalera");
-                }
-            }
+        switch (cDef) {
+            case FoxGame.FOX_BIT | FoxGame.LADDER_BIT:
+                Foxy.setOnLadder(false);
         }
     }
 

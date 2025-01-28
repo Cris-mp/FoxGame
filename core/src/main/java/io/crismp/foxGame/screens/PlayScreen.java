@@ -6,6 +6,7 @@ import com.badlogic.gdx.Input;
 import com.badlogic.gdx.Screen;
 import com.badlogic.gdx.graphics.GL20;
 import com.badlogic.gdx.graphics.OrthographicCamera;
+import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.maps.tiled.TiledMap;
 import com.badlogic.gdx.maps.tiled.TmxMapLoader;
 import com.badlogic.gdx.maps.tiled.renderers.OrthogonalTiledMapRenderer;
@@ -18,7 +19,10 @@ import io.crismp.foxGame.FoxGame;
 import io.crismp.foxGame.Scenes.Hud;
 import io.crismp.foxGame.Sprites.Foxy;
 import io.crismp.foxGame.Sprites.enemies.Enemy;
+import io.crismp.foxGame.Sprites.items.Cherry;
+import io.crismp.foxGame.Sprites.items.Gem;
 import io.crismp.foxGame.Tools.B2WorldCreator;
+import io.crismp.foxGame.Tools.ParallaxLayer;
 import io.crismp.foxGame.Tools.VirtualJoystick;
 import io.crismp.foxGame.Tools.WorldContactListener;
 
@@ -43,11 +47,22 @@ public class PlayScreen implements Screen {
     private Foxy player;
 
     VirtualJoystick joystick;
+    float accumulator;
+    float timeStep;
+
+    // Parallax
+    // private ParallaxLayer backgroundLayer1;
+    // private ParallaxLayer backgroundLayer2;
+    // private Texture bgTexture1;
+    // private Texture bgTexture2;
 
     public PlayScreen(FoxGame game) {
+        accumulator = 0f;
+        timeStep = 1 / 60f;
         this.game = game;
         this.joystick = new VirtualJoystick(0, 0, 2, 1);
         gamecam = new OrthographicCamera();
+
         // mantiene el ratio de aspecto virtual a pesar de la pantalla
         gamePort = new FitViewport(FoxGame.V_WIDTH / FoxGame.PPM, FoxGame.V_HEIGHT / FoxGame.PPM, gamecam);
 
@@ -74,6 +89,17 @@ public class PlayScreen implements Screen {
 
         world.setContactListener(new WorldContactListener());
 
+        // // Cargar texturas del fondo
+        // bgTexture1 = new Texture("maps/back.png");
+        // bgTexture2 = new Texture("maps/middle.png");
+
+        // // Crear capas de parallax
+        // backgroundLayer1 = new ParallaxLayer(bgTexture1, 0.2f, true, false, 0); //
+        // Capa más lejana
+        // backgroundLayer2 = new ParallaxLayer(bgTexture2, 0.5f, true, false, 260); //
+        // Capa intermedia más abajo
+        // backgroundLayer1.setCamera(new OrthographicCamera());
+        // backgroundLayer2.setCamera(new OrthographicCamera());
     }
 
     @Override
@@ -82,61 +108,39 @@ public class PlayScreen implements Screen {
     }
 
     public void handleInput(float dt) {
-
         if (Gdx.app.getType() == ApplicationType.Android) {
             player.jumpCounter = 0;
             if (joystick.isJumpPressed() && player.jumpCounter < 2) {// TODO:aqui no uso el dt porque no se como
-                // float force;
-
-                // joystick.setJumpPressed(false);
-                // if(dt>5){
-                //     force = player.body.getMass() * 2.5f;
-                // }else{
-                //     force = player.body.getMass() * 1.50f;
-                // }
-                player.body.applyForceToCenter(0, 175f, true);
+                joystick.setJumpPressed(false);
+                player.body.applyLinearImpulse(new Vector2(0, 4f), player.body.getWorldCenter(), true);
                 player.jumpCounter++;
 
             }
             // reseteamos el contador de salto
-            if (player.body.getLinearVelocity().y == 0 && player.jumpCounter!=0) {
+            if (player.body.getLinearVelocity().y == 0 && player.jumpCounter != 0) {
 
                 player.jumpCounter = 0;
             }
 
             if (player.getOnLadder() && joystick.getDirection().y > 0) {
-                float force;
-                if(dt>5){
-                    force = player.body.getMass() * 2.5f;
-                }else{
-                    force = player.body.getMass() * 0.5f;
-                }
-                player.body.setLinearVelocity(0, player.velY = force);
+
+                player.body.setLinearVelocity(0, player.velY = 175f * dt);
             }
-            float vel;
-                if(dt>5){
-                    vel = player.body.getMass() * 2.5f;
-                }else{
-                    vel = player.body.getMass() * 1.75f;
-                }
-            player.body.setLinearVelocity(joystick.getDirection().x/vel,
+
+            player.body.setLinearVelocity(joystick.getDirection().x / (2.4f * dt),
                     player.body.getLinearVelocity().y < 15 ? player.body.getLinearVelocity().y : 15);
 
         } else {
             player.velX = 0;
             if (Gdx.input.isKeyPressed(Input.Keys.D)) {
-                player.velX = 30f * dt;
+                player.velX = 1f;
             }
             if (Gdx.input.isKeyPressed(Input.Keys.A)) {
-                player.velX = -30f * dt;
+                player.velX = -1f;
             }
-            if (Gdx.input.isKeyJustPressed(Input.Keys.SPACE) && player.jumpCounter < 2) {// TODO:aqui no uso el dt
-                                                                                         // porque no
-                                                                                         // se como
-                float force = player.body.getMass() * 2.5f;
 
-                player.body.setLinearVelocity(player.body.getLinearVelocity().x, 0);
-                player.body.applyLinearImpulse(new Vector2(0, force), player.body.getWorldCenter(), true);
+            if (Gdx.input.isKeyJustPressed(Input.Keys.SPACE) && player.jumpCounter < 2) {
+                player.body.applyLinearImpulse(new Vector2(0, 2.5f), player.body.getWorldCenter(), true);
                 player.jumpCounter++;
             }
             // reseteamos el contador de salto
@@ -145,24 +149,37 @@ public class PlayScreen implements Screen {
             }
 
             if (player.getOnLadder() && Gdx.input.isKeyPressed(Input.Keys.W)) {
-                player.body.setLinearVelocity(0, player.velY = 30 * dt);
+                player.body.setLinearVelocity(0, player.velY = 1f);
             }
 
             player.body.setLinearVelocity(player.velX * player.speed,
                     player.body.getLinearVelocity().y < 15 ? player.body.getLinearVelocity().y : 15);
+
         }
 
     }
 
     public void update(float dt) {
+        // Asegura que las físicas se actualicen con una tasa fija, sin importar la tasa
+        // de refresco de la pantalla.
+        accumulator += dt;
+        while (accumulator >= timeStep) {
+            world.step(timeStep, 6, 2); // Actualiza el mundo con un paso de tiempo fijo
+            accumulator -= timeStep;
+        }
         handleInput(dt);
-
-        world.step(1 / 60f, 6, 2);
+        // world.step(dt, 6, 2);
 
         player.update(dt);
 
-        for(Enemy enemy : creator.getZarigueyas()){
+        for (Enemy enemy : creator.getZarigueyas()) {
             enemy.update(dt);
+        }
+        for (Cherry cherry : creator.getCherries()) {
+            cherry.update(dt);
+        }
+        for (Gem gem : creator.getGems()) {
+            gem.update(dt);
         }
 
         // Ajuste de posicion de la camara en el eje X
@@ -202,16 +219,23 @@ public class PlayScreen implements Screen {
 
         // renderizador del juego
         renderer.render();
-
         // renderizamos el Box2DDebugLines
         b2dr.render(world, gamecam.combined);
-
+        
         game.batch.setProjectionMatrix(gamecam.combined);
-
         game.batch.begin();
+        // backgroundLayer1.render(game.batch); // Dibujar capa más lejana
+        // backgroundLayer2.render(game.batch); // Dibujar capa intermedia
         player.draw(game.batch);
-        for(Enemy enemy : creator.getZarigueyas()){
-            enemy.draw(game.batch);;
+
+        for (Enemy enemy : creator.getZarigueyas()) {
+            enemy.draw(game.batch);
+        }
+        for (Cherry cherry : creator.getCherries()) {
+            cherry.draw(game.batch);
+        }
+        for (Gem gem : creator.getGems()) {
+            gem.draw(game.batch);
         }
         game.batch.end();
 
@@ -256,6 +280,9 @@ public class PlayScreen implements Screen {
         world.dispose();
         b2dr.dispose();
         hud.dispose();
+
+        // bgTexture1.dispose();
+        // bgTexture2.dispose();
     }
 
 }

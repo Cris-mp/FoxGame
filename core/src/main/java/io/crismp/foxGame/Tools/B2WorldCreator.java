@@ -15,14 +15,18 @@ import com.badlogic.gdx.physics.box2d.World;
 import io.crismp.foxGame.FoxGame;
 import io.crismp.foxGame.Screens.PlayScreen;
 import io.crismp.foxGame.Sprites.enemies.Zarigueya;
+import io.crismp.foxGame.Sprites.items.Cherry;
+import io.crismp.foxGame.Sprites.items.Gem;
 import io.crismp.foxGame.Sprites.tileObjects.Escalera;
 import io.crismp.foxGame.Sprites.tileObjects.Zarzas;
 
 public class B2WorldCreator {
     World world;
 
-    ArrayList<RectangleMapObject> limites;
+    
     ArrayList<Zarigueya> zarigueyas;
+    ArrayList<Cherry> cherrys;
+    ArrayList<Gem> gems;
     public B2WorldCreator(PlayScreen screen) {
 
         world =screen.getWorld();
@@ -56,10 +60,28 @@ public class B2WorldCreator {
             Rectangle rectangle = ((RectangleMapObject) object).getRectangle();
             zarigueyas.add(new Zarigueya(screen,rectangle));
         }
+
+        cherrys=new ArrayList<>();
+        for (MapObject object : map.getLayers().get("cherries").getObjects().getByType(RectangleMapObject.class)) {
+            Rectangle rectangle = ((RectangleMapObject) object).getRectangle();
+            cherrys.add(new Cherry(screen,rectangle));
+        }
+        gems=new ArrayList<>();
+        for (MapObject object : map.getLayers().get("gems").getObjects().getByType(RectangleMapObject.class)) {
+            Rectangle rectangle = ((RectangleMapObject) object).getRectangle();
+            gems.add(new Gem(screen,rectangle));
+        }
+
     }
 
     public ArrayList<Zarigueya> getZarigueyas(){
         return zarigueyas;
+    }
+    public ArrayList<Cherry> getCherries(){
+        return cherrys;
+    }
+    public ArrayList<Gem> getGems(){
+        return gems;
     }
 
     private void define(Object object,short mask){

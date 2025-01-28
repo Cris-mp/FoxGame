@@ -176,7 +176,7 @@ public class Foxy extends Sprite {
 		CircleShape shape = new CircleShape();
 		shape.setRadius(5 / FoxGame.PPM);
 		fdef.filter.categoryBits=FoxGame.FOX_BIT;
-		fdef.filter.maskBits = FoxGame.GROUND_BIT|FoxGame.FLOOR_BIT|FoxGame.WALL_BIT|FoxGame.OBSTACLE_BIT|FoxGame.ENEMY_BIT|FoxGame.ZARZAS_BIT|FoxGame.LADDER_BIT;
+		fdef.filter.maskBits = FoxGame.GROUND_BIT|FoxGame.FLOOR_BIT|FoxGame.WALL_BIT|FoxGame.OBSTACLE_BIT|FoxGame.ENEMY_BIT|FoxGame.ZARZAS_BIT|FoxGame.LADDER_BIT|FoxGame.ITEM_BIT;
 
 		fdef.shape = shape;
 		body.createFixture(fdef);
@@ -186,9 +186,10 @@ public class Foxy extends Sprite {
 		//NOTA: sensor en la cabeza de foxy, no rompe ladrillos pero creo que sera util para dubir a las plataformas
 		EdgeShape head = new EdgeShape();
 		head.set(new Vector2(-2/FoxGame.PPM,14/FoxGame.PPM), new Vector2(2/FoxGame.PPM,14/FoxGame.PPM));
+		fdef.filter.categoryBits=FoxGame.HEAD_FOX_BIT;
 		fdef.shape = head;
 		fdef.isSensor=true;
-		body.createFixture(fdef).setUserData("head");
+		body.createFixture(fdef).setUserData(this);
 
 
 

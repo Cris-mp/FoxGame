@@ -22,11 +22,16 @@ public class FoxGame extends Game {
     public static final short FLOOR_BIT=2;
     public static final short WALL_BIT=4;
     public static final short OBSTACLE_BIT=16;
+
     public static final short FOX_BIT=32;
+    public static final short HEAD_FOX_BIT=1984;
+
     public static final short ENEMY_BIT=64;
     public static final short ENEMY_HEAD_BIT=124;
     public static final short LADDER_BIT=248;
     public static final short ZARZAS_BIT=496;
+
+    public static final short ITEM_BIT=992;
 
     public SpriteBatch batch;
 

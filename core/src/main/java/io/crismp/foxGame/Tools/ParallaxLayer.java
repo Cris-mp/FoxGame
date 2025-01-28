@@ -11,12 +11,14 @@ public class ParallaxLayer {
     boolean wrapHorizontally;
     boolean wrapVertically;
     Camera camera;
+    int offsetY;
 
-    public ParallaxLayer(Texture texture, float factor, boolean wrapHorizontally, boolean wrapVertically) {
+    public ParallaxLayer(Texture texture, float factor, boolean wrapHorizontally, boolean wrapVertically,int offsetY) {
         this.texture = texture;
         this.factor = factor;
         this.wrapHorizontally = wrapHorizontally;
         this.wrapVertically = wrapVertically;
+        this.offsetY=offsetY;
         this.texture.setWrap(
                 this.wrapHorizontally ? Texture.TextureWrap.Repeat : Texture.TextureWrap.ClampToEdge,
                 this.wrapVertically ? Texture.TextureWrap.Repeat : Texture.TextureWrap.ClampToEdge);
@@ -34,7 +36,7 @@ public class ParallaxLayer {
         region.setRegionY(yOffset % texture.getHeight());
         region.setRegionWidth(wrapHorizontally ? (int) camera.viewportWidth : texture.getWidth());
         region.setRegionHeight(wrapVertically ? (int) camera.viewportHeight : texture.getHeight());
-        batch.draw(region, camera.position.x - camera.viewportWidth / 2, camera.position.y - camera.viewportHeight / 2);
+        batch.draw(region, camera.position.x - camera.viewportWidth / 2, camera.position.y - camera.viewportHeight / 2-offsetY);
 
     }
 
