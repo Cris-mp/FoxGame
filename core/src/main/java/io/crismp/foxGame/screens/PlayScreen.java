@@ -6,7 +6,6 @@ import com.badlogic.gdx.Input;
 import com.badlogic.gdx.Screen;
 import com.badlogic.gdx.graphics.GL20;
 import com.badlogic.gdx.graphics.OrthographicCamera;
-import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.maps.tiled.TiledMap;
 import com.badlogic.gdx.maps.tiled.TmxMapLoader;
 import com.badlogic.gdx.maps.tiled.renderers.OrthogonalTiledMapRenderer;
@@ -22,7 +21,6 @@ import io.crismp.foxGame.Sprites.enemies.Enemy;
 import io.crismp.foxGame.Sprites.items.Cherry;
 import io.crismp.foxGame.Sprites.items.Gem;
 import io.crismp.foxGame.Tools.B2WorldCreator;
-import io.crismp.foxGame.Tools.ParallaxLayer;
 import io.crismp.foxGame.Tools.VirtualJoystick;
 import io.crismp.foxGame.Tools.WorldContactListener;
 
@@ -221,7 +219,7 @@ public class PlayScreen implements Screen {
         renderer.render();
         // renderizamos el Box2DDebugLines
         b2dr.render(world, gamecam.combined);
-        
+
         game.batch.setProjectionMatrix(gamecam.combined);
         game.batch.begin();
         // backgroundLayer1.render(game.batch); // Dibujar capa más lejana

@@ -1,6 +1,5 @@
 package io.crismp.foxGame.Sprites.enemies;
 
-
 import com.badlogic.gdx.graphics.g2d.Sprite;
 import com.badlogic.gdx.maps.tiled.TiledMap;
 import com.badlogic.gdx.math.Rectangle;

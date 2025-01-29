@@ -10,6 +10,7 @@ import com.badlogic.gdx.physics.box2d.BodyDef;
 import com.badlogic.gdx.physics.box2d.FixtureDef;
 import com.badlogic.gdx.physics.box2d.PolygonShape;
 import com.badlogic.gdx.utils.Array;
+
 import io.crismp.foxGame.FoxGame;
 import io.crismp.foxGame.Screens.PlayScreen;
 
@@ -19,80 +20,71 @@ public class Zarigueya extends Enemy {
     }
 
     public State currenState;
-    public State previoState;
     private float stateTimer;
     private boolean runRight;
 
-    // public State StateTime;
     private Animation<TextureRegion> zarWalk;
-    private Animation<TextureRegion> dead;
-    private Texture zar;
+    private Animation<TextureRegion> zarDead;
+    private Texture walk;
+    private Texture dead;
 
     private boolean setToDestroy;
     private boolean destroyed;
 
-
     public Zarigueya(PlayScreen screen, Rectangle rect) {
-        super(screen,rect);
+        super(screen, rect);
 
-        zar = new Texture("enemies/opossum.png");
-
+        // --walk----
+        walk = new Texture("enemies/opossum.png");
         Array<TextureRegion> frames = new Array<TextureRegion>();
         for (int i = 0; i < 6; i++) {
-            frames.add(new TextureRegion(zar, i * 36, 0, zar.getWidth() / 6, zar.getHeight()));
+            frames.add(new TextureRegion(walk, i * 36, 0, walk.getWidth() / 6, walk.getHeight()));
         }
         zarWalk = new Animation<>(0.1f, frames);
-        stateTimer = 0;
-        setBounds(0, 0, 16 / (FoxGame.PPM / 2), 12 / (FoxGame.PPM / 2));
+
+        // --dead----
+        dead = new Texture("enemies/enemy-deadth.png");
+        for (int i = 0; i < 6; i++) {
+            frames.add(new TextureRegion(new Texture("enemies/enemy-deadth.png"), i * 40, 0, dead.getWidth() / 6,
+                    dead.getHeight()));
+        }
+        zarDead = new Animation<>(0.1f, frames);
+
         setToDestroy = false;
         destroyed = false;
-        // dead
-        for (int i = 0; i < 6; i++) {
-            frames.add(new TextureRegion(new Texture("enemies/enemy-deadth.png"), i * 40, 0, zar.getWidth() / 6,
-                    zar.getHeight()));
-        }
-        dead = new Animation<>(0.4f, frames);
-
-        // animaciones
-        currenState = State.WALK;
-        previoState = State.WALK;
         runRight = true;
-
+        currenState = State.WALK;
+        stateTimer = 0;
+        setBounds(0, 0, 16 / (FoxGame.PPM / 2), 12 / (FoxGame.PPM / 2));
     }
 
     public void update(float dt) {
-        //FIXME problema al hacer la animacion de muerte
+        // FIXME problema al hacer la animacion de muerte al saltar muere tarde
         stateTimer += dt;
-        setRegion(getFrame(dt));
-
         if (setToDestroy && !destroyed) {
-                world.destroyBody(body);
-                destroyed = true;
-                stateTimer = 0;
-        } else if (!destroyed) {
-            body.setLinearVelocity(velocity);
-            setPosition(body.getPosition().x - getWidth() / 2, body.getPosition().y - getHeight() / 3);
+            world.destroyBody(body);
+            destroyed = true;
+            stateTimer = 0;
         }
+        setRegion(getFrame(dt));
+        body.setLinearVelocity(velocity);
+        setPosition(body.getPosition().x - getWidth() / 2, body.getPosition().y - getHeight() / 3);
     }
 
     @Override
     protected void defineEnenmy() {
         BodyDef bdef = new BodyDef();
-
-
-            bdef.position.set((rect.getX()) / FoxGame.PPM, (rect.getY()) / FoxGame.PPM);
-
-
+        bdef.position.set((rect.getX()) / FoxGame.PPM, (rect.getY()) / FoxGame.PPM);
         bdef.type = BodyDef.BodyType.DynamicBody;
         body = world.createBody(bdef);
-
         FixtureDef fdef = new FixtureDef();
         PolygonShape shape = new PolygonShape();
         shape.setAsBox(12 / FoxGame.PPM, 5 / FoxGame.PPM);
         fdef.filter.categoryBits = FoxGame.ENEMY_BIT;
-        fdef.filter.maskBits = FoxGame.GROUND_BIT | FoxGame.FLOOR_BIT | FoxGame.WALL_BIT | FoxGame.OBSTACLE_BIT
-                | FoxGame.LADDER_BIT | FoxGame.FOX_BIT|FoxGame.ZARZAS_BIT;
-
+        fdef.filter.maskBits = FoxGame.GROUND_BIT
+                | FoxGame.FLOOR_BIT | FoxGame.WALL_BIT
+                | FoxGame.OBSTACLE_BIT | FoxGame.LADDER_BIT
+                | FoxGame.FOX_BIT | FoxGame.ZARZAS_BIT;
         fdef.shape = shape;
         body.createFixture(fdef).setUserData(this);
 
@@ -104,9 +96,8 @@ public class Zarigueya extends Enemy {
         vertice[2] = new Vector2(-3, 3).scl(1 / FoxGame.PPM);
         vertice[3] = new Vector2(0, 3).scl(1 / FoxGame.PPM);
         head.set(vertice);
-
         fdef.shape = head;
-        fdef.restitution = 0.5f;
+        fdef.restitution = 0.75f;
         fdef.filter.categoryBits = FoxGame.ENEMY_HEAD_BIT;
         body.createFixture(fdef).setUserData(this);
     }
@@ -131,7 +122,7 @@ public class Zarigueya extends Enemy {
                 break;
             case DEAD:
             default:
-                region = (TextureRegion) dead.getKeyFrame(10f, false);
+                region = (TextureRegion) zarDead.getKeyFrame(stateTimer, true);
                 break;
         }
 
@@ -142,17 +133,13 @@ public class Zarigueya extends Enemy {
             region.flip(true, false);
             runRight = true;
         }
-        previoState = currenState;
         return region;
     }
 
     public State getState() {
-        if (body.getLinearVelocity().x != 0 && !setToDestroy) {
-            return State.WALK;
-        } else if (setToDestroy) {
+        if (setToDestroy) {
             return State.DEAD;
-        } else {
-            return State.WALK;
         }
+        return State.WALK;
     }
 }

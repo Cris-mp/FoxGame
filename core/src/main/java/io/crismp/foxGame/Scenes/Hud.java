@@ -2,11 +2,15 @@ package io.crismp.foxGame.Scenes;
 
 import com.badlogic.gdx.graphics.Color;
 import com.badlogic.gdx.graphics.OrthographicCamera;
+import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.graphics.g2d.BitmapFont;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
+import com.badlogic.gdx.graphics.g2d.TextureRegion;
 import com.badlogic.gdx.scenes.scene2d.Stage;
+import com.badlogic.gdx.scenes.scene2d.ui.Image;
 import com.badlogic.gdx.scenes.scene2d.ui.Label;
 import com.badlogic.gdx.scenes.scene2d.ui.Table;
+import com.badlogic.gdx.utils.Array;
 import com.badlogic.gdx.utils.Disposable;
 import com.badlogic.gdx.utils.viewport.FitViewport;
 import com.badlogic.gdx.utils.viewport.Viewport;
@@ -21,9 +25,21 @@ public class Hud implements Disposable{
 
     Label lblLife;
     Label lblFase;
+    Array<Image> heartArray;
+
+
 
     public Hud(SpriteBatch sb){
-        life=2;
+
+        Texture heart=new Texture("heart.png");
+        heartArray= new Array<Image>();
+        for (int i = 0; i < 7; i++) {
+            heartArray.add(new Image(new TextureRegion(heart, 0, i*11, heart.getWidth(), heart.getHeight()/7)));
+        }
+
+
+
+        life=5;
 
         viewport = new FitViewport(FoxGame.V_WIDTH*2,FoxGame.V_HEIGHT*2,new OrthographicCamera());
         stage = new Stage(viewport,sb);
@@ -32,12 +48,12 @@ public class Hud implements Disposable{
         table.top();
         table.setFillParent(true);
 
-        lblLife = new Label("Vidas: "+life,new Label.LabelStyle(new BitmapFont(),Color.WHITE));
         lblFase = new Label("Fase 1",new Label.LabelStyle(new BitmapFont(),Color.WHITE));
 
-        table.add(lblLife).expandX().padTop(5);
-        table.add(lblFase).expandX().padTop(5);
 
+        table.add(heartArray.get(life)).size(99,25).pad(10);
+
+        table.add(lblFase).expandX().padTop(5);
         stage.addActor(table);
     }
 
