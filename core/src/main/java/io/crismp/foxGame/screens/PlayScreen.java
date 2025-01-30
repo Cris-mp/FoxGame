@@ -106,17 +106,16 @@ public class PlayScreen implements Screen {
     }
 
     public void handleInput(float dt) {
+        player.velX=0;
         if (Gdx.app.getType() == ApplicationType.Android) {
-            player.jumpCounter = 0;
             if (joystick.isJumpPressed() && player.jumpCounter < 2) {
-                joystick.setJumpPressed(false);
                 player.body.applyLinearImpulse(new Vector2(0, 2.5f), player.body.getWorldCenter(), true);
                 player.jumpCounter++;
+                joystick.setJumpPressed(false);
 
             }
             // reseteamos el contador de salto
-            if (player.body.getLinearVelocity().y == 0 && player.jumpCounter != 0) {
-
+            if (player.body.getLinearVelocity().y == 0) {
                 player.jumpCounter = 0;
             }
 
@@ -125,11 +124,10 @@ public class PlayScreen implements Screen {
                 player.body.setLinearVelocity(0, player.velY = 1f);
             }
 
-            player.body.setLinearVelocity(joystick.getDirection().x / 1f,
-                    player.body.getLinearVelocity().y < 15 ? player.body.getLinearVelocity().y : 15);
+            player.body.setLinearVelocity(joystick.getDirection().x * player.speed,
+            Math.min(player.body.getLinearVelocity().y, 15));
 
         } else {
-            player.velX = 0;
             if (Gdx.input.isKeyPressed(Input.Keys.D)) {
                 player.velX = 1f;
             }
@@ -151,7 +149,7 @@ public class PlayScreen implements Screen {
             }
 
             player.body.setLinearVelocity(player.velX * player.speed,
-                    player.body.getLinearVelocity().y < 15 ? player.body.getLinearVelocity().y : 15);
+            Math.min(player.body.getLinearVelocity().y, 15));
 
         }
 
@@ -165,8 +163,8 @@ public class PlayScreen implements Screen {
             world.step(timeStep, 6, 2); // Actualiza el mundo con un paso de tiempo fijo
             accumulator -= timeStep;
         }
-        handleInput(dt);
         // world.step(dt, 6, 2);
+        handleInput(dt);
 
         player.update(dt);
 

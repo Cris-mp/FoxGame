@@ -41,7 +41,7 @@ public class Zarigueya extends Enemy {
             frames.add(new TextureRegion(walk, i * 36, 0, walk.getWidth() / 6, walk.getHeight()));
         }
         zarWalk = new Animation<>(0.1f, frames);
-
+        frames.clear();
         // --dead----
         dead = new Texture("enemies/enemy-deadth.png");
         for (int i = 0; i < 6; i++) {
@@ -59,7 +59,6 @@ public class Zarigueya extends Enemy {
     }
 
     public void update(float dt) {
-        // FIXME problema al hacer la animacion de muerte al saltar muere tarde
         stateTimer += dt;
         if (setToDestroy && !destroyed) {
             world.destroyBody(body);
@@ -103,7 +102,7 @@ public class Zarigueya extends Enemy {
     }
 
     public void draw(Batch batch) {
-        if (!destroyed || stateTimer < 1) {
+        if (!destroyed || stateTimer < 0.5) {
             super.draw(batch);
         }
     }

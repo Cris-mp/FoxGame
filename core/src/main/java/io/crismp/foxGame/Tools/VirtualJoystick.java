@@ -12,28 +12,29 @@ import com.badlogic.gdx.scenes.scene2d.ui.Table;
 import com.badlogic.gdx.scenes.scene2d.ui.Touchpad;
 import com.badlogic.gdx.scenes.scene2d.ui.Touchpad.TouchpadStyle;
 
-public class VirtualJoystick{
+public class VirtualJoystick {
 	private Stage stage;
 	private Table table;
 	// joystick
-	private Texture baseTexture;
-	private Texture knobTexture;
 	private Touchpad touchpad;
 	// botones
 	private boolean jumpPressed;
 	public Image jumpImage;
+	private Skin skin;
+	private Texture upTexture;
+	private Texture downTexture;
 
 	public VirtualJoystick(float x, float y, float baseRadius, float knobRadius) {
 
 		stage = new Stage();
 		table = new Table();
-		jumpPressed=false;
+		jumpPressed = false;
 		table.bottom();
 		table.setFillParent(true);
 		table.pad(20);
 
-		//Joystick
-		Skin skin = new Skin();
+		// Joystick
+		skin = new Skin();
 		skin.add("Joystick_base", new Texture("joystick/Joystick.png"));
 		skin.add("Joystick_knob", new Texture("joystick/SmallHandleFilledGrey.png"));
 		Touchpad.TouchpadStyle touchpadStyle = new TouchpadStyle();
@@ -41,49 +42,43 @@ public class VirtualJoystick{
 		touchpadStyle.knob = skin.getDrawable("Joystick_knob");
 
 		touchpad = new Touchpad(10, touchpadStyle);
-		table.add(touchpad);
-		Gdx.input.setInputProcessor(stage);
+		table.add(touchpad).pad(10);
 
-		Image up=new Image(new Texture("joystick/boton.png"));
-		Image down =new Image(new Texture("joystick/botonPress.png"));
-		jumpImage = up;
-		jumpImage.setSize(20, 20);
+		upTexture = new Texture("joystick/boton.png");
+		downTexture = new Texture("joystick/botonPress.png");
+		jumpImage = new Image(upTexture);
+		jumpImage.setSize(100, 100);
 		jumpImage.addListener(new InputListener() {
 
 			@Override
 			public boolean touchDown(InputEvent event, float x, float y, int pointer, int button) {
-				jumpPressed=true;
-				jumpImage=down;
-                System.out.println("toudown"+jumpPressed);
+				jumpPressed = true;
+				jumpImage.setDrawable(new Image(downTexture).getDrawable());
 				return true;
 			}
 
 			@Override
 			public void touchUp(InputEvent event, float x, float y, int pointer, int button) {
-				jumpImage=up;
-				jumpPressed=false;
-                System.out.println("touchup"+jumpPressed);
+				jumpPressed = false;
+				Gdx.app.postRunnable(() -> jumpImage.setDrawable(new Image(upTexture).getDrawable()));
+
 			}
 
 		});
 		table.add().expandX().fillX();
-		table.add(jumpImage).size(touchpad.getWidth(),touchpad.getHeight());
+		table.add(jumpImage).size(touchpad.getWidth(), touchpad.getHeight());
 
 		stage.addActor(table);
-
+		Gdx.input.setInputProcessor(stage);
 	}
 
 	public Vector2 getDirection() {
-		float knobPercentX = touchpad.getKnobPercentX();
-		float knobPercentY = touchpad.getKnobPercentY();
-
-		knobPercentY *= 1;
-
-		return new Vector2(knobPercentX, knobPercentY);
+		return new Vector2(touchpad.getKnobPercentX(), touchpad.getKnobPercentY());
 	}
 	public void setJumpPressed(boolean bool) {
-		jumpPressed=bool;
-	}
+        jumpPressed = bool;
+    }
+
 	public boolean isJumpPressed() {
 		return jumpPressed;
 	}
@@ -98,7 +93,9 @@ public class VirtualJoystick{
 	}
 
 	public void dispose() {
-		baseTexture.dispose();
-		knobTexture.dispose();
+		stage.dispose();
+		if (skin != null) {
+			skin.dispose();
+		}
 	}
 }
