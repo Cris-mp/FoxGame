@@ -122,10 +122,12 @@ public class PlayScreen implements Screen {
             if (player.getOnLadder() && joystick.getDirection().y > 0) {
 
                 player.body.setLinearVelocity(0, player.velY = 1f);
+            }else{
+                player.body.setLinearVelocity(joystick.getDirection().x * player.speed,
+
+                Math.min(player.body.getLinearVelocity().y, 15));
             }
 
-            player.body.setLinearVelocity(joystick.getDirection().x * player.speed,
-            Math.min(player.body.getLinearVelocity().y, 15));
 
         } else {
             if (Gdx.input.isKeyPressed(Input.Keys.D)) {

@@ -61,7 +61,7 @@ public class Foxy extends Sprite {
 		this.map = screen.getMap();
 		this.velX = 0;
 		this.velY = 0;
-		this.speed = 2f;
+		this.speed = 1.2f;
 		this.jumpCounter = 0;
 		Foxy.onLadder=false;
 
