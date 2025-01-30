@@ -18,7 +18,7 @@ import io.crismp.foxGame.Sprites.enemies.Zarigueya;
 import io.crismp.foxGame.Sprites.items.Cherry;
 import io.crismp.foxGame.Sprites.items.Gem;
 import io.crismp.foxGame.Sprites.tileObjects.Escalera;
-import io.crismp.foxGame.Sprites.tileObjects.Zarzas;
+import io.crismp.foxGame.Sprites.tileObjects.Pinchos;
 
 public class B2WorldCreator {
     World world;
@@ -51,9 +51,9 @@ public class B2WorldCreator {
             new Escalera(screen, rectangle);
         }
 
-        for (MapObject object : map.getLayers().get("zarzas").getObjects().getByType(RectangleMapObject.class)) {
+        for (MapObject object : map.getLayers().get("pinchos").getObjects().getByType(RectangleMapObject.class)) {
             Rectangle rectangle = ((RectangleMapObject) object).getRectangle();
-            new Zarzas(screen, rectangle);
+            new Pinchos(screen, rectangle);
         }
         zarigueyas=new ArrayList<>();
         for (MapObject object : map.getLayers().get("zarigueya").getObjects().getByType(RectangleMapObject.class)) {

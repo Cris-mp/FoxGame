@@ -29,7 +29,7 @@ public class FoxGame extends Game {
     public static final short ENEMY_BIT=64;
     public static final short ENEMY_HEAD_BIT=124;
     public static final short LADDER_BIT=248;
-    public static final short ZARZAS_BIT=496;
+    public static final short PINCHOS_BIT=496;
 
     public static final short ITEM_BIT=992;
 

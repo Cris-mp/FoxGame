@@ -83,7 +83,7 @@ public class Zarigueya extends Enemy {
         fdef.filter.maskBits = FoxGame.GROUND_BIT
                 | FoxGame.FLOOR_BIT | FoxGame.WALL_BIT
                 | FoxGame.OBSTACLE_BIT | FoxGame.LADDER_BIT
-                | FoxGame.FOX_BIT | FoxGame.ZARZAS_BIT;
+                | FoxGame.FOX_BIT | FoxGame.PINCHOS_BIT;
         fdef.shape = shape;
         body.createFixture(fdef).setUserData(this);
 
