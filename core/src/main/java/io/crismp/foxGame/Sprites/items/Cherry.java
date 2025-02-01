@@ -63,8 +63,8 @@ public class Cherry extends Item {
 
     @Override
     public void use(Foxy foxy) {
-        toDestroy=true;
-       
+        screen.addCherry();
+        destroy();
     }
 
     @Override

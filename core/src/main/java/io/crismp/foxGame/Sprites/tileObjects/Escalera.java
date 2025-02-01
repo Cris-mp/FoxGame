@@ -1,6 +1,5 @@
 package io.crismp.foxGame.Sprites.tileObjects;
 
-import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.math.Rectangle;
 
 import io.crismp.foxGame.FoxGame;
@@ -13,9 +12,5 @@ public class Escalera extends InteractiveTiledObject {
 		fixture.setSensor(true);
 		fixture.setUserData(this);
 		setCategoryFilter(FoxGame.LADDER_BIT);
-	}
-	@Override
-	public void onHeadHit() {
-		Gdx.app.log("Escalera", "Colision");
 	}
 }

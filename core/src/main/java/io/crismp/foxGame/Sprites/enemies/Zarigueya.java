@@ -76,27 +76,30 @@ public class Zarigueya extends Enemy {
         bdef.position.set((rect.getX()) / FoxGame.PPM, (rect.getY()) / FoxGame.PPM);
         bdef.type = BodyDef.BodyType.DynamicBody;
         body = world.createBody(bdef);
+
         FixtureDef fdef = new FixtureDef();
         PolygonShape shape = new PolygonShape();
-        shape.setAsBox(12 / FoxGame.PPM, 5 / FoxGame.PPM);
+        shape.setAsBox(12 / FoxGame.PPM, 4 / FoxGame.PPM);
         fdef.filter.categoryBits = FoxGame.ENEMY_BIT;
         fdef.filter.maskBits = FoxGame.GROUND_BIT
                 | FoxGame.FLOOR_BIT | FoxGame.WALL_BIT
                 | FoxGame.OBSTACLE_BIT | FoxGame.LADDER_BIT
                 | FoxGame.FOX_BIT | FoxGame.PINCHOS_BIT;
         fdef.shape = shape;
+        fdef.density = 200f; // 🔥 Aumentar densidad para evitar que Foxy lo mueva
+fdef.friction = 2f; // 🔥 Aumentar fricción para que no resbale
         body.createFixture(fdef).setUserData(this);
 
         // hacemos parte superior
         PolygonShape head = new PolygonShape();
         Vector2[] vertice = new Vector2[4];
-        vertice[0] = new Vector2(-10, 6).scl(1 / FoxGame.PPM);
-        vertice[1] = new Vector2(10, 6).scl(1 / FoxGame.PPM);
+        vertice[0] = new Vector2(-10, 7).scl(1 / FoxGame.PPM);
+        vertice[1] = new Vector2(10, 7).scl(1 / FoxGame.PPM);
         vertice[2] = new Vector2(-3, 3).scl(1 / FoxGame.PPM);
         vertice[3] = new Vector2(0, 3).scl(1 / FoxGame.PPM);
         head.set(vertice);
         fdef.shape = head;
-        fdef.restitution = 0.75f;
+        fdef.restitution = 1f;
         fdef.filter.categoryBits = FoxGame.ENEMY_HEAD_BIT;
         body.createFixture(fdef).setUserData(this);
     }

@@ -18,16 +18,17 @@ public class FoxGame extends Game {
     public static final int V_HEIGHT = 208;
     public static final float PPM = 100;
 
+    public static final short NOTHING_BIT=0;
     public static final short GROUND_BIT=1;
     public static final short FLOOR_BIT=2;
     public static final short WALL_BIT=4;
     public static final short OBSTACLE_BIT=16;
 
     public static final short FOX_BIT=32;
-    public static final short HEAD_FOX_BIT=1984;
-
+  
     public static final short ENEMY_BIT=64;
     public static final short ENEMY_HEAD_BIT=124;
+    
     public static final short LADDER_BIT=248;
     public static final short PINCHOS_BIT=496;
 

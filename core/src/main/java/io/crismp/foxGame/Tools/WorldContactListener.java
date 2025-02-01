@@ -1,6 +1,5 @@
 package io.crismp.foxGame.Tools;
 
-import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.physics.box2d.Contact;
 import com.badlogic.gdx.physics.box2d.ContactImpulse;
 import com.badlogic.gdx.physics.box2d.ContactListener;
@@ -24,12 +23,10 @@ public class WorldContactListener implements ContactListener {
         Fixture fixB = contact.getFixtureB();
 
         int cDef = fixA.getFilterData().categoryBits | fixB.getFilterData().categoryBits;
-        System.out.println(fixA.getFilterData().categoryBits);
-        System.out.println(fixB.getFilterData().categoryBits);
-        System.out.println("cdef:" + cDef);
-
         switch (cDef) {
             case FoxGame.ENEMY_HEAD_BIT | FoxGame.FOX_BIT:
+                System.out.println("A" + fixA.getFilterData().categoryBits);
+                System.out.println("B" + fixB.getFilterData().categoryBits);
                 if (fixA.getFilterData().categoryBits == FoxGame.ENEMY_HEAD_BIT)
                     ((Enemy) fixA.getUserData()).hitOnHead();
                 else
@@ -39,10 +36,8 @@ public class WorldContactListener implements ContactListener {
             case FoxGame.ENEMY_BIT | FoxGame.WALL_BIT:
                 if (fixA.getFilterData().categoryBits == FoxGame.ENEMY_BIT)
                     ((Enemy) fixA.getUserData()).reverseVelocity(true, false);
-
                 else
                     ((Enemy) fixB.getUserData()).reverseVelocity(true, false);
-
                 break;
             case FoxGame.FOX_BIT | FoxGame.ITEM_BIT:
                 if (fixA.getFilterData().categoryBits == FoxGame.ITEM_BIT)
@@ -50,13 +45,29 @@ public class WorldContactListener implements ContactListener {
                 else
                     ((Item) fixB.getUserData()).use((Foxy) fixA.getUserData());
                 break;
+            case FoxGame.FOX_BIT | FoxGame.PINCHOS_BIT:
             case FoxGame.FOX_BIT | FoxGame.ENEMY_BIT:
-                Gdx.app.log("FOXY", "DIED");
+                System.out.println("A" + fixA.getFilterData().categoryBits);
+                System.out.println("B" + fixB.getFilterData().categoryBits);
+                if (fixA.getFilterData().categoryBits == FoxGame.FOX_BIT)
+                    ((Foxy) fixA.getUserData()).hit();
+                else {
+                    ((Foxy) fixB.getUserData()).hit();
+                }
+                if (fixA.getFilterData().categoryBits == FoxGame.ENEMY_BIT)
+                    ((Enemy) fixA.getUserData()).reverseVelocity(true, false);
+                else if(fixB.getFilterData().categoryBits == FoxGame.ENEMY_BIT)
+                    ((Enemy) fixB.getUserData()).reverseVelocity(true, false);
+                break;
 
             case FoxGame.FOX_BIT | FoxGame.LADDER_BIT:
                 if (fixA.getFilterData().categoryBits == FoxGame.LADDER_BIT ||
                         fixB.getFilterData().categoryBits == FoxGame.LADDER_BIT) {
-                    Foxy.setOnLadder(true);
+                    if (fixA.getFilterData().categoryBits == FoxGame.FOX_BIT)
+                        ((Foxy) fixA.getUserData()).setOnLadder(true);
+                    else
+                        ((Foxy) fixB.getUserData()).setOnLadder(true);
+                    break;
                 }
             default:
                 break;
@@ -74,7 +85,11 @@ public class WorldContactListener implements ContactListener {
 
         switch (cDef) {
             case FoxGame.FOX_BIT | FoxGame.LADDER_BIT:
-                Foxy.setOnLadder(false);
+                if (fixA.getFilterData().categoryBits == FoxGame.FOX_BIT)
+                    ((Foxy) fixA.getUserData()).setOnLadder(false);
+                else
+                    ((Foxy) fixB.getUserData()).setOnLadder(false);
+                break;
         }
     }
 

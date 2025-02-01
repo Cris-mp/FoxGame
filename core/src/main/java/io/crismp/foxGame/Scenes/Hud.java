@@ -1,7 +1,8 @@
 package io.crismp.foxGame.Scenes;
 
+import java.util.ArrayList;
+
 import com.badlogic.gdx.Gdx;
-import com.badlogic.gdx.graphics.Color;
 import com.badlogic.gdx.graphics.OrthographicCamera;
 import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.graphics.g2d.BitmapFont;
@@ -11,8 +12,6 @@ import com.badlogic.gdx.scenes.scene2d.Stage;
 import com.badlogic.gdx.scenes.scene2d.ui.Image;
 import com.badlogic.gdx.scenes.scene2d.ui.Label;
 import com.badlogic.gdx.scenes.scene2d.ui.Table;
-import com.badlogic.gdx.utils.Align;
-import com.badlogic.gdx.utils.Array;
 import com.badlogic.gdx.utils.Disposable;
 import com.badlogic.gdx.utils.viewport.FitViewport;
 import com.badlogic.gdx.utils.viewport.Viewport;
@@ -30,8 +29,9 @@ public class Hud implements Disposable {
     Label lblLife;
     Label lblCherries;
     Label lblGems;
+    Table leftTable;
 
-    Array<Image> heartArray;
+    ArrayList<Image> heartArray;
     Image cherry;
     Image gem;
 
@@ -40,28 +40,27 @@ public class Hud implements Disposable {
     public Hud(SpriteBatch sb) {
 
         Texture heart = new Texture("heart.png");
-        heartArray = new Array<Image>();
-        for (int i = 0; i < 7; i++) {
+        heartArray = new ArrayList<Image>();
+        for (int i = 6; i >= 0; i--) {
             heartArray.add(new Image(new TextureRegion(heart, 0, i * 11, heart.getWidth(), heart.getHeight() / 7)));
         }
         cherry = (new Image(new TextureRegion(new Texture("items/cherry.png"), 0, 0, 21, 21)));
         gem = (new Image(new TextureRegion(new Texture("items/gem.png"), 0, 0, 15, 15)));
-        ;
 
         font = new BitmapFont(Gdx.files.internal("fonts/wood.fnt"));
         font.getData().setScale(1.2f);
         Label.LabelStyle labelStyle = new Label.LabelStyle();
         labelStyle.font = font;
 
-        life = 0;
+        life = 6;
         cherries = 0;
         gems = 0;
 
         viewport = new FitViewport(FoxGame.V_WIDTH * 2, FoxGame.V_HEIGHT * 2, new OrthographicCamera());
         stage = new Stage(viewport, sb);
 
-        lblCherries = new Label("x" + cherries, labelStyle);
-        lblGems = new Label("x" + gems, labelStyle);
+        lblCherries = new Label(String.format("x%02d", cherries), labelStyle);
+        lblGems = new Label(String.format("x%02d", gems), labelStyle);
 
         // *** TABLA PRINCIPAL ***
         Table rootTable = new Table();
@@ -69,7 +68,7 @@ public class Hud implements Disposable {
         rootTable.setFillParent(true);
 
         // *** TABLA IZQUIERDA (VIDAS) ***
-        Table leftTable = new Table();
+        leftTable = new Table();
         leftTable.add(heartArray.get(life)).size(99, 25).pad(5).left();
 
         // *** TABLA DERECHA (GEMAS Y CEREZAS) ***
@@ -88,8 +87,21 @@ public class Hud implements Disposable {
         stage.addActor(rootTable);
     }
 
+    public void updateHud(int newLife, int newCherries, int newGems) {
+       this.life=newLife;
+        lblCherries.setText(String.format("x%02d", newCherries));
+        lblGems.setText(String.format("x%02d", newGems));
+        if (newLife >= 0 && newLife < heartArray.size()) {
+            leftTable.clearChildren(); // Borra los elementos previos de la tabla izquierda
+            leftTable.add(heartArray.get(life)).size(99, 25).pad(5).left(); // Añade el nuevo corazón
+        }
+       
+
+    }
+
     @Override
     public void dispose() {
+        font.dispose();
         stage.dispose();
     }
 

@@ -28,9 +28,12 @@ public class PlayScreen implements Screen {
     private FoxGame game;
     private OrthographicCamera gamecam;
 
-    //
+    // HUD
     private Viewport gamePort;
     private Hud hud;
+    private int cherriesCollected;
+    private int gemsCollected;
+    private int newLife;
 
     // Variables de creacion de mapa y situacion de camara
     private TmxMapLoader mapLoader;
@@ -57,6 +60,9 @@ public class PlayScreen implements Screen {
     public PlayScreen(FoxGame game) {
         accumulator = 0f;
         timeStep = 1 / 60f;
+        cherriesCollected = 0;
+        gemsCollected = 0;
+        newLife = 6;
         this.game = game;
         this.joystick = new VirtualJoystick(0, 0, 2, 1);
         gamecam = new OrthographicCamera();
@@ -106,55 +112,54 @@ public class PlayScreen implements Screen {
     }
 
     public void handleInput(float dt) {
-        player.velX=0;
-        if (Gdx.app.getType() == ApplicationType.Android) {
-            if (joystick.isJumpPressed() && player.jumpCounter < 2) {
-                player.body.applyLinearImpulse(new Vector2(0, 2.5f), player.body.getWorldCenter(), true);
-                player.jumpCounter++;
-                joystick.setJumpPressed(false);
+        if (player.currenState != Foxy.State.DEAD) {
+            player.velX = 0;
+            if (Gdx.app.getType() == ApplicationType.Android) {
+                if (joystick.isJumpPressed() && player.jumpCounter < 2) {
+                    player.body.applyLinearImpulse(new Vector2(0, 2.5f), player.body.getWorldCenter(), true);
+                    player.jumpCounter++;
+                    joystick.setJumpPressed(false);
+                }
 
+                // reseteamos el contador de salto
+                if (player.body.getLinearVelocity().y == 0) {
+                    player.jumpCounter = 0;
+                }
+
+                if (player.getOnLadder() && joystick.getDirection().y > 0) {
+
+                    player.body.setLinearVelocity(0, player.velY = 1f);
+                } else {
+                    player.body.setLinearVelocity(joystick.getDirection().x * player.speed,
+
+                            Math.min(player.body.getLinearVelocity().y, 15));
+                }
+
+            } else {
+                if (Gdx.input.isKeyPressed(Input.Keys.D)) {
+                    player.velX = 1f;
+                }
+                if (Gdx.input.isKeyPressed(Input.Keys.A)) {
+                    player.velX = -1f;
+                }
+
+                if (Gdx.input.isKeyJustPressed(Input.Keys.SPACE) && player.jumpCounter < 2) {
+                    player.body.applyLinearImpulse(new Vector2(0, 2.5f), player.body.getWorldCenter(), true);
+                    player.jumpCounter++;
+                }
+                // reseteamos el contador de salto
+                if (player.body.getLinearVelocity().y == 0) {
+                    player.jumpCounter = 0;
+                }
+
+                if (player.getOnLadder() && Gdx.input.isKeyPressed(Input.Keys.W)) {
+                    player.body.setLinearVelocity(0, player.velY = 1f);
+                }
+
+                player.body.setLinearVelocity(player.velX * player.speed,
+                        Math.min(player.body.getLinearVelocity().y, 15));
             }
-            // reseteamos el contador de salto
-            if (player.body.getLinearVelocity().y == 0) {
-                player.jumpCounter = 0;
-            }
-
-            if (player.getOnLadder() && joystick.getDirection().y > 0) {
-
-                player.body.setLinearVelocity(0, player.velY = 1f);
-            }else{
-                player.body.setLinearVelocity(joystick.getDirection().x * player.speed,
-
-                Math.min(player.body.getLinearVelocity().y, 15));
-            }
-
-
-        } else {
-            if (Gdx.input.isKeyPressed(Input.Keys.D)) {
-                player.velX = 1f;
-            }
-            if (Gdx.input.isKeyPressed(Input.Keys.A)) {
-                player.velX = -1f;
-            }
-
-            if (Gdx.input.isKeyJustPressed(Input.Keys.SPACE) && player.jumpCounter < 2) {
-                player.body.applyLinearImpulse(new Vector2(0, 2.5f), player.body.getWorldCenter(), true);
-                player.jumpCounter++;
-            }
-            // reseteamos el contador de salto
-            if (player.body.getLinearVelocity().y == 0) {
-                player.jumpCounter = 0;
-            }
-
-            if (player.getOnLadder() && Gdx.input.isKeyPressed(Input.Keys.W)) {
-                player.body.setLinearVelocity(0, player.velY = 1f);
-            }
-
-            player.body.setLinearVelocity(player.velX * player.speed,
-            Math.min(player.body.getLinearVelocity().y, 15));
-
         }
-
     }
 
     public void update(float dt) {
@@ -169,6 +174,7 @@ public class PlayScreen implements Screen {
         handleInput(dt);
 
         player.update(dt);
+        hud.updateHud(newLife, cherriesCollected, gemsCollected);
 
         for (Enemy enemy : creator.getZarigueyas()) {
             enemy.update(dt);
@@ -179,25 +185,26 @@ public class PlayScreen implements Screen {
         for (Gem gem : creator.getGems()) {
             gem.update(dt);
         }
-
-        // Ajuste de posicion de la camara en el eje X
-        if (player.body.getPosition().x > 5.20f) {
-            gamecam.position.x = 5.20f;
-        } else {
-            if (player.body.getPosition().x < 2.1f) {
-                gamecam.position.x = 2.10f;
+        if (player.currenState != Foxy.State.DEAD) {
+            // Ajuste de posicion de la camara en el eje X
+            if (player.body.getPosition().x > 5.20f) {
+                gamecam.position.x = 5.20f;
             } else {
-                gamecam.position.x = player.body.getPosition().x;
+                if (player.body.getPosition().x < 2.1f) {
+                    gamecam.position.x = 2.10f;
+                } else {
+                    gamecam.position.x = player.body.getPosition().x;
+                }
             }
-        }
-        // Ajuste de posicion de la camara en el eje Y
-        if (player.body.getPosition().y < 1.05f) {
-            gamecam.position.y = 1.05f;
-        } else {
-            if (player.body.getPosition().y < 6.1f) {
-                gamecam.position.y = player.body.getPosition().y;
+            // Ajuste de posicion de la camara en el eje Y
+            if (player.body.getPosition().y < 1.05f) {
+                gamecam.position.y = 1.05f;
             } else {
-                gamecam.position.y = 6.1f;
+                if (player.body.getPosition().y < 6.1f) {
+                    gamecam.position.y = player.body.getPosition().y;
+                } else {
+                    gamecam.position.y = 6.1f;
+                }
             }
         }
         // actualiza a las nuevas coordenadas
@@ -205,7 +212,7 @@ public class PlayScreen implements Screen {
         // llama al rederer para que se muestre solo el trozo que queremos ver del mundo
         renderer.setView(gamecam);
     }
-
+    private int[] pinchos = {1};
     @Override
     public void render(float delta) {
         // lo primero que debe hacer es actualizarse
@@ -214,12 +221,12 @@ public class PlayScreen implements Screen {
         // Borra la pantalla y la deja negra
         Gdx.gl.glClearColor(0, 0, 0, 1);
         Gdx.gl.glClear(GL20.GL_COLOR_BUFFER_BIT);
-
+        
         // renderizador del juego
         renderer.render();
         // renderizamos el Box2DDebugLines
         b2dr.render(world, gamecam.combined);
-
+        
         game.batch.setProjectionMatrix(gamecam.combined);
         game.batch.begin();
         // backgroundLayer1.render(game.batch); // Dibujar capa más lejana
@@ -236,7 +243,8 @@ public class PlayScreen implements Screen {
             gem.draw(game.batch);
         }
         game.batch.end();
-
+        
+        renderer.render(pinchos);
         // Configura el batch para centrar la camara del HUD
         game.batch.setProjectionMatrix(hud.stage.getCamera().combined);
         hud.stage.draw();
@@ -282,5 +290,22 @@ public class PlayScreen implements Screen {
         // bgTexture1.dispose();
         // bgTexture2.dispose();
     }
+
+    // --------- Actualizar HUD--------------
+    public void addCherry() {
+        cherriesCollected++;
+        hud.updateHud(newLife, cherriesCollected, gemsCollected);
+    }
+
+    public void addGem() {
+        gemsCollected++;
+        hud.updateHud(newLife, cherriesCollected, gemsCollected);
+    }
+
+    public void restLife(int life) {
+        this.newLife=life;
+        hud.updateHud(newLife, cherriesCollected, gemsCollected);
+    }
+     
 
 }

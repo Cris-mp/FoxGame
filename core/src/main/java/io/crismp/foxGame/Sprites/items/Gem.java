@@ -58,8 +58,8 @@ public class Gem extends Item{
 
     @Override
     public void use(Foxy foxy) {
-        toDestroy=true;
-       
+        screen.addGem();
+        destroy();
     }
 
     @Override
