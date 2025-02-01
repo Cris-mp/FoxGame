@@ -41,7 +41,7 @@ char id=56   x=136 y=51  width=12  height=19  xoffset=0   yoffset=0   xadvance=1
 char id=57   x=151 y=51  width=12  height=19  xoffset=0   yoffset=0   xadvance=15  page=0  chnl=0  # 9
 char id=48   x=166 y=51  width=12  height=19  xoffset=0   yoffset=0   xadvance=15  page=0  chnl=0  # 0
 
-char id=97   x=1   y=51  width=12  height=19  xoffset=0   yoffset=0   xadvance=15  page=0  chnl=0  # a
+char id=97   x=1   y=76  width=12  height=19  xoffset=0   yoffset=0   xadvance=15  page=0  chnl=0  # a
 char id=98   x=16  y=76  width=12  height=19  xoffset=0   yoffset=0   xadvance=15  page=0  chnl=0  # b
 char id=99   x=31  y=76  width=12  height=19  xoffset=0   yoffset=0   xadvance=15  page=0  chnl=0  # c
 char id=100  x=46  y=76  width=12  height=19  xoffset=0   yoffset=0   xadvance=15  page=0  chnl=0  # d

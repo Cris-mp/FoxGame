@@ -9,7 +9,6 @@ public class Pinchos extends InteractiveTiledObject{
 	public Pinchos(PlayScreen screen, Rectangle bounds){
 		super(screen,bounds);
 		fixture.setUserData(this);
-		fixture.setSensor(true);
 		setCategoryFilter(FoxGame.PINCHOS_BIT);
 	}
 

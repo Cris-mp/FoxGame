@@ -1,5 +1,7 @@
 package io.crismp.foxGame.Sprites;
 
+import java.util.ArrayList;
+
 //#region imports
 import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.graphics.g2d.Animation;
@@ -22,13 +24,16 @@ import com.badlogic.gdx.utils.Array;
 
 import io.crismp.foxGame.FoxGame;
 import io.crismp.foxGame.Screens.PlayScreen;
+import io.crismp.foxGame.Sprites.enemies.Enemy;
+import io.crismp.foxGame.Sprites.tileObjects.Pinchos;
+import io.crismp.foxGame.Tools.WorldContactListener;
 
 public class Foxy extends Sprite {
 	public enum State {
 		FALLING, JUMPING, STANDING, RUNNING, CLIMBING, HURT, DEAD
 	}
 
-	private static final float HURT_DURATION = 1f;
+	private static final float HURT_DURATION = 2f;
 
 	protected PlayScreen screen;
 	public State currenState;
@@ -55,6 +60,8 @@ public class Foxy extends Sprite {
 	private float hurtTimer;
 	private boolean foxyIsDead;
 	public int life;
+	public ArrayList<Enemy> enemiesInContact;
+	public ArrayList<Pinchos> pinchosInContact;
 
 	public Texture img;
 
@@ -78,6 +85,8 @@ public class Foxy extends Sprite {
 		this.life = 6;
 		this.onLadder = false;
 		this.foxyIsHurt = false;
+		enemiesInContact = new ArrayList<>();
+		pinchosInContact = new ArrayList<>();
 
 		// animaciones
 		currenState = State.STANDING;
@@ -138,6 +147,9 @@ public class Foxy extends Sprite {
 			hurtTimer += dt; // Aumenta el tiempo en estado HURT
 			if (hurtTimer >= HURT_DURATION) {
 				foxyIsHurt = false; // Después de 1 segundos, vuelve a la normalidad
+				if ((!enemiesInContact.isEmpty()||!pinchosInContact.isEmpty())) {
+					hit();
+				}
 			}
 		}
 	}
@@ -209,6 +221,9 @@ public class Foxy extends Sprite {
 	public boolean isDead() {
 		return foxyIsDead;
 	}
+	public float getStateTimer(){
+		return stateTimer;
+	}
 
 	public void hit() {
 		if (!foxyIsHurt) {
@@ -241,7 +256,7 @@ public class Foxy extends Sprite {
 				| FoxGame.ENEMY_BIT | FoxGame.PINCHOS_BIT | FoxGame.LADDER_BIT | FoxGame.ITEM_BIT;
 		fdef.shape = shape;
 		body.createFixture(fdef).setUserData(this);
-		shape.setPosition(new Vector2(0,8/ FoxGame.PPM));
+		shape.setPosition(new Vector2(0, 8 / FoxGame.PPM));
 		body.createFixture(fdef).setUserData(this);
 	}
 

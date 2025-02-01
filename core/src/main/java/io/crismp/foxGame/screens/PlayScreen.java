@@ -212,7 +212,9 @@ public class PlayScreen implements Screen {
         // llama al rederer para que se muestre solo el trozo que queremos ver del mundo
         renderer.setView(gamecam);
     }
-    private int[] pinchos = {1};
+
+    private int[] pinchos = { 1 };
+
     @Override
     public void render(float delta) {
         // lo primero que debe hacer es actualizarse
@@ -221,12 +223,12 @@ public class PlayScreen implements Screen {
         // Borra la pantalla y la deja negra
         Gdx.gl.glClearColor(0, 0, 0, 1);
         Gdx.gl.glClear(GL20.GL_COLOR_BUFFER_BIT);
-        
+
         // renderizador del juego
         renderer.render();
         // renderizamos el Box2DDebugLines
         b2dr.render(world, gamecam.combined);
-        
+
         game.batch.setProjectionMatrix(gamecam.combined);
         game.batch.begin();
         // backgroundLayer1.render(game.batch); // Dibujar capa más lejana
@@ -243,7 +245,7 @@ public class PlayScreen implements Screen {
             gem.draw(game.batch);
         }
         game.batch.end();
-        
+
         renderer.render(pinchos);
         // Configura el batch para centrar la camara del HUD
         game.batch.setProjectionMatrix(hud.stage.getCamera().combined);
@@ -251,6 +253,18 @@ public class PlayScreen implements Screen {
 
         if (Gdx.app.getType() == ApplicationType.Android)
             joystick.render();
+
+        if (gameOver()) {
+            game.setScreen(new GameOverScreen(game));
+            dispose();
+        }
+    }
+
+    public boolean gameOver(){
+        if(player.currenState == Foxy.State.DEAD && player.getStateTimer() > 3){
+            return true;
+        }
+        return false;
     }
 
     @Override
@@ -303,9 +317,8 @@ public class PlayScreen implements Screen {
     }
 
     public void restLife(int life) {
-        this.newLife=life;
+        this.newLife = life;
         hud.updateHud(newLife, cherriesCollected, gemsCollected);
     }
-     
 
 }

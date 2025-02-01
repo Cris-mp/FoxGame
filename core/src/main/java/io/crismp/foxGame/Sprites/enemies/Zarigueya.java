@@ -55,7 +55,7 @@ public class Zarigueya extends Enemy {
         runRight = true;
         currenState = State.WALK;
         stateTimer = 0;
-        setBounds(0, 0, 16 / (FoxGame.PPM / 2), 12 / (FoxGame.PPM / 2));
+        setBounds(0, 0, 16 / (FoxGame.PPM / 2), 11 / (FoxGame.PPM / 2));
     }
 
     public void update(float dt) {
@@ -87,7 +87,7 @@ public class Zarigueya extends Enemy {
                 | FoxGame.FOX_BIT | FoxGame.PINCHOS_BIT;
         fdef.shape = shape;
         fdef.density = 200f; // 🔥 Aumentar densidad para evitar que Foxy lo mueva
-fdef.friction = 2f; // 🔥 Aumentar fricción para que no resbale
+        fdef.friction = 2f; // 🔥 Aumentar fricción para que no resbale
         body.createFixture(fdef).setUserData(this);
 
         // hacemos parte superior
