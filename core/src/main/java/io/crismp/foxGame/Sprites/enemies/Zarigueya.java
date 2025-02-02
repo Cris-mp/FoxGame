@@ -7,6 +7,7 @@ import com.badlogic.gdx.graphics.g2d.TextureRegion;
 import com.badlogic.gdx.math.Rectangle;
 import com.badlogic.gdx.math.Vector2;
 import com.badlogic.gdx.physics.box2d.BodyDef;
+import com.badlogic.gdx.physics.box2d.Fixture;
 import com.badlogic.gdx.physics.box2d.FixtureDef;
 import com.badlogic.gdx.physics.box2d.PolygonShape;
 import com.badlogic.gdx.utils.Array;
@@ -93,15 +94,21 @@ public class Zarigueya extends Enemy {
         // hacemos parte superior
         PolygonShape head = new PolygonShape();
         Vector2[] vertice = new Vector2[4];
-        vertice[0] = new Vector2(-10, 7).scl(1 / FoxGame.PPM);
-        vertice[1] = new Vector2(10, 7).scl(1 / FoxGame.PPM);
+        vertice[0] = new Vector2(-10, 8).scl(1 / FoxGame.PPM);
+        vertice[1] = new Vector2(10, 8).scl(1 / FoxGame.PPM);
         vertice[2] = new Vector2(-3, 3).scl(1 / FoxGame.PPM);
         vertice[3] = new Vector2(0, 3).scl(1 / FoxGame.PPM);
         head.set(vertice);
-        fdef.shape = head;
+        fdef.shape = head; 
         fdef.restitution = 1f;
         fdef.filter.categoryBits = FoxGame.ENEMY_HEAD_BIT;
+        fdef.filter.maskBits = FoxGame.FOX_BIT;
         body.createFixture(fdef).setUserData(this);
+
+        for (Fixture fixture : body.getFixtureList()) {
+    System.out.println("Fixture creado con categoryBits: " + fixture.getFilterData().categoryBits);
+}
+
     }
 
     public void draw(Batch batch) {
@@ -112,6 +119,7 @@ public class Zarigueya extends Enemy {
 
     @Override
     public void hitOnHead() {
+        System.out.println("¡Enemigo golpeado en la cabeza!");
         setToDestroy = true;
     }
 

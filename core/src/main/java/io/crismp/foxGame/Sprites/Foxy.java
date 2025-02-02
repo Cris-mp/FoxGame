@@ -1,8 +1,6 @@
 package io.crismp.foxGame.Sprites;
 
 import java.util.ArrayList;
-
-//#region imports
 import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.graphics.g2d.Animation;
 import com.badlogic.gdx.graphics.g2d.Sprite;
@@ -20,13 +18,13 @@ import com.badlogic.gdx.physics.box2d.FixtureDef;
 import com.badlogic.gdx.physics.box2d.World;
 import com.badlogic.gdx.utils.Array;
 
-//#endregion
-
 import io.crismp.foxGame.FoxGame;
 import io.crismp.foxGame.Screens.PlayScreen;
 import io.crismp.foxGame.Sprites.enemies.Enemy;
 import io.crismp.foxGame.Sprites.tileObjects.Pinchos;
-import io.crismp.foxGame.Tools.WorldContactListener;
+
+
+
 
 public class Foxy extends Sprite {
 	public enum State {
@@ -253,7 +251,7 @@ public class Foxy extends Sprite {
 		shape.setRadius(5 / FoxGame.PPM);
 		fdef.filter.categoryBits = FoxGame.FOX_BIT;
 		fdef.filter.maskBits = FoxGame.GROUND_BIT | FoxGame.FLOOR_BIT | FoxGame.WALL_BIT | FoxGame.OBSTACLE_BIT
-				| FoxGame.ENEMY_BIT | FoxGame.PINCHOS_BIT | FoxGame.LADDER_BIT | FoxGame.ITEM_BIT;
+				| FoxGame.ENEMY_BIT | FoxGame.PINCHOS_BIT | FoxGame.LADDER_BIT | FoxGame.ITEM_BIT| FoxGame.ENEMY_HEAD_BIT;
 		fdef.shape = shape;
 		body.createFixture(fdef).setUserData(this);
 		shape.setPosition(new Vector2(0, 8 / FoxGame.PPM));

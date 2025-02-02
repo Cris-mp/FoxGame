@@ -70,7 +70,7 @@ public class PlayScreen implements Screen {
         // mantiene el ratio de aspecto virtual a pesar de la pantalla
         gamePort = new FitViewport(FoxGame.V_WIDTH / FoxGame.PPM, FoxGame.V_HEIGHT / FoxGame.PPM, gamecam);
 
-        // Crea los marcadores de fase y vista //TODO: Ampliar en futuro
+        // Crea los marcadores de fase y vista
         hud = new Hud(game.batch);
 
         // Carga nuestro mapa y configurar nuestro renderizador de mapas
@@ -106,6 +106,14 @@ public class PlayScreen implements Screen {
         // backgroundLayer2.setCamera(new OrthographicCamera());
     }
 
+    public int getCherriesCollected() {
+        return cherriesCollected;
+    }
+
+    public int getGemsCollected() {
+        return gemsCollected;
+    }
+
     @Override
     public void show() {
 
@@ -134,7 +142,6 @@ public class PlayScreen implements Screen {
 
                             Math.min(player.body.getLinearVelocity().y, 15));
                 }
-
             } else {
                 if (Gdx.input.isKeyPressed(Input.Keys.D)) {
                     player.velX = 1f;
@@ -260,8 +267,8 @@ public class PlayScreen implements Screen {
         }
     }
 
-    public boolean gameOver(){
-        if(player.currenState == Foxy.State.DEAD && player.getStateTimer() > 3){
+    public boolean gameOver() {
+        if (player.currenState == Foxy.State.DEAD && player.getStateTimer() > 3) {
             return true;
         }
         return false;

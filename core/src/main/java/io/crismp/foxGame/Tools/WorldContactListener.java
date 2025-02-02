@@ -22,11 +22,10 @@ public class WorldContactListener implements ContactListener {
         // No sabemos quien es A y B en una colision
         Fixture fixA = contact.getFixtureA();
         Fixture fixB = contact.getFixtureB();
-        //FIXME me detecta una colision entre zariguella y pinchos que hace entrar en el caso de zariguella con foxi o pincho con foxy
-        System.out.println("Colisión detectada entre: " + fixA.getUserData() + " y " + fixB.getUserData());
         int cDef = fixA.getFilterData().categoryBits | fixB.getFilterData().categoryBits;
+        System.out.println("Colisión detectada: " + fixA.getFilterData().categoryBits + " con " + fixB.getFilterData().categoryBits);
         switch (cDef) {
-            case FoxGame.ENEMY_HEAD_BIT | FoxGame.FOX_BIT:
+            case FoxGame.FOX_BIT | FoxGame.ENEMY_HEAD_BIT:
                 if (fixA.getFilterData().categoryBits == FoxGame.ENEMY_HEAD_BIT)
                     ((Enemy) fixA.getUserData()).hitOnHead();
                 else
@@ -34,6 +33,7 @@ public class WorldContactListener implements ContactListener {
                 break;
             case FoxGame.ENEMY_BIT | FoxGame.OBSTACLE_BIT:
             case FoxGame.ENEMY_BIT | FoxGame.WALL_BIT:
+            case FoxGame.ENEMY_BIT | FoxGame.PINCHOS_BIT:
                 if (fixA.getFilterData().categoryBits == FoxGame.ENEMY_BIT)
                     ((Enemy) fixA.getUserData()).reverseVelocity(true, false);
                 else
@@ -48,7 +48,7 @@ public class WorldContactListener implements ContactListener {
 
             case FoxGame.FOX_BIT | FoxGame.PINCHOS_BIT:
             case FoxGame.FOX_BIT | FoxGame.ENEMY_BIT:
-            System.out.println("entro");
+                System.out.println("entro");
                 Foxy foxy = null;
                 Enemy enemy = null;
                 Pinchos pinchos = null;
@@ -59,7 +59,7 @@ public class WorldContactListener implements ContactListener {
                     } else {
                         pinchos = (Pinchos) fixB.getUserData();
                     }
-                    
+
                 } else {
                     foxy = (Foxy) fixB.getUserData();
                     if (fixA.getFilterData().categoryBits == FoxGame.ENEMY_BIT) {
@@ -67,7 +67,6 @@ public class WorldContactListener implements ContactListener {
                     } else {
                         pinchos = (Pinchos) fixA.getUserData();
                     }
-                    
                 }
                 if (enemy != null && !foxy.enemiesInContact.contains(enemy)) {
                     foxy.enemiesInContact.add(enemy); // Añadir enemigo a la lista de colisiones
@@ -75,13 +74,13 @@ public class WorldContactListener implements ContactListener {
                 if (pinchos != null && !foxy.pinchosInContact.contains(pinchos)) {
                     foxy.pinchosInContact.add(pinchos); // Añadir pinchos a la lista de colisiones
                 }
-                
+
                 foxy.hit();
 
                 if (fixA.getFilterData().categoryBits == FoxGame.ENEMY_BIT)
-                ((Enemy) fixA.getUserData()).reverseVelocity(true, false);
-                else if(fixB.getFilterData().categoryBits == FoxGame.ENEMY_BIT)
-                ((Enemy) fixB.getUserData()).reverseVelocity(true, false);
+                    ((Enemy) fixA.getUserData()).reverseVelocity(true, false);
+                else if (fixB.getFilterData().categoryBits == FoxGame.ENEMY_BIT)
+                    ((Enemy) fixB.getUserData()).reverseVelocity(true, false);
                 break;
 
             case FoxGame.FOX_BIT | FoxGame.LADDER_BIT:
@@ -139,7 +138,7 @@ public class WorldContactListener implements ContactListener {
                     }
                 }
                 break;
-                default:
+            default:
                 break;
         }
     }

@@ -18,28 +18,27 @@ public class FoxGame extends Game {
     public static final int V_HEIGHT = 208;
     public static final float PPM = 100;
 
-    public static final short NOTHING_BIT=0;
-    public static final short GROUND_BIT=1;
-    public static final short FLOOR_BIT=2;
-    public static final short WALL_BIT=4;
-    public static final short OBSTACLE_BIT=16;
+    public static final short NOTHING_BIT = 0; // 0000000000000000
+    public static final short GROUND_BIT = 1; // 0000000000000001
+    public static final short FLOOR_BIT = 2; // 0000000000000010
+    public static final short WALL_BIT = 4; // 0000000000000100
+    public static final short OBSTACLE_BIT = 8; // 0000000000001000
 
-    public static final short FOX_BIT=32;
-  
-    public static final short ENEMY_BIT=64;
-    public static final short ENEMY_HEAD_BIT=124;
-    
-    public static final short LADDER_BIT=248;
-    public static final short PINCHOS_BIT=496;
+    public static final short FOX_BIT = 16; // 0000000000010000
+    public static final short FOX_HEAD_BIT = 32; // 0000000000100000
 
-    public static final short ITEM_BIT=992;
+    public static final short ENEMY_BIT = 64; // 0000000001000000
+    public static final short ENEMY_HEAD_BIT = 128; // 0000000010000000
+
+    public static final short LADDER_BIT = 256; // 0000000100000000
+    public static final short PINCHOS_BIT = 512; // 0000001000000000
+    public static final short ITEM_BIT = 1024; // 0000010000000000
 
     public SpriteBatch batch;
 
-
     @Override
     public void create() {
-        batch= new SpriteBatch();
+        batch = new SpriteBatch();
         setScreen(new PlayScreen(this));
     }
 

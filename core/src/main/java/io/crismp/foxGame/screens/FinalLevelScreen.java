@@ -14,14 +14,16 @@ import com.badlogic.gdx.utils.viewport.Viewport;
 
 import io.crismp.foxGame.FoxGame;
 
-public class GameOverScreen implements Screen{
+public class FinalLevelScreen implements Screen {
     private Viewport viewport;
     private Stage stage;
     private BitmapFont font;
+   
+
 
     private Game game;
 
-      public GameOverScreen(Game game){
+      public FinalLevelScreen(Game game, PlayScreen screen){
         this.game = game;
         viewport = new FitViewport(FoxGame.V_WIDTH, FoxGame.V_HEIGHT, new OrthographicCamera());
         stage = new Stage(viewport, ((FoxGame) game).batch);
@@ -35,16 +37,22 @@ public class GameOverScreen implements Screen{
         table.center();
         table.setFillParent(true);
 
-        Label gameOverLabel = new Label("GAME OVER", labelStyle);
-        Label playAgainLabel = new Label("Click to Play Again", labelStyle);
+        Label levelCompletedLbl = new Label("NIVEL COMPLETADO", labelStyle);
+        Label lblCherries= new Label(String.format("Cerezas = %d x 25 = %d", screen.getCherriesCollected(),screen.getCherriesCollected()*25), labelStyle);
+        Label lblGems= new Label(String.format("Gemas = %d x 100 = %d", screen.getGemsCollected(),screen.getCherriesCollected()*100), labelStyle);
+        Label playAgainLbl = new Label("Click to Play Again", labelStyle);
 
-        table.add(gameOverLabel).expandX();
+        table.add(levelCompletedLbl).expandX();
         table.row();
-        table.add(playAgainLabel).expandX().padTop(10f);
+        table.add(lblCherries).expandX().padTop(10f);
+        table.row();
+        table.add(lblGems).expandX().padTop(10f);
+        table.row();
+        table.add(playAgainLbl).expandX().padTop(10f);
 
         stage.addActor(table);
     }
-
+ 
     @Override
     public void show() {
     }
@@ -81,5 +89,4 @@ public class GameOverScreen implements Screen{
         font.dispose();
         stage.dispose();
     }
-    
 }
