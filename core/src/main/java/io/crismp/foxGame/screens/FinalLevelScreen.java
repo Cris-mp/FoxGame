@@ -38,8 +38,9 @@ public class FinalLevelScreen implements Screen {
         table.setFillParent(true);
 
         Label levelCompletedLbl = new Label("NIVEL COMPLETADO", labelStyle);
-        Label lblCherries= new Label(String.format("Cerezas = %d x 25 = %d", screen.getCherriesCollected(),screen.getCherriesCollected()*25), labelStyle);
-        Label lblGems= new Label(String.format("Gemas = %d x 100 = %d", screen.getGemsCollected(),screen.getCherriesCollected()*100), labelStyle);
+        Label lblCherries= new Label(String.format("%d Cerezas x 25 pts : %d", screen.getCherriesCollected(),screen.getCherriesCollected()*25), labelStyle);
+        Label lblGems= new Label(String.format("%d Gemas x 100 pts : %d", screen.getGemsCollected(),screen.getCherriesCollected()*100), labelStyle);
+        Label lblTotal= new Label(String.format("Total: %d pts", (screen.getCherriesCollected()*25)+(screen.getCherriesCollected()*100)), labelStyle);
         Label playAgainLbl = new Label("Click to Play Again", labelStyle);
 
         table.add(levelCompletedLbl).expandX();
@@ -47,6 +48,8 @@ public class FinalLevelScreen implements Screen {
         table.add(lblCherries).expandX().padTop(10f);
         table.row();
         table.add(lblGems).expandX().padTop(10f);
+        table.row();
+        table.add(lblTotal).expandX().padTop(10f);
         table.row();
         table.add(playAgainLbl).expandX().padTop(10f);
 

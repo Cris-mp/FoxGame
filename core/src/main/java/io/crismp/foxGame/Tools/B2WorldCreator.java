@@ -72,6 +72,10 @@ public class B2WorldCreator {
             gems.add(new Gem(screen,rectangle));
         }
 
+        for (MapObject object : map.getLayers().get("puerta").getObjects().getByType(RectangleMapObject.class)) {
+            define(object,FoxGame.END_GAME_BIT);
+        }
+
     }
 
     public ArrayList<Zarigueya> getZarigueyas(){

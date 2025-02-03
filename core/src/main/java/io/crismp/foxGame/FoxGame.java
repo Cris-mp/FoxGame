@@ -33,6 +33,7 @@ public class FoxGame extends Game {
     public static final short LADDER_BIT = 256; // 0000000100000000
     public static final short PINCHOS_BIT = 512; // 0000001000000000
     public static final short ITEM_BIT = 1024; // 0000010000000000
+    public static final short  END_GAME_BIT = 2048; // 0000100000000000
 
     public SpriteBatch batch;
 

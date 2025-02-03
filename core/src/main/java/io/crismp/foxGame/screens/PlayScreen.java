@@ -265,6 +265,10 @@ public class PlayScreen implements Screen {
             game.setScreen(new GameOverScreen(game));
             dispose();
         }
+        if (player.isEndGame()) {
+            game.setScreen(new FinalLevelScreen(game,this));
+            dispose();
+        }
     }
 
     public boolean gameOver() {

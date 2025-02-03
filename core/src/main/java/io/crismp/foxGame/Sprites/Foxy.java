@@ -63,6 +63,8 @@ public class Foxy extends Sprite {
 
 	public Texture img;
 
+	public boolean endGame;
+
 	public Boolean getOnLadder() {
 		return onLadder;
 	}
@@ -83,8 +85,10 @@ public class Foxy extends Sprite {
 		this.life = 6;
 		this.onLadder = false;
 		this.foxyIsHurt = false;
+		this.endGame=false;
 		enemiesInContact = new ArrayList<>();
 		pinchosInContact = new ArrayList<>();
+		
 
 		// animaciones
 		currenState = State.STANDING;
@@ -135,6 +139,14 @@ public class Foxy extends Sprite {
 		defineFoxy();
 		setBounds(0, 0, 16 / (FoxGame.PPM / 2), 16 / (FoxGame.PPM / 2));
 
+	}
+
+	public boolean isEndGame() {
+		return endGame;
+	}
+
+	public void setEndGame(boolean endGame) {
+		this.endGame = endGame;
 	}
 
 	public void update(float dt) {
@@ -250,8 +262,11 @@ public class Foxy extends Sprite {
 		CircleShape shape = new CircleShape();
 		shape.setRadius(5 / FoxGame.PPM);
 		fdef.filter.categoryBits = FoxGame.FOX_BIT;
-		fdef.filter.maskBits = FoxGame.GROUND_BIT | FoxGame.FLOOR_BIT | FoxGame.WALL_BIT | FoxGame.OBSTACLE_BIT
-				| FoxGame.ENEMY_BIT | FoxGame.PINCHOS_BIT | FoxGame.LADDER_BIT | FoxGame.ITEM_BIT| FoxGame.ENEMY_HEAD_BIT;
+		fdef.filter.maskBits = FoxGame.GROUND_BIT | FoxGame.FLOOR_BIT | 
+							   FoxGame.WALL_BIT | FoxGame.OBSTACLE_BIT| 
+							   FoxGame.ENEMY_BIT | FoxGame.PINCHOS_BIT | 
+							   FoxGame.LADDER_BIT | FoxGame.ITEM_BIT| 
+							   FoxGame.ENEMY_HEAD_BIT|FoxGame.END_GAME_BIT;
 		fdef.shape = shape;
 		body.createFixture(fdef).setUserData(this);
 		shape.setPosition(new Vector2(0, 8 / FoxGame.PPM));

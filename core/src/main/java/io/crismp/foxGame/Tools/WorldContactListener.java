@@ -23,7 +23,8 @@ public class WorldContactListener implements ContactListener {
         Fixture fixA = contact.getFixtureA();
         Fixture fixB = contact.getFixtureB();
         int cDef = fixA.getFilterData().categoryBits | fixB.getFilterData().categoryBits;
-        System.out.println("Colisión detectada: " + fixA.getFilterData().categoryBits + " con " + fixB.getFilterData().categoryBits);
+        System.out.println("Colisión detectada: " + fixA.getFilterData().categoryBits + " con "
+                + fixB.getFilterData().categoryBits);
         switch (cDef) {
             case FoxGame.FOX_BIT | FoxGame.ENEMY_HEAD_BIT:
                 if (fixA.getFilterData().categoryBits == FoxGame.ENEMY_HEAD_BIT)
@@ -90,8 +91,17 @@ public class WorldContactListener implements ContactListener {
                         ((Foxy) fixA.getUserData()).setOnLadder(true);
                     else
                         ((Foxy) fixB.getUserData()).setOnLadder(true);
-                    break;
                 }
+                break;
+            case FoxGame.FOX_BIT | FoxGame.END_GAME_BIT:
+                if (fixA.getFilterData().categoryBits == FoxGame.END_GAME_BIT ||
+                        fixB.getFilterData().categoryBits == FoxGame.END_GAME_BIT) {
+                    if (fixA.getFilterData().categoryBits == FoxGame.FOX_BIT)
+                        ((Foxy) fixA.getUserData()).setEndGame(true);
+                    else
+                        ((Foxy) fixB.getUserData()).setEndGame(true);
+                }
+                break;
             default:
                 break;
         }
