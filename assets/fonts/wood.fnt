@@ -30,7 +30,7 @@ char id=88   x=166 y=26  width=12  height=19  xoffset=0   yoffset=0   xadvance=1
 char id=89   x=1   y=51  width=12  height=19  xoffset=0   yoffset=0   xadvance=15  page=0  chnl=0  # Y
 char id=90   x=16  y=51  width=12  height=19  xoffset=0   yoffset=0   xadvance=15  page=0  chnl=0  # Z
 
-char id=49   x=31  y=51  width=12  height=19  xoffset=0   yoffset=0   xadvance=15  page=0  chnl=0  # 1
+char id=49   x=31  y=51  width=12  height=19  xoffset=0   yoffset=0   xadvance=10  page=0  chnl=0  # 1
 char id=50   x=46  y=51  width=12  height=19  xoffset=0   yoffset=0   xadvance=15  page=0  chnl=0  # 2
 char id=51   x=61  y=51  width=12  height=19  xoffset=0   yoffset=0   xadvance=15  page=0  chnl=0  # 3
 char id=52   x=76  y=51  width=12  height=19  xoffset=0   yoffset=0   xadvance=15  page=0  chnl=0  # 4

@@ -18,7 +18,7 @@ public class FinalLevelScreen implements Screen {
     private Viewport viewport;
     private Stage stage;
     private BitmapFont font;
-   
+
 
 
     private Game game;
@@ -39,7 +39,7 @@ public class FinalLevelScreen implements Screen {
 
         Label levelCompletedLbl = new Label("NIVEL COMPLETADO", labelStyle);
         Label lblCherries= new Label(String.format("%d Cerezas x 25 pts : %d", screen.getCherriesCollected(),screen.getCherriesCollected()*25), labelStyle);
-        Label lblGems= new Label(String.format("%d Gemas x 100 pts : %d", screen.getGemsCollected(),screen.getCherriesCollected()*100), labelStyle);
+        Label lblGems= new Label(String.format("%d Gemas x 100 pts : %d", screen.getGemsCollected(),screen.getGemsCollected()*100), labelStyle);
         Label lblTotal= new Label(String.format("Total: %d pts", (screen.getCherriesCollected()*25)+(screen.getCherriesCollected()*100)), labelStyle);
         Label playAgainLbl = new Label("Click to Play Again", labelStyle);
 
@@ -52,10 +52,9 @@ public class FinalLevelScreen implements Screen {
         table.add(lblTotal).expandX().padTop(10f);
         table.row();
         table.add(playAgainLbl).expandX().padTop(10f);
-
         stage.addActor(table);
     }
- 
+
     @Override
     public void show() {
     }
