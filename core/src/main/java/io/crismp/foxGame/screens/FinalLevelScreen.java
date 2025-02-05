@@ -62,7 +62,7 @@ public class FinalLevelScreen implements Screen {
     @Override
     public void render(float delta) {
         if(Gdx.input.justTouched()) {
-            game.setScreen(new PlayScreen((FoxGame) game));
+            game.setScreen(new MainMenuScreen((FoxGame) game));
             dispose();
         }
         Gdx.gl.glClearColor(0, 0, 0, 1);

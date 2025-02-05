@@ -5,7 +5,8 @@ package io.crismp.foxGame;
 import com.badlogic.gdx.Game;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 
-import io.crismp.foxGame.Screens.PlayScreen;
+import io.crismp.foxGame.Screens.MainMenuScreen;
+import io.crismp.foxGame.Tools.Assets;
 
 /**
  * {@link com.badlogic.gdx.ApplicationListener} implementation shared by all
@@ -33,18 +34,21 @@ public class FoxGame extends Game {
     public static final short LADDER_BIT = 256; // 0000000100000000
     public static final short PINCHOS_BIT = 512; // 0000001000000000
     public static final short ITEM_BIT = 1024; // 0000010000000000
-    public static final short  END_GAME_BIT = 2048; // 0000100000000000
+    public static final short END_GAME_BIT = 2048; // 0000100000000000
 
     public SpriteBatch batch;
 
     @Override
     public void create() {
         batch = new SpriteBatch();
-        setScreen(new PlayScreen(this));
+        Assets.load();//manager de asert
+        Assets.finishLoading();//manager de asert
+        setScreen(new MainMenuScreen(this));
     }
 
     @Override
     public void render() {
+        Assets.dispose();//manager de asert
         super.render();
     }
 
