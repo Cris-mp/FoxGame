@@ -26,6 +26,8 @@ import io.crismp.foxGame.Tools.WorldContactListener;
 
 public class PlayScreen implements Screen {
     private FoxGame game;
+
+
     private OrthographicCamera gamecam;
 
     // HUD
@@ -314,6 +316,10 @@ public class PlayScreen implements Screen {
 
         // bgTexture1.dispose();
         // bgTexture2.dispose();
+    }
+
+    public FoxGame getGame() {
+        return game;
     }
 
     // --------- Actualizar HUD--------------

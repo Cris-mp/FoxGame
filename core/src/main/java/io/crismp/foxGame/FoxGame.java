@@ -37,6 +37,7 @@ public class FoxGame extends Game {
     public static final short END_GAME_BIT = 2048; // 0000100000000000
 
     public SpriteBatch batch;
+    public boolean isVibrationOn=true;
 
     @Override
     public void create() {

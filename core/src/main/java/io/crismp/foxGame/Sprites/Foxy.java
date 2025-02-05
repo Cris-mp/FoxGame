@@ -1,6 +1,8 @@
 package io.crismp.foxGame.Sprites;
 
 import java.util.ArrayList;
+
+import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.graphics.g2d.Animation;
 import com.badlogic.gdx.graphics.g2d.Sprite;
@@ -88,7 +90,7 @@ public class Foxy extends Sprite {
 		this.endGame=false;
 		enemiesInContact = new ArrayList<>();
 		pinchosInContact = new ArrayList<>();
-		
+
 
 		// animaciones
 		currenState = State.STANDING;
@@ -240,6 +242,9 @@ public class Foxy extends Sprite {
 			foxyIsHurt = true;
 			hurtTimer = 0;
 			life--;
+            if(screen.getGame().isVibrationOn){
+                Gdx.input.vibrate(1000);
+            }
 			screen.restLife(life);
 			if (life <= 0) {
 				foxyIsDead = true;
@@ -262,10 +267,10 @@ public class Foxy extends Sprite {
 		CircleShape shape = new CircleShape();
 		shape.setRadius(5 / FoxGame.PPM);
 		fdef.filter.categoryBits = FoxGame.FOX_BIT;
-		fdef.filter.maskBits = FoxGame.GROUND_BIT | FoxGame.FLOOR_BIT | 
-							   FoxGame.WALL_BIT | FoxGame.OBSTACLE_BIT| 
-							   FoxGame.ENEMY_BIT | FoxGame.PINCHOS_BIT | 
-							   FoxGame.LADDER_BIT | FoxGame.ITEM_BIT| 
+		fdef.filter.maskBits = FoxGame.GROUND_BIT | FoxGame.FLOOR_BIT |
+							   FoxGame.WALL_BIT | FoxGame.OBSTACLE_BIT|
+							   FoxGame.ENEMY_BIT | FoxGame.PINCHOS_BIT |
+							   FoxGame.LADDER_BIT | FoxGame.ITEM_BIT|
 							   FoxGame.ENEMY_HEAD_BIT|FoxGame.END_GAME_BIT;
 		fdef.shape = shape;
 		body.createFixture(fdef).setUserData(this);

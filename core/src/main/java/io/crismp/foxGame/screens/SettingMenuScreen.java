@@ -27,7 +27,7 @@ public class SettingMenuScreen implements Screen {
     private Stage stage;
     private Texture backgroundTexture;
     private BitmapFont font;
-    private boolean isMusicOn = true, isSoundOn = true, isVibrationOn = true;
+    private boolean isMusicOn = true, isSoundOn = true;
     private ImageButton btnMusica, btnSonidos, btnVibracion;
     private SelectBox<String> selectIdioma;
 
@@ -65,10 +65,10 @@ public class SettingMenuScreen implements Screen {
         stage.addActor(btnMainMenu);
 
         // Botones de Música, Sonido y Vibración (Toggle)
-        btnMusica = createToggleButton("ui/musica.png", "ui/musica_pulsado.png", () -> isMusicOn = !isMusicOn);
-        btnSonidos = createToggleButton("ui/sonidos.png", "ui/sonidos_pulsado.png", () -> isSoundOn = !isSoundOn);
+        btnMusica = createToggleButton("ui/musica.png", "ui/musica_pulsado.png", () -> isMusicOn = !isMusicOn,false);//TODO:poner la booleana correcta;
+        btnSonidos = createToggleButton("ui/sonidos.png", "ui/sonidos_pulsado.png", () -> isSoundOn = !isSoundOn,false);
         btnVibracion = createToggleButton("ui/boton_p.png", "ui/boton_p_pulsado.png",
-                () -> isVibrationOn = !isVibrationOn);
+                () -> game.isVibrationOn = !game.isVibrationOn,game.isVibrationOn);
 
         // Cargar texturas para el fondo y la lista desplegable
         TextureRegionDrawable background = new TextureRegionDrawable(new Texture("ui/boton_cua.png"));
@@ -86,7 +86,7 @@ public class SettingMenuScreen implements Screen {
         selectIdioma = new SelectBox<>(selectBoxStyle);
         selectIdioma.setAlignment(Align.center); // Centrar el texto
         selectIdioma.getList().setAlignment(Align.center); // Centrar la lista de opciones
-        
+
         selectIdioma.setItems("Espanol", "Ingles");
         selectIdioma.setSelected("Español");
 
@@ -118,26 +118,35 @@ public class SettingMenuScreen implements Screen {
         btnMainMenu.addListener(new ClickListener() {
             @Override
             public void clicked(InputEvent event, float x, float y) {
-                game.setScreen(new MainMenuScreen(game)); 
+                game.setScreen(new MainMenuScreen(game));
             }
         });
+
+        btnVibracion.addListener(new ClickListener() {
+            @Override
+            public void clicked(InputEvent event, float x, float y) {
+
+            }
+        });
+
 
     }
 
     // Método para crear botones con estado ON/OFF
-    private ImageButton createToggleButton(String normalPath, String pressedPath, Runnable toggleAction) {
+    private ImageButton createToggleButton(String normalPath, String pressedPath, Runnable toggleAction, boolean isChecked) {
         Texture normalTexture = new Texture(normalPath);
         Texture pressedTexture = new Texture(pressedPath);
-
         TextureRegionDrawable normal = new TextureRegionDrawable(normalTexture);
         TextureRegionDrawable pressed = new TextureRegionDrawable(pressedTexture);
-
         ImageButton button = new ImageButton(normal, pressed);
+        button.setChecked(isChecked);
+
         button.addListener(new ClickListener() {
             @Override
             public void clicked(InputEvent event, float x, float y) {
                 toggleAction.run();
                 // Cambia la imagen manualmente en función del estado
+                System.out.println(game.isVibrationOn);
                 if (button.isChecked()) {
                     button.getStyle().imageUp = pressed;
                 } else {

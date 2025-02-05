@@ -42,7 +42,7 @@ public class VirtualJoystick {
 		touchpadStyle.knob = skin.getDrawable("Joystick_knob");
 
 		touchpad = new Touchpad(10, touchpadStyle);
-		table.add(touchpad).pad(10);
+		table.add(touchpad).size(400,400).pad(10);
 
 		upTexture = new Texture("joystick/boton.png");
 		downTexture = new Texture("joystick/botonPress.png");
