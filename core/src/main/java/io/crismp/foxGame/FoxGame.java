@@ -6,12 +6,7 @@ import com.badlogic.gdx.Game;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 
 import io.crismp.foxGame.Screens.MainMenuScreen;
-import io.crismp.foxGame.Tools.Assets;
-
-/**
- * {@link com.badlogic.gdx.ApplicationListener} implementation shared by all
- * platforms.
- */
+import io.crismp.foxGame.Tools.AssetsManager;
 
 public class FoxGame extends Game {
 
@@ -37,20 +32,24 @@ public class FoxGame extends Game {
     public static final short END_GAME_BIT = 2048; // 0000100000000000
 
     public SpriteBatch batch;
-    public boolean isVibrationOn=true;
+    public boolean isVibrationOn = true;
 
     @Override
     public void create() {
         batch = new SpriteBatch();
-        Assets.load();//manager de asert
-        Assets.finishLoading();//manager de asert
+        AssetsManager.load();
+        AssetsManager.finishLoading();
         setScreen(new MainMenuScreen(this));
     }
 
     @Override
     public void render() {
-        Assets.dispose();//manager de asert
         super.render();
+    }
+
+    public void dispose() {
+        super.render();
+        AssetsManager.dispose();// manager de asert
     }
 
 }

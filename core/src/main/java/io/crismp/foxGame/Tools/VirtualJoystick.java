@@ -35,8 +35,8 @@ public class VirtualJoystick {
 
 		// Joystick
 		skin = new Skin();
-		skin.add("Joystick_base", new Texture("joystick/Joystick.png"));
-		skin.add("Joystick_knob", new Texture("joystick/SmallHandleFilledGrey.png"));
+		skin.add("Joystick_base", AssetsManager.getTexture("joystick/Joystick.png"));
+		skin.add("Joystick_knob", AssetsManager.getTexture("joystick/SmallHandleFilledGrey.png"));
 		Touchpad.TouchpadStyle touchpadStyle = new TouchpadStyle();
 		touchpadStyle.background = skin.getDrawable("Joystick_base");
 		touchpadStyle.knob = skin.getDrawable("Joystick_knob");
@@ -44,8 +44,8 @@ public class VirtualJoystick {
 		touchpad = new Touchpad(10, touchpadStyle);
 		table.add(touchpad).size(400,400).pad(10);
 
-		upTexture = new Texture("joystick/boton.png");
-		downTexture = new Texture("joystick/botonPress.png");
+		upTexture = AssetsManager.getTexture("joystick/boton.png");
+		downTexture = AssetsManager.getTexture("joystick/botonPress.png");
 		jumpImage = new Image(upTexture);
 		jumpImage.setSize(100, 100);
 		jumpImage.addListener(new InputListener() {

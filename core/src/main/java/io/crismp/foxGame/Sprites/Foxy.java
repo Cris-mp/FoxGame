@@ -24,6 +24,7 @@ import io.crismp.foxGame.FoxGame;
 import io.crismp.foxGame.Screens.PlayScreen;
 import io.crismp.foxGame.Sprites.enemies.Enemy;
 import io.crismp.foxGame.Sprites.tileObjects.Pinchos;
+import io.crismp.foxGame.Tools.AssetsManager;
 
 
 
@@ -76,7 +77,7 @@ public class Foxy extends Sprite {
 	}
 
 	public Foxy(PlayScreen screen) {
-		super(new Texture("player/zorritoExtendido.png"), 16, 16);
+		super(AssetsManager.getTexture("player/zorrito.png"), 16, 16);
 		this.screen = screen;
 		this.world = screen.getWorld();
 		this.map = screen.getMap();

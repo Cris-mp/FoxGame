@@ -2,7 +2,6 @@ package io.crismp.foxGame.Scenes;
 
 import java.util.ArrayList;
 
-import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.graphics.OrthographicCamera;
 import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.graphics.g2d.BitmapFont;
@@ -17,6 +16,7 @@ import com.badlogic.gdx.utils.viewport.FitViewport;
 import com.badlogic.gdx.utils.viewport.Viewport;
 
 import io.crismp.foxGame.FoxGame;
+import io.crismp.foxGame.Tools.AssetsManager;
 
 public class Hud implements Disposable {
     public Stage stage;
@@ -39,15 +39,15 @@ public class Hud implements Disposable {
 
     public Hud(SpriteBatch sb) {
 
-        Texture heart = new Texture("heart.png");
+        Texture heart = AssetsManager.getTexture("hud/heart.png");
         heartArray = new ArrayList<Image>();
         for (int i = 6; i >= 0; i--) {
             heartArray.add(new Image(new TextureRegion(heart, 0, i * 11, heart.getWidth(), heart.getHeight() / 7)));
         }
-        cherry = (new Image(new TextureRegion(new Texture("items/cherry.png"), 0, 0, 21, 21)));
-        gem = (new Image(new TextureRegion(new Texture("items/gem.png"), 0, 0, 15, 15)));
+        cherry = (new Image(new TextureRegion(AssetsManager.getTexture("items/cherry.png"), 0, 0, 21, 21)));
+        gem = (new Image(new TextureRegion(AssetsManager.getTexture("items/gem.png"), 0, 0, 15, 15)));
 
-        font = new BitmapFont(Gdx.files.internal("fonts/wood.fnt"));
+        font = AssetsManager.getFont("fonts/wood.fnt");
         font.getData().setScale(1.2f);
         Label.LabelStyle labelStyle = new Label.LabelStyle();
         labelStyle.font = font;
@@ -95,8 +95,6 @@ public class Hud implements Disposable {
             leftTable.clearChildren(); // Borra los elementos previos de la tabla izquierda
             leftTable.add(heartArray.get(life)).size(99, 25).pad(5).left(); // Añade el nuevo corazón
         }
-       
-
     }
 
     @Override

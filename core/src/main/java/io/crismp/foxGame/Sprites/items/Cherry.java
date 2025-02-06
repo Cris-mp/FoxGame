@@ -13,6 +13,7 @@ import com.badlogic.gdx.utils.Array;
 import io.crismp.foxGame.FoxGame;
 import io.crismp.foxGame.Screens.PlayScreen;
 import io.crismp.foxGame.Sprites.Foxy;
+import io.crismp.foxGame.Tools.AssetsManager;
 
 public class Cherry extends Item {
 
@@ -20,11 +21,11 @@ public class Cherry extends Item {
     private Texture cherryTexture;
     private float stateTime;
     private Fixture fixture;
-    
+
     public Cherry(PlayScreen screen, Rectangle rect) {
         super(screen, rect);
 
-        cherryTexture = new Texture("items/cherry.png");
+        cherryTexture = AssetsManager.getTexture("items/cherry.png");
         Array<TextureRegion> frames = new Array<TextureRegion>();
         for (int i = 0; i < 5; i++) {
             frames.add(new TextureRegion(cherryTexture, i * 21, 0, cherryTexture.getWidth() / 5,
@@ -53,7 +54,7 @@ public class Cherry extends Item {
         PolygonShape shape = new PolygonShape();
         shape.setAsBox(5 / FoxGame.PPM, 5 / FoxGame.PPM);
         fdef.filter.categoryBits = FoxGame.ITEM_BIT;
-        fdef.filter.maskBits = FoxGame.FOX_BIT; 
+        fdef.filter.maskBits = FoxGame.FOX_BIT;
 
         fdef.shape = shape;
         fixture=body.createFixture(fdef);

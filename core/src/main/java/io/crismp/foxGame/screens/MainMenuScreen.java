@@ -18,6 +18,7 @@ import com.badlogic.gdx.utils.viewport.FitViewport;
 import com.badlogic.gdx.utils.viewport.Viewport;
 
 import io.crismp.foxGame.FoxGame;
+import io.crismp.foxGame.Tools.AssetsManager;
 
 public class MainMenuScreen implements Screen {
     private FoxGame game;
@@ -35,18 +36,18 @@ public class MainMenuScreen implements Screen {
         stage = new Stage(viewport, game.batch);
         Gdx.input.setInputProcessor(stage);
 
-        font = new BitmapFont(Gdx.files.internal("fonts/wood.fnt"));
+        font = AssetsManager.getFont("fonts/wood.fnt");
         font.getData().setScale(1.15f);
 
-        backgroundTexture = new Texture("ui/background.png");
-        titleTexture = new Texture("ui/title.png");
+        backgroundTexture = AssetsManager.getTexture("ui/background.png");
+        titleTexture = AssetsManager.getTexture("ui/title.png");
 
-        btnNormal = new TextureRegionDrawable(new Texture("ui/boton.png"));
-        btnPressed = new TextureRegionDrawable(new Texture("ui/boton_pulsado.png"));
-        iconoOpciones = new TextureRegionDrawable(new Texture("ui/opciones.png"));
-        iconoOpcionesPulsado = new TextureRegionDrawable(new Texture("ui/opciones_pulsado.png"));
-        iconoRecords = new TextureRegionDrawable(new Texture("ui/records.png"));
-        iconoRecordsPulsado = new TextureRegionDrawable(new Texture("ui/records_pulsado.png"));
+        btnNormal = new TextureRegionDrawable(AssetsManager.getTexture("ui/boton.png"));
+        btnPressed = new TextureRegionDrawable(AssetsManager.getTexture("ui/boton_pulsado.png"));
+        iconoOpciones = new TextureRegionDrawable(AssetsManager.getTexture("ui/opciones.png"));
+        iconoOpcionesPulsado = new TextureRegionDrawable(AssetsManager.getTexture("ui/opciones_pulsado.png"));
+        iconoRecords = new TextureRegionDrawable(AssetsManager.getTexture("ui/records.png"));
+        iconoRecordsPulsado = new TextureRegionDrawable(AssetsManager.getTexture("ui/records_pulsado.png"));
 
         TextButton.TextButtonStyle estiloBoton = new TextButton.TextButtonStyle();
         estiloBoton.font = font;
@@ -112,7 +113,7 @@ public class MainMenuScreen implements Screen {
         btnOpciones.addListener(new ClickListener() {
             @Override
             public void clicked(InputEvent event, float x, float y) {
-                game.setScreen(new SettingMenuScreen(game)); 
+                game.setScreen(new SettingMenuScreen(game));
             }
         });
 

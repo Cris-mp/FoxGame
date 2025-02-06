@@ -21,6 +21,7 @@ import com.badlogic.gdx.utils.Align;
 import com.badlogic.gdx.utils.viewport.FitViewport;
 
 import io.crismp.foxGame.FoxGame;
+import io.crismp.foxGame.Tools.AssetsManager;
 
 public class SettingMenuScreen implements Screen {
     private FoxGame game;
@@ -39,10 +40,10 @@ public class SettingMenuScreen implements Screen {
         Gdx.input.setInputProcessor(stage);
 
         // Fondo del menú
-        backgroundTexture = new Texture("ui/background.png");
+        backgroundTexture = AssetsManager.getTexture("ui/background.png");
 
         // Fuente
-        font = new BitmapFont(Gdx.files.internal("fonts/wood.fnt"));
+        font = AssetsManager.getFont("fonts/wood.fnt");
         font.getData().setScale(0.8f);
         Label.LabelStyle labelStyle = new Label.LabelStyle();
         labelStyle.font = font;
@@ -53,8 +54,8 @@ public class SettingMenuScreen implements Screen {
         Label lblMusica = new Label("MUSICA", labelStyle);
         Label lblSonidos = new Label("SONIDOS", labelStyle);
         Label lblVibracion = new Label("VIBRACION", labelStyle);
-        iconoMainMenu = new TextureRegionDrawable(new Texture("ui/mainMenu.png"));
-        iconoMainMenuPulsado = new TextureRegionDrawable(new Texture("ui/mainMenu_pulsado.png"));
+        iconoMainMenu = new TextureRegionDrawable(AssetsManager.getTexture("ui/mainMenu.png"));
+        iconoMainMenuPulsado = new TextureRegionDrawable(AssetsManager.getTexture("ui/mainMenu_pulsado.png"));
         ImageButton.ImageButtonStyle estiloMainMenu = new ImageButton.ImageButtonStyle();
         estiloMainMenu.imageUp = iconoMainMenu;
         estiloMainMenu.imageDown = iconoMainMenuPulsado;
@@ -80,7 +81,7 @@ public class SettingMenuScreen implements Screen {
         selectBoxStyle.listStyle = new List.ListStyle();
         selectBoxStyle.listStyle.font = font;
         selectBoxStyle.listStyle.background = listBackground;
-        selectBoxStyle.listStyle.selection = new TextureRegionDrawable(new Texture("ui/boton_cua.png"));
+        selectBoxStyle.listStyle.selection = new TextureRegionDrawable(AssetsManager.getTexture("ui/boton_cua.png"));
         selectBoxStyle.scrollStyle = new ScrollPane.ScrollPaneStyle();
         // SelectBox para el idioma
         selectIdioma = new SelectBox<>(selectBoxStyle);
@@ -97,7 +98,7 @@ public class SettingMenuScreen implements Screen {
         btnAyuda.padBottom(8);
 
         // Tabla para organizar los elementos
-        Table table = new Table().background(new TextureRegionDrawable(new Texture("ui/backSettings.png")));
+        Table table = new Table().background(new TextureRegionDrawable(AssetsManager.getTexture("ui/backSettings.png")));
         table.setSize(FoxGame.V_WIDTH * 0.9f, FoxGame.V_HEIGHT * 1.7f);
         table.setPosition((FoxGame.V_WIDTH / 2)+25, 30);
         table.add(lblOpciones).colspan(2).row();
@@ -134,8 +135,8 @@ public class SettingMenuScreen implements Screen {
 
     // Método para crear botones con estado ON/OFF
     private ImageButton createToggleButton(String normalPath, String pressedPath, Runnable toggleAction, boolean isChecked) {
-        Texture normalTexture = new Texture(normalPath);
-        Texture pressedTexture = new Texture(pressedPath);
+        Texture normalTexture = AssetsManager.getTexture(normalPath);
+        Texture pressedTexture = AssetsManager.getTexture(pressedPath);
         TextureRegionDrawable normal = new TextureRegionDrawable(normalTexture);
         TextureRegionDrawable pressed = new TextureRegionDrawable(pressedTexture);
         ImageButton button = new ImageButton(normal, pressed);
@@ -161,8 +162,8 @@ public class SettingMenuScreen implements Screen {
     private TextButton createTextButton(String text) {
         TextButton.TextButtonStyle estilo = new TextButton.TextButtonStyle();
         estilo.font = font;
-        estilo.up = new TextureRegionDrawable(new Texture("ui/boton.png"));
-        estilo.down = new TextureRegionDrawable(new Texture("ui/boton_pulsado.png"));
+        estilo.up = new TextureRegionDrawable(AssetsManager.getTexture("ui/boton.png"));
+        estilo.down = new TextureRegionDrawable(AssetsManager.getTexture("ui/boton_pulsado.png"));
         return new TextButton(text, estilo);
     }
 

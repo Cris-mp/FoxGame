@@ -7,13 +7,13 @@ import com.badlogic.gdx.graphics.g2d.TextureRegion;
 import com.badlogic.gdx.math.Rectangle;
 import com.badlogic.gdx.math.Vector2;
 import com.badlogic.gdx.physics.box2d.BodyDef;
-import com.badlogic.gdx.physics.box2d.Fixture;
 import com.badlogic.gdx.physics.box2d.FixtureDef;
 import com.badlogic.gdx.physics.box2d.PolygonShape;
 import com.badlogic.gdx.utils.Array;
 
 import io.crismp.foxGame.FoxGame;
 import io.crismp.foxGame.Screens.PlayScreen;
+import io.crismp.foxGame.Tools.AssetsManager;
 
 public class Zarigueya extends Enemy {
     public enum State {
@@ -36,17 +36,18 @@ public class Zarigueya extends Enemy {
         super(screen, rect);
 
         // --walk----
-        walk = new Texture("enemies/opossum.png");
+        walk = AssetsManager.getTexture("enemies/opossum.png");
         Array<TextureRegion> frames = new Array<TextureRegion>();
         for (int i = 0; i < 6; i++) {
             frames.add(new TextureRegion(walk, i * 36, 0, walk.getWidth() / 6, walk.getHeight()));
         }
         zarWalk = new Animation<>(0.1f, frames);
         frames.clear();
+
         // --dead----
-        dead = new Texture("enemies/enemy-deadth.png");
+        dead = AssetsManager.getTexture("enemies/enemy-deadth.png");
         for (int i = 0; i < 6; i++) {
-            frames.add(new TextureRegion(new Texture("enemies/enemy-deadth.png"), i * 40, 0, dead.getWidth() / 6,
+            frames.add(new TextureRegion(dead, i * 40, 0, dead.getWidth() / 6,
                     dead.getHeight()));
         }
         zarDead = new Animation<>(0.1f, frames);
@@ -82,10 +83,10 @@ public class Zarigueya extends Enemy {
         PolygonShape shape = new PolygonShape();
         shape.setAsBox(12 / FoxGame.PPM, 4 / FoxGame.PPM);
         fdef.filter.categoryBits = FoxGame.ENEMY_BIT;
-        fdef.filter.maskBits = FoxGame.GROUND_BIT
-                | FoxGame.FLOOR_BIT | FoxGame.WALL_BIT
-                | FoxGame.OBSTACLE_BIT | FoxGame.LADDER_BIT
-                | FoxGame.FOX_BIT | FoxGame.PINCHOS_BIT;
+        fdef.filter.maskBits = FoxGame.GROUND_BIT | FoxGame.FLOOR_BIT |
+                               FoxGame.WALL_BIT | FoxGame.OBSTACLE_BIT |
+                               FoxGame.LADDER_BIT | FoxGame.FOX_BIT |
+                               FoxGame.PINCHOS_BIT;
         fdef.shape = shape;
         fdef.density = 200f; // 🔥 Aumentar densidad para evitar que Foxy lo mueva
         fdef.friction = 2f; // 🔥 Aumentar fricción para que no resbale
@@ -99,16 +100,11 @@ public class Zarigueya extends Enemy {
         vertice[2] = new Vector2(-3, 3).scl(1 / FoxGame.PPM);
         vertice[3] = new Vector2(0, 3).scl(1 / FoxGame.PPM);
         head.set(vertice);
-        fdef.shape = head; 
+        fdef.shape = head;
         fdef.restitution = 1f;
         fdef.filter.categoryBits = FoxGame.ENEMY_HEAD_BIT;
         fdef.filter.maskBits = FoxGame.FOX_BIT;
         body.createFixture(fdef).setUserData(this);
-
-        for (Fixture fixture : body.getFixtureList()) {
-    System.out.println("Fixture creado con categoryBits: " + fixture.getFilterData().categoryBits);
-}
-
     }
 
     public void draw(Batch batch) {
@@ -119,7 +115,6 @@ public class Zarigueya extends Enemy {
 
     @Override
     public void hitOnHead() {
-        System.out.println("¡Enemigo golpeado en la cabeza!");
         setToDestroy = true;
     }
 
@@ -143,6 +138,7 @@ public class Zarigueya extends Enemy {
             region.flip(true, false);
             runRight = true;
         }
+
         return region;
     }
 
