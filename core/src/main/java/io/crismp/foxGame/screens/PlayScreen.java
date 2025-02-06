@@ -1,6 +1,7 @@
 package io.crismp.foxGame.Screens;
 
 import com.badlogic.gdx.Application.ApplicationType;
+import com.badlogic.gdx.audio.Music;
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.Input;
 import com.badlogic.gdx.Screen;
@@ -20,13 +21,14 @@ import io.crismp.foxGame.Sprites.Foxy;
 import io.crismp.foxGame.Sprites.enemies.Enemy;
 import io.crismp.foxGame.Sprites.items.Cherry;
 import io.crismp.foxGame.Sprites.items.Gem;
+import io.crismp.foxGame.Tools.AssetsManagerAudio;
 import io.crismp.foxGame.Tools.B2WorldCreator;
+import io.crismp.foxGame.Tools.GamePreferences;
 import io.crismp.foxGame.Tools.VirtualJoystick;
 import io.crismp.foxGame.Tools.WorldContactListener;
 
 public class PlayScreen implements Screen {
     private FoxGame game;
-
 
     private OrthographicCamera gamecam;
 
@@ -52,6 +54,8 @@ public class PlayScreen implements Screen {
     VirtualJoystick joystick;
     float accumulator;
     float timeStep;
+
+    private Music music;
 
     // Parallax
     // private ParallaxLayer backgroundLayer1;
@@ -95,6 +99,13 @@ public class PlayScreen implements Screen {
 
         world.setContactListener(new WorldContactListener());
 
+        // music = AssetsManagerAudio.getMusic("audio/music/exploration.ogg");
+        // music.setLooping(true);
+        // music.setVolume(GamePreferences.getMusicVolume()); // Aplica el volumen guardado
+        // if (GamePreferences.getMusicVolume() > 0) {
+        //     music.play(); // Solo reproduce si el volumen es mayor a 0
+        // }
+
         // // Cargar texturas del fondo
         // bgTexture1 = new Texture("maps/back.png");
         // bgTexture2 = new Texture("maps/middle.png");
@@ -118,7 +129,13 @@ public class PlayScreen implements Screen {
 
     @Override
     public void show() {
+        music = AssetsManagerAudio.getMusic("audio/music/exploration.ogg"); // 🔥 Se vuelve a cargar
+        music.setLooping(true);
+        music.setVolume(GamePreferences.getMusicVolume());
 
+        if (GamePreferences.getMusicVolume() > 0) {
+            music.play();
+        }
     }
 
     public void handleInput(float dt) {
@@ -268,7 +285,7 @@ public class PlayScreen implements Screen {
             dispose();
         }
         if (player.isEndGame()) {
-            game.setScreen(new FinalLevelScreen(game,this));
+            game.setScreen(new FinalLevelScreen(game, this));
             dispose();
         }
     }
@@ -313,6 +330,8 @@ public class PlayScreen implements Screen {
         world.dispose();
         b2dr.dispose();
         hud.dispose();
+
+       music.stop();
 
         // bgTexture1.dispose();
         // bgTexture2.dispose();

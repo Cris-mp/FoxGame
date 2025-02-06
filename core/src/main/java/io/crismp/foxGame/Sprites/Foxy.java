@@ -25,6 +25,7 @@ import io.crismp.foxGame.Screens.PlayScreen;
 import io.crismp.foxGame.Sprites.enemies.Enemy;
 import io.crismp.foxGame.Sprites.tileObjects.Pinchos;
 import io.crismp.foxGame.Tools.AssetsManager;
+import io.crismp.foxGame.Tools.GamePreferences;
 
 
 
@@ -243,7 +244,7 @@ public class Foxy extends Sprite {
 			foxyIsHurt = true;
 			hurtTimer = 0;
 			life--;
-            if(screen.getGame().isVibrationOn){
+            if(GamePreferences.isVibrationEnabled() && !foxyIsDead){
                 Gdx.input.vibrate(1000);
             }
 			screen.restLife(life);

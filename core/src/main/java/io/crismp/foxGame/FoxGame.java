@@ -3,10 +3,13 @@
 package io.crismp.foxGame;
 
 import com.badlogic.gdx.Game;
+import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 
-import io.crismp.foxGame.Screens.MainMenuScreen;
+import io.crismp.foxGame.Screens.SplashScreen;
+import io.crismp.foxGame.Tools.AssetsManagerAudio;
 import io.crismp.foxGame.Tools.AssetsManager;
+import io.crismp.foxGame.Tools.GamePreferences;
 
 public class FoxGame extends Game {
 
@@ -32,14 +35,20 @@ public class FoxGame extends Game {
     public static final short END_GAME_BIT = 2048; // 0000100000000000
 
     public SpriteBatch batch;
-    public boolean isVibrationOn = true;
 
     @Override
     public void create() {
         batch = new SpriteBatch();
         AssetsManager.load();
+        AssetsManagerAudio.load();
         AssetsManager.finishLoading();
-        setScreen(new MainMenuScreen(this));
+        AssetsManagerAudio.finishLoading();
+        
+        // Cargar preferencias del juego
+        GamePreferences.load();
+       
+
+        Gdx.app.postRunnable(() -> setScreen(new SplashScreen(this)));
     }
 
     @Override
@@ -50,6 +59,8 @@ public class FoxGame extends Game {
     public void dispose() {
         super.render();
         AssetsManager.dispose();// manager de asert
+        AssetsManagerAudio.dispose();
+        batch.dispose();
     }
 
 }

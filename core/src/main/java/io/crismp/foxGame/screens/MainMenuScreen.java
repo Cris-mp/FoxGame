@@ -106,7 +106,9 @@ public class MainMenuScreen implements Screen {
         btnSalir.addListener(new ClickListener() {
             @Override
             public void clicked(InputEvent event, float x, float y) {
+                System.exit(0);
                 Gdx.app.exit();
+
             }
         });
 
