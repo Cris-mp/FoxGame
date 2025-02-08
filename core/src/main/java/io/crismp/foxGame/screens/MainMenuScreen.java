@@ -32,6 +32,7 @@ public class MainMenuScreen implements Screen {
 
     public MainMenuScreen(FoxGame game) {
         this.game = game;
+        game.playMusic("audio/music/joyful.ogg",true);
         viewport = new FitViewport(FoxGame.V_WIDTH * 2, FoxGame.V_HEIGHT * 2, new OrthographicCamera());
         stage = new Stage(viewport, game.batch);
         Gdx.input.setInputProcessor(stage);
@@ -92,6 +93,7 @@ public class MainMenuScreen implements Screen {
         btnJugar.addListener(new ClickListener() {
             @Override
             public void clicked(InputEvent event, float x, float y) {
+                game.playSound(game.clickSound);
                 game.setScreen(new PlayScreen(game));
             }
         });
@@ -99,6 +101,7 @@ public class MainMenuScreen implements Screen {
         btnTutorial.addListener(new ClickListener() {
             @Override
             public void clicked(InputEvent event, float x, float y) {
+                game.playSound(game.clickSound);
                 game.setScreen(new PlayScreen(game)); // Aquí puedes poner la pantalla de opciones si tienes una
             }
         });
@@ -106,6 +109,7 @@ public class MainMenuScreen implements Screen {
         btnSalir.addListener(new ClickListener() {
             @Override
             public void clicked(InputEvent event, float x, float y) {
+                game.playSound(game.clickSound);
                 System.exit(0);
                 Gdx.app.exit();
 
@@ -115,6 +119,7 @@ public class MainMenuScreen implements Screen {
         btnOpciones.addListener(new ClickListener() {
             @Override
             public void clicked(InputEvent event, float x, float y) {
+                game.playSound(game.clickSound);
                 game.setScreen(new SettingMenuScreen(game));
             }
         });
@@ -122,6 +127,7 @@ public class MainMenuScreen implements Screen {
         btnRecords.addListener(new ClickListener() {
             @Override
             public void clicked(InputEvent event, float x, float y) {
+                game.playSound(game.clickSound);
                 game.setScreen(new PlayScreen(game)); // Aquí puedes poner la pantalla de récords si tienes una
             }
         });

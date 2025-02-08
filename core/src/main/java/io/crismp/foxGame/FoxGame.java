@@ -4,6 +4,8 @@ package io.crismp.foxGame;
 
 import com.badlogic.gdx.Game;
 import com.badlogic.gdx.Gdx;
+import com.badlogic.gdx.audio.Music;
+import com.badlogic.gdx.audio.Sound;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 
 import io.crismp.foxGame.Screens.SplashScreen;
@@ -35,6 +37,8 @@ public class FoxGame extends Game {
     public static final short END_GAME_BIT = 2048; // 0000100000000000
 
     public SpriteBatch batch;
+    private Music currentMusic; // Para evitar reinicios innecesarios de la música
+    public Sound clickSound, clickSound2, clickSound3;
 
     @Override
     public void create() {
@@ -43,12 +47,60 @@ public class FoxGame extends Game {
         AssetsManagerAudio.load();
         AssetsManager.finishLoading();
         AssetsManagerAudio.finishLoading();
-        
+
         // Cargar preferencias del juego
         GamePreferences.load();
-       
+
+        clickSound = AssetsManagerAudio.getSound("audio/sounds/ui/Wood1.wav");
+        clickSound2 = AssetsManagerAudio.getSound("audio/sounds/ui/Wood2.wav");
+        clickSound3 = AssetsManagerAudio.getSound("audio/sounds/ui/Wood3.wav");
 
         Gdx.app.postRunnable(() -> setScreen(new SplashScreen(this)));
+    }
+
+    public void playMusic(String musicPath, boolean loop) {
+        Music newMusic = AssetsManagerAudio.getMusic(musicPath);
+
+        // Si es la misma música, solo actualizar volumen
+        if (currentMusic == newMusic) {
+            updateMusicVolume();
+            return;
+        }
+
+        // Detener la música anterior si hay alguna
+        if (currentMusic != null) {
+            currentMusic.stop();
+            currentMusic.dispose();
+        }
+
+        // Configurar nueva música
+        currentMusic = newMusic;
+        currentMusic.setLooping(loop);
+        updateMusicVolume(); // 📌 Aplica el volumen correcto
+
+        if (GamePreferences.getMusicVolume() > 0) {
+            currentMusic.play();
+        }
+    }
+
+    public void updateMusicVolume() {
+        if (currentMusic != null) {
+            float volume = GamePreferences.getMusicVolume();
+            currentMusic.setVolume(volume);
+
+            // Si el volumen es 0, pausar la música; si es mayor, reanudarla
+            if (volume == 0) {
+                currentMusic.pause();
+            } else if (!currentMusic.isPlaying()) {
+                currentMusic.play();
+            }
+        }
+    }
+
+    public void playSound(Sound sound) {
+        if (GamePreferences.getSoundVolume() > 0) {
+            sound.play(GamePreferences.getSoundVolume());
+        }
     }
 
     @Override
@@ -57,9 +109,12 @@ public class FoxGame extends Game {
     }
 
     public void dispose() {
-        super.render();
-        AssetsManager.dispose();// manager de asert
+        super.dispose();
+        AssetsManager.dispose();
         AssetsManagerAudio.dispose();
+        if (currentMusic != null) {
+            currentMusic.dispose();
+        }
         batch.dispose();
     }
 

@@ -1,7 +1,6 @@
 package io.crismp.foxGame.Screens;
 
 import com.badlogic.gdx.Application.ApplicationType;
-import com.badlogic.gdx.audio.Music;
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.Input;
 import com.badlogic.gdx.Screen;
@@ -21,9 +20,7 @@ import io.crismp.foxGame.Sprites.Foxy;
 import io.crismp.foxGame.Sprites.enemies.Enemy;
 import io.crismp.foxGame.Sprites.items.Cherry;
 import io.crismp.foxGame.Sprites.items.Gem;
-import io.crismp.foxGame.Tools.AssetsManagerAudio;
 import io.crismp.foxGame.Tools.B2WorldCreator;
-import io.crismp.foxGame.Tools.GamePreferences;
 import io.crismp.foxGame.Tools.VirtualJoystick;
 import io.crismp.foxGame.Tools.WorldContactListener;
 
@@ -55,8 +52,6 @@ public class PlayScreen implements Screen {
     float accumulator;
     float timeStep;
 
-    private Music music;
-
     // Parallax
     // private ParallaxLayer backgroundLayer1;
     // private ParallaxLayer backgroundLayer2;
@@ -72,6 +67,7 @@ public class PlayScreen implements Screen {
         this.game = game;
         this.joystick = new VirtualJoystick(0, 0, 2, 1);
         gamecam = new OrthographicCamera();
+        game.playMusic("audio/music/exploration.ogg",true);
 
         // mantiene el ratio de aspecto virtual a pesar de la pantalla
         gamePort = new FitViewport(FoxGame.V_WIDTH / FoxGame.PPM, FoxGame.V_HEIGHT / FoxGame.PPM, gamecam);
@@ -129,13 +125,7 @@ public class PlayScreen implements Screen {
 
     @Override
     public void show() {
-        music = AssetsManagerAudio.getMusic("audio/music/exploration.ogg"); // 🔥 Se vuelve a cargar
-        music.setLooping(true);
-        music.setVolume(GamePreferences.getMusicVolume());
-
-        if (GamePreferences.getMusicVolume() > 0) {
-            music.play();
-        }
+        
     }
 
     public void handleInput(float dt) {
@@ -330,8 +320,6 @@ public class PlayScreen implements Screen {
         world.dispose();
         b2dr.dispose();
         hud.dispose();
-
-       music.stop();
 
         // bgTexture1.dispose();
         // bgTexture2.dispose();

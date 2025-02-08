@@ -10,8 +10,7 @@ import com.badlogic.gdx.scenes.scene2d.ui.Image;
 import com.badlogic.gdx.utils.viewport.FitViewport;
 import io.crismp.foxGame.FoxGame;
 import io.crismp.foxGame.Tools.AssetsManager;
-import io.crismp.foxGame.Tools.AssetsManagerAudio;
-import io.crismp.foxGame.Tools.GamePreferences;
+
 
 public class SplashScreen implements Screen {
     private FoxGame game;
@@ -36,13 +35,7 @@ public class SplashScreen implements Screen {
         pressImage.setScale(0.5f);
         pressImage.setPosition((stage.getWidth() - (pressImage.getWidth() / 2)) / 2, 50);
         stage.addActor(pressImage);
-        // music = AssetsManagerAudio.getMusic("audio/music/joyful.ogg");
-        // music.setLooping(true);
-        // music.setVolume(GamePreferences.getMusicVolume());
-
-        // if (GamePreferences.getMusicVolume() > 0) {
-        //     music.play();
-        // }
+        game.playMusic("audio/music/joyful.ogg",true);
     }
 
     @Override

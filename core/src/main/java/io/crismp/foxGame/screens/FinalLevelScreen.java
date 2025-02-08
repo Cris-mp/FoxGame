@@ -23,10 +23,11 @@ public class FinalLevelScreen implements Screen {
 
     private Game game;
 
-      public FinalLevelScreen(Game game, PlayScreen screen){
+      public FinalLevelScreen(FoxGame game, PlayScreen screen){
         this.game = game;
         viewport = new FitViewport(FoxGame.V_WIDTH, FoxGame.V_HEIGHT, new OrthographicCamera());
         stage = new Stage(viewport, ((FoxGame) game).batch);
+        game.playMusic("audio/music/Victorious.ogg",false);
 
         font = new BitmapFont(Gdx.files.internal("fonts/wood.fnt"));
         font.getData().setScale(1f);

@@ -10,7 +10,11 @@ public class AssetsManagerAudio {
     public static void load() {
         manager.load("audio/music/exploration.ogg", Music.class);
         manager.load("audio/music/joyful.ogg", Music.class);
-        //manager.load("audio/jump.wav", Sound.class);
+        manager.load("audio/music/To Suffer a Loss (Game Over).ogg", Music.class);
+        manager.load("audio/music/Victorious.ogg", Music.class);
+        manager.load("audio/sounds/ui/Wood1.wav", Sound.class);
+        manager.load("audio/sounds/ui/Wood2.wav", Sound.class);
+        manager.load("audio/sounds/ui/Wood3.wav", Sound.class);
         
     }
     public static void finishLoading() {

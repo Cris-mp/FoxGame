@@ -21,10 +21,11 @@ public class GameOverScreen implements Screen{
 
     private Game game;
 
-      public GameOverScreen(Game game){
+      public GameOverScreen(FoxGame game){
         this.game = game;
         viewport = new FitViewport(FoxGame.V_WIDTH, FoxGame.V_HEIGHT, new OrthographicCamera());
         stage = new Stage(viewport, ((FoxGame) game).batch);
+        game.playMusic("audio/music/To Suffer a Loss (Game Over).ogg",false);
 
         font = new BitmapFont(Gdx.files.internal("fonts/wood.fnt"));
         font.getData().setScale(1f);

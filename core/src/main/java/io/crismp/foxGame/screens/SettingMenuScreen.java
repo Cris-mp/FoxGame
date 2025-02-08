@@ -40,6 +40,8 @@ public class SettingMenuScreen implements Screen {
         isMusicOn = GamePreferences.getMusicVolume() > 0;
         isSoundOn = GamePreferences.getSoundVolume() > 0;
 
+        game.playMusic("audio/music/joyful.ogg",true);
+
         stage = new Stage(new FitViewport(FoxGame.V_WIDTH * 2, FoxGame.V_HEIGHT * 2, new OrthographicCamera()));
         Gdx.input.setInputProcessor(stage);
 
@@ -126,6 +128,7 @@ public class SettingMenuScreen implements Screen {
         button.addListener(new ClickListener() {
             @Override
             public void clicked(InputEvent event, float x, float y) {
+                game.playSound(game.clickSound3);
                 toggleAction.run();
                 boolean newState = button.isChecked();
                 button.getStyle().imageUp = newState ? normal : pressed;
@@ -154,6 +157,7 @@ public class SettingMenuScreen implements Screen {
         button.addListener(new ClickListener() {
             @Override
             public void clicked(InputEvent event, float x, float y) {
+                game.playSound(game.clickSound);
                 action.run();
             }
         });
@@ -175,6 +179,7 @@ public class SettingMenuScreen implements Screen {
         button.addListener(new ClickListener() {
             @Override
             public void clicked(InputEvent event, float x, float y) {
+                game.playSound(game.clickSound);
                 action.run();
             }
         });
@@ -193,11 +198,13 @@ public class SettingMenuScreen implements Screen {
         slider.addListener(new ChangeListener() {
             @Override
             public void changed(ChangeEvent event, Actor actor) {
+                game.playSound(game.clickSound2);
                 float value = slider.getValue();
 
                 if (isMusic) {
                     musicVolume = value;
                     GamePreferences.setMusicVolume(value);
+                    game.updateMusicVolume();
                     System.out.println("Volumen guardado: " + value);
                 } else {
                     soundVolume = value;
@@ -211,6 +218,7 @@ public class SettingMenuScreen implements Screen {
 
     // Método para cambiar idioma
     private void toggleIdioma() {
+        game.playSound(game.clickSound3);
         String nuevoIdioma = btnIdioma.getText().toString().contains("Espanol") ? "Ingles" : "Espanol";
         btnIdioma.setText(nuevoIdioma);
         GamePreferences.setLanguage(nuevoIdioma);
