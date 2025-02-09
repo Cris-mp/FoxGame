@@ -28,9 +28,11 @@ public class SettingMenuScreen implements Screen {
     private BitmapFont font;
     private float musicVolume = 0.5f, soundVolume = 0.5f;
     private ImageButton btnMusica, btnSonidos, btnVibracion;
-    private boolean isVibrationOn,isMusicOn,isSoundOn;
+    private boolean isVibrationOn, isMusicOn, isSoundOn;
     private Label lblIdioma;
     private TextButton btnIdioma;
+    private float lastMusicVolume, lastSoundVolume;
+    Slider sliderMusica, sliderSonidos;
 
     public SettingMenuScreen(FoxGame game) {
         this.game = game;
@@ -39,9 +41,8 @@ public class SettingMenuScreen implements Screen {
         isVibrationOn = GamePreferences.isVibrationEnabled();
         isMusicOn = GamePreferences.getMusicVolume() > 0;
         isSoundOn = GamePreferences.getSoundVolume() > 0;
-
-        game.playMusic("audio/music/joyful.ogg",true);
-
+        lastMusicVolume = GamePreferences.getMusicVolume();
+        lastSoundVolume = GamePreferences.getSoundVolume();
         stage = new Stage(new FitViewport(FoxGame.V_WIDTH * 2, FoxGame.V_HEIGHT * 2, new OrthographicCamera()));
         Gdx.input.setInputProcessor(stage);
 
@@ -76,8 +77,8 @@ public class SettingMenuScreen implements Screen {
                 () -> isVibrationOn = !isVibrationOn, isVibrationOn);
 
         // Sliders para controlar el volumen
-        Slider sliderMusica = createSlider(musicVolume, true);
-        Slider sliderSonidos = createSlider(soundVolume, false);
+        sliderMusica = createSlider(musicVolume, true);
+        sliderSonidos = createSlider(soundVolume, false);
 
         // Botón de regreso al menú principal
         ImageButton btnMainMenu = createIconButton("ui/mainMenu.png", "ui/mainMenu_pulsado.png",
@@ -133,11 +134,23 @@ public class SettingMenuScreen implements Screen {
                 boolean newState = button.isChecked();
                 button.getStyle().imageUp = newState ? normal : pressed;
 
-                // Guardar preferencia en el almacenamiento
+                //Guardar en preferencias y actualizar slider en funcion de lo marcado
                 if (normalPath.equals("ui/musica.png")) {
-                    GamePreferences.setMusicVolume(isMusicOn ? 1.0f : 0.0f);
+                    if (GamePreferences.getMusicVolume() > 0) {
+                        lastMusicVolume = GamePreferences.getMusicVolume(); 
+                        GamePreferences.setMusicVolume(0);
+                    } else {
+                        GamePreferences.setMusicVolume(lastMusicVolume > 0 ? lastMusicVolume : 0.5f);
+                    }
+                    sliderMusica.setValue(GamePreferences.getMusicVolume());
                 } else if (normalPath.equals("ui/sonidos.png")) {
-                    GamePreferences.setSoundVolume(isSoundOn ? 1.0f : 0.0f);
+                    if (GamePreferences.getSoundVolume() > 0) {
+                        lastSoundVolume = GamePreferences.getSoundVolume();
+                        GamePreferences.setSoundVolume(0);
+                    } else {
+                        GamePreferences.setSoundVolume(lastSoundVolume > 0 ? lastSoundVolume : 0.5f);
+                    }
+                    sliderSonidos.setValue(GamePreferences.getSoundVolume());
                 } else if (normalPath.equals("ui/vibracion.png")) {
                     GamePreferences.setVibration(isVibrationOn);
                 }
@@ -205,7 +218,6 @@ public class SettingMenuScreen implements Screen {
                     musicVolume = value;
                     GamePreferences.setMusicVolume(value);
                     game.updateMusicVolume();
-                    System.out.println("Volumen guardado: " + value);
                 } else {
                     soundVolume = value;
                     GamePreferences.setSoundVolume(value);
@@ -259,6 +271,7 @@ public class SettingMenuScreen implements Screen {
     // Métodos vacíos de la interfaz Screen
     @Override
     public void show() {
+        game.playMusic("audio/music/joyful.ogg", true);
     }
 
     @Override

@@ -62,7 +62,7 @@ public class FoxGame extends Game {
         Music newMusic = AssetsManagerAudio.getMusic(musicPath);
 
         // Si es la misma música, solo actualizar volumen
-        if (currentMusic == newMusic) {
+        if (currentMusic == newMusic && currentMusic.isPlaying()) {
             updateMusicVolume();
             return;
         }
@@ -70,7 +70,6 @@ public class FoxGame extends Game {
         // Detener la música anterior si hay alguna
         if (currentMusic != null) {
             currentMusic.stop();
-            currentMusic.dispose();
         }
 
         // Configurar nueva música

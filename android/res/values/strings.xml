@@ -1,4 +1,10 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
   <string name="app_name">Fox Raider</string>
+  <string name="play">Jugar</string>
+  <string name="options">Ajustes</string>
+  <string name="exit">Salir</string>
+  <string name="music">Musica</string>
+  <string name="sound">Sonido</string>
+  <string name="language">Idioma</string>
 </resources>

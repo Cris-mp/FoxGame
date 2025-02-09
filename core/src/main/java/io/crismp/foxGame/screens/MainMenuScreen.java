@@ -32,7 +32,6 @@ public class MainMenuScreen implements Screen {
 
     public MainMenuScreen(FoxGame game) {
         this.game = game;
-        game.playMusic("audio/music/joyful.ogg",true);
         viewport = new FitViewport(FoxGame.V_WIDTH * 2, FoxGame.V_HEIGHT * 2, new OrthographicCamera());
         stage = new Stage(viewport, game.batch);
         Gdx.input.setInputProcessor(stage);
@@ -135,6 +134,7 @@ public class MainMenuScreen implements Screen {
 
     @Override
     public void show() {
+        game.playMusic("audio/music/joyful.ogg",true);
     }
 
     @Override
