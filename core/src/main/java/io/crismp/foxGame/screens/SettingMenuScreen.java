@@ -7,7 +7,6 @@ import com.badlogic.gdx.graphics.GL20;
 import com.badlogic.gdx.graphics.OrthographicCamera;
 import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.graphics.g2d.BitmapFont;
-import com.badlogic.gdx.graphics.g2d.TextureRegion;
 import com.badlogic.gdx.scenes.scene2d.Actor;
 import com.badlogic.gdx.scenes.scene2d.InputEvent;
 import com.badlogic.gdx.scenes.scene2d.Stage;
@@ -258,13 +257,10 @@ public class SettingMenuScreen implements Screen {
         buttonStyle.up = new TextureRegionDrawable(AssetsManager.getTexture("ui/boton.png"));
         buttonStyle.down = new TextureRegionDrawable(AssetsManager.getTexture("ui/boton_pulsado.png"));
         skin.add("default", buttonStyle);
-        TextButton btnSalir = new TextButton(LanguageManager.get("exit").toUpperCase(), buttonStyle);
-        // Establecer tamaño específico para el botón
-        btnSalir.getLabel().setFontScale(0.8f); // Cambiar el tamaño de la fuente
-        btnSalir.setWidth(100); // Ajustar el ancho
-        btnSalir.setHeight(10); //
 
-        //skin.add("button", btnSalir);
+        TextButton btnSalir = new TextButton(LanguageManager.get("exit").toUpperCase(), buttonStyle);
+        btnSalir.getLabel().setFontScale(0.8f); 
+        btnSalir.setSize(100, 30);
 
         Window.WindowStyle windowStyle = new Window.WindowStyle();
         windowStyle.titleFont = font;
@@ -272,9 +268,49 @@ public class SettingMenuScreen implements Screen {
         skin.add("default", windowStyle);
 
         Dialog dialog = new Dialog("", skin);
-        ScrollPane scrollPane = new ScrollPane(new Image(new Texture(imagePath)));
-        scrollPane.setForceScroll(false, true);
 
+        // 🟢 Crear la tabla para el contenido
+        Table table = new Table();
+        
+       
+        // Agregar títulos y descripciones con imágenes
+        table.add(new Label(LanguageManager.get("help_1"), new Label.LabelStyle(font, Color.CYAN))).colspan(2);
+        table.row();
+        table.add(new Image(new Texture("ui/help/casa.png"))).colspan(2); // Imagen de Foxy
+        table.row();
+        table.add(new Label(LanguageManager.get("help1_2"), new Label.LabelStyle(font, Color.WHITE))).colspan(2).padTop(10);
+        table.row();
+
+        table.add(new Label(LanguageManager.get("help_2"), new Label.LabelStyle(font, Color.GREEN))).colspan(2).padTop(10);
+        table.row();
+        table.add(new Image(new Texture("ui/help/cherry.png"))).size(40,40);
+        table.add(new Label(LanguageManager.get("help2_1"), new Label.LabelStyle(font, Color.WHITE)));
+        table.row();
+        table.add(new Image(new Texture("ui/help/gema.png"))).size(40,40);
+        table.add(new Label(LanguageManager.get("help2_2"), new Label.LabelStyle(font, Color.WHITE)));
+        table.row();
+
+        table.add(new Label(LanguageManager.get("help_3"), new Label.LabelStyle(font, Color.RED))).colspan(2).padTop(10).padBottom(10);
+        table.row();
+        table.add(new Image(new Texture("ui/help/matar.png"))).size(50,60).padRight(-20);
+        Label enemigos = new Label(LanguageManager.get("help3_1"), new Label.LabelStyle(font, Color.WHITE));
+        enemigos.setWrap(true);
+        table.add(enemigos).width(200).padLeft(20);
+        table.row();
+
+        table.add(new Label(LanguageManager.get("help_4"), new Label.LabelStyle(font, Color.ORANGE))).colspan(2).padTop(10).padBottom(10);
+        table.row();
+        table.add(new Image(new Texture("ui/help/pinchos.png"))).size(50,50).padRight(-20);
+        Label pinchos = new Label(LanguageManager.get("help4_1"), new Label.LabelStyle(font, Color.WHITE));
+        pinchos.setWrap(true);
+        table.add(pinchos).width(200).padLeft(20);
+        table.row();
+
+
+        // 🟢 Agregar la tabla a un ScrollPane
+        ScrollPane scrollPane = new ScrollPane(table);
+        scrollPane.setScrollingDisabled(true, false);
+    
         dialog.getContentTable().add(scrollPane).size(300, 300).padTop(20);
         dialog.button(btnSalir).padBottom(20);
         dialog.show(stage);
