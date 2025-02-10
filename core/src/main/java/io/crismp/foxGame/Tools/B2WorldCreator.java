@@ -24,7 +24,7 @@ import io.crismp.foxGame.sprites.tileObjects.Pinchos;
  * Crea y configura los objetos del mundo del juego a partir de un mapa de
  * objetos (TiledMap). Cada objeto del mapa se asocia con un cuerpo físico en el
  * mundo de Box2D, permitiendo su interacción física.
- * 
+ *
  * El constructor de esta clase itera sobre las capas del mapa que contienen los
  * objetos del juego, como suelos, paredes, techos, obstáculos, escaleras,
  * pinchos, zarigueyas, cerezas, gemas y la puerta de fin de nivel. Para cada
@@ -43,7 +43,7 @@ public class B2WorldCreator {
      * Este método itera sobre las capas del mapa de objetos y crea los objetos
      * correspondientes en el mundo físico (Box2D), asignándoles cuerpos físicos
      * estáticos o dinámicos.
-     * 
+     *
      * @param screen El objeto PlayScreen que gestiona la pantalla del juego,
      *               proporcionando acceso al mundo físico y al mapa de objetos.
      */
@@ -52,57 +52,71 @@ public class B2WorldCreator {
         world = screen.getWorld();
         map = screen.getMap();
 
-        for (MapObject object : map.getLayers().get("suelos").getObjects().getByType(RectangleMapObject.class)) {
-            define(object, FoxGame.GROUND_BIT);
+        if (map.getLayers().get("suelos") != null) {
+            for (MapObject object : map.getLayers().get("suelos").getObjects().getByType(RectangleMapObject.class)) {
+                define(object, FoxGame.GROUND_BIT);
+            }
         }
+        if (map.getLayers().get("paredes") != null) {
+            for (MapObject object : map.getLayers().get("paredes").getObjects().getByType(RectangleMapObject.class)) {
+                define(object, FoxGame.WALL_BIT);
+            }
+        }
+        if (map.getLayers().get("techos") != null) {
+            for (MapObject object : map.getLayers().get("techos").getObjects().getByType(RectangleMapObject.class)) {
+                define(object, FoxGame.FLOOR_BIT);
+            }
+        }
+        if (map.getLayers().get("obstaculos") != null) {
+            for (MapObject object : map.getLayers().get("obstaculos").getObjects()
+                    .getByType(RectangleMapObject.class)) {
+                define(object, FoxGame.OBSTACLE_BIT);
+            }
+        }
+        if (map.getLayers().get("escaleras") != null) {
 
-        for (MapObject object : map.getLayers().get("paredes").getObjects().getByType(RectangleMapObject.class)) {
-            define(object, FoxGame.WALL_BIT);
+            for (MapObject object : map.getLayers().get("escaleras").getObjects().getByType(RectangleMapObject.class)) {
+                Rectangle rectangle = ((RectangleMapObject) object).getRectangle();
+                new Escalera(screen, rectangle);
+            }
         }
-
-        for (MapObject object : map.getLayers().get("techos").getObjects().getByType(RectangleMapObject.class)) {
-            define(object, FoxGame.FLOOR_BIT);
+        if (map.getLayers().get("pinchos") != null) {
+            for (MapObject object : map.getLayers().get("pinchos").getObjects().getByType(RectangleMapObject.class)) {
+                Rectangle rectangle = ((RectangleMapObject) object).getRectangle();
+                new Pinchos(screen, rectangle);
+            }
         }
-
-        for (MapObject object : map.getLayers().get("obstaculos").getObjects().getByType(RectangleMapObject.class)) {
-            define(object, FoxGame.OBSTACLE_BIT);
+        if (map.getLayers().get("zarigueya") != null) {
+            zarigueyas = new ArrayList<>();
+            for (MapObject object : map.getLayers().get("zarigueya").getObjects().getByType(RectangleMapObject.class)) {
+                Rectangle rectangle = ((RectangleMapObject) object).getRectangle();
+                zarigueyas.add(new Zarigueya(screen, rectangle));
+            }
         }
-
-        for (MapObject object : map.getLayers().get("escaleras").getObjects().getByType(RectangleMapObject.class)) {
-            Rectangle rectangle = ((RectangleMapObject) object).getRectangle();
-            new Escalera(screen, rectangle);
+        if (map.getLayers().get("cherries") != null) {
+            cherrys = new ArrayList<>();
+            for (MapObject object : map.getLayers().get("cherries").getObjects().getByType(RectangleMapObject.class)) {
+                Rectangle rectangle = ((RectangleMapObject) object).getRectangle();
+                cherrys.add(new Cherry(screen, rectangle));
+            }
         }
-
-        for (MapObject object : map.getLayers().get("pinchos").getObjects().getByType(RectangleMapObject.class)) {
-            Rectangle rectangle = ((RectangleMapObject) object).getRectangle();
-            new Pinchos(screen, rectangle);
+        if (map.getLayers().get("gems") != null) {
+            gems = new ArrayList<>();
+            for (MapObject object : map.getLayers().get("gems").getObjects().getByType(RectangleMapObject.class)) {
+                Rectangle rectangle = ((RectangleMapObject) object).getRectangle();
+                gems.add(new Gem(screen, rectangle));
+            }
         }
-        zarigueyas = new ArrayList<>();
-        for (MapObject object : map.getLayers().get("zarigueya").getObjects().getByType(RectangleMapObject.class)) {
-            Rectangle rectangle = ((RectangleMapObject) object).getRectangle();
-            zarigueyas.add(new Zarigueya(screen, rectangle));
-        }
-
-        cherrys = new ArrayList<>();
-        for (MapObject object : map.getLayers().get("cherries").getObjects().getByType(RectangleMapObject.class)) {
-            Rectangle rectangle = ((RectangleMapObject) object).getRectangle();
-            cherrys.add(new Cherry(screen, rectangle));
-        }
-
-        gems = new ArrayList<>();
-        for (MapObject object : map.getLayers().get("gems").getObjects().getByType(RectangleMapObject.class)) {
-            Rectangle rectangle = ((RectangleMapObject) object).getRectangle();
-            gems.add(new Gem(screen, rectangle));
-        }
-
-        for (MapObject object : map.getLayers().get("puerta").getObjects().getByType(RectangleMapObject.class)) {
-            define(object, FoxGame.END_GAME_BIT);
+        if (map.getLayers().get("puerta") != null) {
+            for (MapObject object : map.getLayers().get("puerta").getObjects().getByType(RectangleMapObject.class)) {
+                define(object, FoxGame.END_GAME_BIT);
+            }
         }
     }
 
     /**
      * Devuelve la lista de zarigueyas presentes en el juego.
-     * 
+     *
      * @return La lista de zarigueyas.
      */
     public ArrayList<Zarigueya> getZarigueyas() {
@@ -111,7 +125,7 @@ public class B2WorldCreator {
 
     /**
      * Devuelve la lista de cerezas presentes en el juego.
-     * 
+     *
      * @return La lista de cerezas.
      */
     public ArrayList<Cherry> getCherries() {
@@ -120,7 +134,7 @@ public class B2WorldCreator {
 
     /**
      * Devuelve la lista de gemas presentes en el juego.
-     * 
+     *
      * @return La lista de gemas.
      */
     public ArrayList<Gem> getGems() {
@@ -132,7 +146,7 @@ public class B2WorldCreator {
      * tipo RectangleMapObject. Este método crea un cuerpo estático (sin movimiento)
      * y lo coloca en la posición y tamaño del objeto en el mundo de acuerdo a las
      * coordenadas del mapa.
-     * 
+     *
      * @param object El objeto tipo RectangleMapObject que se utilizará para definir
      *               el cuerpo en el mundo.
      * @param mask   La máscara de bits que identifica el tipo de objeto creado en

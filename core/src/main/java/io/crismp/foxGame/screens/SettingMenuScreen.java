@@ -7,6 +7,7 @@ import com.badlogic.gdx.graphics.GL20;
 import com.badlogic.gdx.graphics.OrthographicCamera;
 import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.graphics.g2d.BitmapFont;
+import com.badlogic.gdx.graphics.g2d.TextureRegion;
 import com.badlogic.gdx.scenes.scene2d.Actor;
 import com.badlogic.gdx.scenes.scene2d.InputEvent;
 import com.badlogic.gdx.scenes.scene2d.Stage;
@@ -66,7 +67,8 @@ public class SettingMenuScreen implements Screen {
         lblIdioma = new Label(LanguageManager.get("language").toUpperCase(), labelStyle);
 
         // Botón para cambiar de idioma
-        btnIdioma = createTextButton(GamePreferences.getLanguage().equals("en")? "Espanol" : "English", () -> toggleIdioma());
+        btnIdioma = createTextButton(GamePreferences.getLanguage().equals("en") ? "Espanol" : "English",
+                () -> toggleIdioma());
         btnIdioma.padBottom(8);
 
         // Botones de Música, Sonido y Vibración (Toggle)
@@ -87,8 +89,10 @@ public class SettingMenuScreen implements Screen {
                 () -> game.setScreen(new MainMenuScreen(game)));
 
         // Botones de Créditos y Ayuda
-        TextButton btnCreditos = createTextButton(LanguageManager.get("credits").toUpperCase(), () -> mostrarPopUp("ui/boton.png"));
-        TextButton btnAyuda = createTextButton(LanguageManager.get("help").toUpperCase(), () -> mostrarPopUp("ui/boton.png"));
+        TextButton btnCreditos = createTextButton(LanguageManager.get("credits").toUpperCase(),
+                () -> mostrarPopUp("player/zorrito.png"));
+        TextButton btnAyuda = createTextButton(LanguageManager.get("help").toUpperCase(),
+                () -> mostrarPopUp("ui/boton.png"));
 
         // Tabla para organizar los elementos
         Table table = new Table()
@@ -216,7 +220,6 @@ public class SettingMenuScreen implements Screen {
                 game.playSound(game.clickSound2);
                 float value = slider.getValue();
 
-                
                 if (isMusic) {
                     musicVolume = value;
                     GamePreferences.setMusicVolume(value);
@@ -234,7 +237,7 @@ public class SettingMenuScreen implements Screen {
     // Método para cambiar idioma
     private void toggleIdioma() {
         game.playSound(game.clickSound3);
-        System.out.println("Estaba en:"+GamePreferences.getLanguage());
+        System.out.println("Estaba en:" + GamePreferences.getLanguage());
         String nuevoIdioma = GamePreferences.getLanguage().equals("es") ? "en" : "es";
         GamePreferences.setLanguage(nuevoIdioma);
         LanguageManager.setLanguage(nuevoIdioma);
@@ -247,10 +250,33 @@ public class SettingMenuScreen implements Screen {
 
     // Método para mostrar un pop-up con una imagen
     private void mostrarPopUp(String imagePath) {
-        Dialog dialog = new Dialog("Hola", new Window.WindowStyle(font, Color.BLACK,
-                new TextureRegionDrawable(AssetsManager.getTexture("ui/boton_cua.png"))));
-        dialog.getContentTable().add(new Image(new Texture(imagePath)));
-        dialog.button("Cerrar");
+        Skin skin = new Skin();
+        skin.add("default-font", font);
+
+        TextButton.TextButtonStyle buttonStyle = new TextButton.TextButtonStyle();
+        buttonStyle.font = font;
+        buttonStyle.up = new TextureRegionDrawable(AssetsManager.getTexture("ui/boton.png"));
+        buttonStyle.down = new TextureRegionDrawable(AssetsManager.getTexture("ui/boton_pulsado.png"));
+        skin.add("default", buttonStyle);
+        TextButton btnSalir = new TextButton(LanguageManager.get("exit").toUpperCase(), buttonStyle);
+        // Establecer tamaño específico para el botón
+        btnSalir.getLabel().setFontScale(0.8f); // Cambiar el tamaño de la fuente
+        btnSalir.setWidth(100); // Ajustar el ancho
+        btnSalir.setHeight(10); //
+
+        //skin.add("button", btnSalir);
+
+        Window.WindowStyle windowStyle = new Window.WindowStyle();
+        windowStyle.titleFont = font;
+        windowStyle.background = new TextureRegionDrawable(AssetsManager.getTexture("ui/backSettings.png"));
+        skin.add("default", windowStyle);
+
+        Dialog dialog = new Dialog("", skin);
+        ScrollPane scrollPane = new ScrollPane(new Image(new Texture(imagePath)));
+        scrollPane.setForceScroll(false, true);
+
+        dialog.getContentTable().add(scrollPane).size(300, 300).padTop(20);
+        dialog.button(btnSalir).padBottom(20);
         dialog.show(stage);
     }
 
@@ -281,7 +307,7 @@ public class SettingMenuScreen implements Screen {
     @Override
     public void show() {
         game.playMusic("audio/music/joyful.ogg", true);
-        
+
     }
 
     @Override

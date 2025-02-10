@@ -108,13 +108,6 @@ public class PlayScreen implements Screen {
 
         world.setContactListener(new WorldContactListener());
 
-        // music = AssetsManagerAudio.getMusic("audio/music/exploration.ogg");
-        // music.setLooping(true);
-        // music.setVolume(GamePreferences.getMusicVolume()); // Aplica el volumen
-        // guardado
-        // if (GamePreferences.getMusicVolume() > 0) {
-        // music.play(); // Solo reproduce si el volumen es mayor a 0
-        // }
 
         // // Cargar texturas del fondo
         // bgTexture1 = new Texture("maps/back.png");
@@ -127,10 +120,11 @@ public class PlayScreen implements Screen {
         // Capa intermedia más abajo
         // backgroundLayer1.setCamera(new OrthographicCamera());
         // backgroundLayer2.setCamera(new OrthographicCamera());
+
         MapProperties prop = map.getProperties();
         int mapWidth = prop.get("width", Integer.class);
         int mapHeight = prop.get("height", Integer.class);
-        int tileSize = prop.get("tilewidth", Integer.class); // Tamaño de cada tile
+        int tileSize = prop.get("tilewidth", Integer.class);
 
         // Calcular el tamaño total del mapa en unidades del mundo
         mapWidthInUnits = (mapWidth * tileSize) / FoxGame.PPM;
@@ -247,31 +241,6 @@ public class PlayScreen implements Screen {
             } else {
                 gamecam.position.y = player.body.getPosition().y;
             }
-            // // Ajuste de posicion de la camara en el eje X
-            // if (player.body.getPosition().x > gamePort.getWorldWidth() +
-            // (gamePort.getWorldWidth() / 2)) {
-            // gamecam.position.x = gamePort.getWorldWidth() + (gamePort.getWorldWidth() /
-            // 2);
-            // } else {
-            // if (player.body.getPosition().x < gamePort.getWorldWidth() / 2) {
-            // gamecam.position.x = gamePort.getWorldWidth() / 2;
-            // } else {
-            // gamecam.position.x = player.body.getPosition().x;
-            // }
-            // }
-            // // Ajuste de posicion de la camara en el eje Y
-            // if (player.body.getPosition().y < gamePort.getWorldHeight() / 2) {
-            // gamecam.position.y = gamePort.getWorldHeight() / 2;
-            // } else {
-            // if (player.body.getPosition().y < 6.1f) {
-            // gamecam.position.y = player.body.getPosition().y;
-            // } else {
-            // gamecam.position.y = 6.1f;
-            // }
-            // }
-            // System.out.println(gamePort.getWorldHeight());
-            // System.out.println(map.getWorldHeight());
-            // System.out.println(gamePort.getWorldHeight() / 2);
         }
         // actualiza a las nuevas coordenadas
         gamecam.update();
