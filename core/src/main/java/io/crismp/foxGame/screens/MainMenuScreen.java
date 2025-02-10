@@ -1,4 +1,4 @@
-package io.crismp.foxGame.Screens;
+package io.crismp.foxGame.screens;
 
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.Screen;
@@ -18,7 +18,8 @@ import com.badlogic.gdx.utils.viewport.FitViewport;
 import com.badlogic.gdx.utils.viewport.Viewport;
 
 import io.crismp.foxGame.FoxGame;
-import io.crismp.foxGame.Tools.AssetsManager;
+import io.crismp.foxGame.managers.AssetsManager;
+import io.crismp.foxGame.managers.LanguageManager;
 
 public class MainMenuScreen implements Screen {
     private FoxGame game;
@@ -54,9 +55,9 @@ public class MainMenuScreen implements Screen {
         estiloBoton.up = btnNormal;
         estiloBoton.down = btnPressed;
 
-        TextButton btnJugar = new TextButton("JUGAR", estiloBoton);
-        TextButton btnTutorial = new TextButton("TUTORIAL", estiloBoton);
-        TextButton btnSalir = new TextButton("SALIR", estiloBoton);
+        TextButton btnJugar = new TextButton(LanguageManager.get("play").toUpperCase(), estiloBoton);
+        TextButton btnTutorial = new TextButton(LanguageManager.get("tutorial").toUpperCase(), estiloBoton);
+        TextButton btnSalir = new TextButton(LanguageManager.get("exit").toUpperCase(), estiloBoton);
         btnJugar.padBottom(8);
         btnTutorial.padBottom(8);
         btnSalir.padBottom(8);
@@ -93,7 +94,7 @@ public class MainMenuScreen implements Screen {
             @Override
             public void clicked(InputEvent event, float x, float y) {
                 game.playSound(game.clickSound);
-                game.setScreen(new PlayScreen(game));
+                game.setScreen(new PlayScreen(game,1));
             }
         });
 
@@ -101,7 +102,7 @@ public class MainMenuScreen implements Screen {
             @Override
             public void clicked(InputEvent event, float x, float y) {
                 game.playSound(game.clickSound);
-                game.setScreen(new PlayScreen(game)); // Aquí puedes poner la pantalla de opciones si tienes una
+                game.setScreen(new PlayScreen(game,2)); 
             }
         });
 
@@ -127,7 +128,7 @@ public class MainMenuScreen implements Screen {
             @Override
             public void clicked(InputEvent event, float x, float y) {
                 game.playSound(game.clickSound);
-                game.setScreen(new PlayScreen(game)); // Aquí puedes poner la pantalla de récords si tienes una
+                game.setScreen(new PlayScreen(game,2)); // Aquí puedes poner la pantalla de récords si tienes una
             }
         });
     }

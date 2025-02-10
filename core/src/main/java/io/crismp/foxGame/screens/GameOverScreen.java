@@ -1,4 +1,4 @@
-package io.crismp.foxGame.Screens;
+package io.crismp.foxGame.screens;
 
 import com.badlogic.gdx.Game;
 import com.badlogic.gdx.Gdx;

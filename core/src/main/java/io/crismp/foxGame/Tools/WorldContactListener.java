@@ -1,4 +1,4 @@
-package io.crismp.foxGame.Tools;
+package io.crismp.foxGame.tools;
 
 import com.badlogic.gdx.physics.box2d.Contact;
 import com.badlogic.gdx.physics.box2d.ContactImpulse;
@@ -7,10 +7,10 @@ import com.badlogic.gdx.physics.box2d.Fixture;
 import com.badlogic.gdx.physics.box2d.Manifold;
 
 import io.crismp.foxGame.FoxGame;
-import io.crismp.foxGame.Sprites.enemies.Enemy;
-import io.crismp.foxGame.Sprites.items.Item;
-import io.crismp.foxGame.Sprites.tileObjects.Pinchos;
-import io.crismp.foxGame.Sprites.Foxy;
+import io.crismp.foxGame.sprites.Foxy;
+import io.crismp.foxGame.sprites.enemies.Enemy;
+import io.crismp.foxGame.sprites.items.Item;
+import io.crismp.foxGame.sprites.tileObjects.Pinchos;
 
 //Que ocurre cuando dos accesorios de Box2D chocan entre si
 public class WorldContactListener implements ContactListener {

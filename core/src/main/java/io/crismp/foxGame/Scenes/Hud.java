@@ -1,4 +1,4 @@
-package io.crismp.foxGame.Scenes;
+package io.crismp.foxGame.scenes;
 
 import java.util.ArrayList;
 
@@ -16,7 +16,7 @@ import com.badlogic.gdx.utils.viewport.FitViewport;
 import com.badlogic.gdx.utils.viewport.Viewport;
 
 import io.crismp.foxGame.FoxGame;
-import io.crismp.foxGame.Tools.AssetsManager;
+import io.crismp.foxGame.managers.AssetsManager;
 
 public class Hud implements Disposable {
     public Stage stage;

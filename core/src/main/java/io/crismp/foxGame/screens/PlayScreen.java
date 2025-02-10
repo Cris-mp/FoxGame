@@ -1,4 +1,4 @@
-package io.crismp.foxGame.Screens;
+package io.crismp.foxGame.screens;
 
 import com.badlogic.gdx.Application.ApplicationType;
 import com.badlogic.gdx.Gdx;
@@ -6,6 +6,7 @@ import com.badlogic.gdx.Input;
 import com.badlogic.gdx.Screen;
 import com.badlogic.gdx.graphics.GL20;
 import com.badlogic.gdx.graphics.OrthographicCamera;
+import com.badlogic.gdx.maps.MapProperties;
 import com.badlogic.gdx.maps.tiled.TiledMap;
 import com.badlogic.gdx.maps.tiled.TmxMapLoader;
 import com.badlogic.gdx.maps.tiled.renderers.OrthogonalTiledMapRenderer;
@@ -15,14 +16,14 @@ import com.badlogic.gdx.physics.box2d.World;
 import com.badlogic.gdx.utils.viewport.FitViewport;
 import com.badlogic.gdx.utils.viewport.Viewport;
 import io.crismp.foxGame.FoxGame;
-import io.crismp.foxGame.Scenes.Hud;
-import io.crismp.foxGame.Sprites.Foxy;
-import io.crismp.foxGame.Sprites.enemies.Enemy;
-import io.crismp.foxGame.Sprites.items.Cherry;
-import io.crismp.foxGame.Sprites.items.Gem;
-import io.crismp.foxGame.Tools.B2WorldCreator;
-import io.crismp.foxGame.Tools.VirtualJoystick;
-import io.crismp.foxGame.Tools.WorldContactListener;
+import io.crismp.foxGame.scenes.Hud;
+import io.crismp.foxGame.sprites.Foxy;
+import io.crismp.foxGame.sprites.enemies.Enemy;
+import io.crismp.foxGame.sprites.items.Cherry;
+import io.crismp.foxGame.sprites.items.Gem;
+import io.crismp.foxGame.tools.B2WorldCreator;
+import io.crismp.foxGame.tools.VirtualJoystick;
+import io.crismp.foxGame.tools.WorldContactListener;
 
 public class PlayScreen implements Screen {
     private FoxGame game;
@@ -57,8 +58,9 @@ public class PlayScreen implements Screen {
     // private ParallaxLayer backgroundLayer2;
     // private Texture bgTexture1;
     // private Texture bgTexture2;
+    float mapWidthInUnits, mapHeightInUnits;
 
-    public PlayScreen(FoxGame game) {
+    public PlayScreen(FoxGame game, int nivelActual) {
         accumulator = 0f;
         timeStep = 1 / 60f;
         cherriesCollected = 0;
@@ -67,7 +69,6 @@ public class PlayScreen implements Screen {
         this.game = game;
         this.joystick = new VirtualJoystick(0, 0, 2, 1);
         gamecam = new OrthographicCamera();
-        game.playMusic("audio/music/exploration.ogg",true);
 
         // mantiene el ratio de aspecto virtual a pesar de la pantalla
         gamePort = new FitViewport(FoxGame.V_WIDTH / FoxGame.PPM, FoxGame.V_HEIGHT / FoxGame.PPM, gamecam);
@@ -77,7 +78,19 @@ public class PlayScreen implements Screen {
 
         // Carga nuestro mapa y configurar nuestro renderizador de mapas
         mapLoader = new TmxMapLoader();
-        map = mapLoader.load("maps/Fase1.tmx");
+        switch (nivelActual) {
+            case 1:
+                map = mapLoader.load("maps/Fase1.tmx");
+                game.playMusic("audio/music/exploration.ogg", true);
+                break;
+            case 2:
+                map = mapLoader.load("maps/Tutorial.tmx");
+                game.playMusic("audio/music/world wanderer.ogg", true);
+                break;
+            default:
+                map = mapLoader.load("maps/Fase1.tmx"); // Cargar por defecto si el nivel no es válido
+                game.playMusic("audio/music/exploration.ogg", true);
+        }
         renderer = new OrthogonalTiledMapRenderer(map, 1 / FoxGame.PPM);
 
         // Situa la camara para que se centre correctamente el el punto 0
@@ -97,9 +110,10 @@ public class PlayScreen implements Screen {
 
         // music = AssetsManagerAudio.getMusic("audio/music/exploration.ogg");
         // music.setLooping(true);
-        // music.setVolume(GamePreferences.getMusicVolume()); // Aplica el volumen guardado
+        // music.setVolume(GamePreferences.getMusicVolume()); // Aplica el volumen
+        // guardado
         // if (GamePreferences.getMusicVolume() > 0) {
-        //     music.play(); // Solo reproduce si el volumen es mayor a 0
+        // music.play(); // Solo reproduce si el volumen es mayor a 0
         // }
 
         // // Cargar texturas del fondo
@@ -113,6 +127,14 @@ public class PlayScreen implements Screen {
         // Capa intermedia más abajo
         // backgroundLayer1.setCamera(new OrthographicCamera());
         // backgroundLayer2.setCamera(new OrthographicCamera());
+        MapProperties prop = map.getProperties();
+        int mapWidth = prop.get("width", Integer.class);
+        int mapHeight = prop.get("height", Integer.class);
+        int tileSize = prop.get("tilewidth", Integer.class); // Tamaño de cada tile
+
+        // Calcular el tamaño total del mapa en unidades del mundo
+        mapWidthInUnits = (mapWidth * tileSize) / FoxGame.PPM;
+        mapHeightInUnits = (mapHeight * tileSize) / FoxGame.PPM;
     }
 
     public int getCherriesCollected() {
@@ -125,7 +147,7 @@ public class PlayScreen implements Screen {
 
     @Override
     public void show() {
-        
+
     }
 
     public void handleInput(float dt) {
@@ -202,26 +224,54 @@ public class PlayScreen implements Screen {
             gem.update(dt);
         }
         if (player.currenState != Foxy.State.DEAD) {
-            // Ajuste de posicion de la camara en el eje X
-            if (player.body.getPosition().x > 5.20f) {
-                gamecam.position.x = 5.20f;
+            // Ajuste de posición de la cámara en el eje X
+            float minX = gamePort.getWorldWidth() / 2;
+            float maxX = mapWidthInUnits - gamePort.getWorldWidth() / 2;
+
+            if (player.body.getPosition().x < minX) {
+                gamecam.position.x = minX;
+            } else if (player.body.getPosition().x > maxX) {
+                gamecam.position.x = maxX;
             } else {
-                if (player.body.getPosition().x < 2.1f) {
-                    gamecam.position.x = 2.10f;
-                } else {
-                    gamecam.position.x = player.body.getPosition().x;
-                }
+                gamecam.position.x = player.body.getPosition().x;
             }
-            // Ajuste de posicion de la camara en el eje Y
-            if (player.body.getPosition().y < 1.05f) {
-                gamecam.position.y = 1.05f;
+
+            // Ajuste de posición de la cámara en el eje Y
+            float minY = gamePort.getWorldHeight() / 2;
+            float maxY = mapHeightInUnits - gamePort.getWorldHeight() / 2;
+
+            if (player.body.getPosition().y < minY) {
+                gamecam.position.y = minY;
+            } else if (player.body.getPosition().y > maxY) {
+                gamecam.position.y = maxY;
             } else {
-                if (player.body.getPosition().y < 6.1f) {
-                    gamecam.position.y = player.body.getPosition().y;
-                } else {
-                    gamecam.position.y = 6.1f;
-                }
+                gamecam.position.y = player.body.getPosition().y;
             }
+            // // Ajuste de posicion de la camara en el eje X
+            // if (player.body.getPosition().x > gamePort.getWorldWidth() +
+            // (gamePort.getWorldWidth() / 2)) {
+            // gamecam.position.x = gamePort.getWorldWidth() + (gamePort.getWorldWidth() /
+            // 2);
+            // } else {
+            // if (player.body.getPosition().x < gamePort.getWorldWidth() / 2) {
+            // gamecam.position.x = gamePort.getWorldWidth() / 2;
+            // } else {
+            // gamecam.position.x = player.body.getPosition().x;
+            // }
+            // }
+            // // Ajuste de posicion de la camara en el eje Y
+            // if (player.body.getPosition().y < gamePort.getWorldHeight() / 2) {
+            // gamecam.position.y = gamePort.getWorldHeight() / 2;
+            // } else {
+            // if (player.body.getPosition().y < 6.1f) {
+            // gamecam.position.y = player.body.getPosition().y;
+            // } else {
+            // gamecam.position.y = 6.1f;
+            // }
+            // }
+            // System.out.println(gamePort.getWorldHeight());
+            // System.out.println(map.getWorldHeight());
+            // System.out.println(gamePort.getWorldHeight() / 2);
         }
         // actualiza a las nuevas coordenadas
         gamecam.update();

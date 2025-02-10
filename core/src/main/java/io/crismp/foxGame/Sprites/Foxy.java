@@ -1,4 +1,4 @@
-package io.crismp.foxGame.Sprites;
+package io.crismp.foxGame.sprites;
 
 import java.util.ArrayList;
 
@@ -21,11 +21,11 @@ import com.badlogic.gdx.physics.box2d.World;
 import com.badlogic.gdx.utils.Array;
 
 import io.crismp.foxGame.FoxGame;
-import io.crismp.foxGame.Screens.PlayScreen;
-import io.crismp.foxGame.Sprites.enemies.Enemy;
-import io.crismp.foxGame.Sprites.tileObjects.Pinchos;
-import io.crismp.foxGame.Tools.AssetsManager;
-import io.crismp.foxGame.Tools.GamePreferences;
+import io.crismp.foxGame.managers.AssetsManager;
+import io.crismp.foxGame.screens.PlayScreen;
+import io.crismp.foxGame.sprites.enemies.Enemy;
+import io.crismp.foxGame.sprites.tileObjects.Pinchos;
+import io.crismp.foxGame.tools.GamePreferences;
 
 
 

@@ -1,4 +1,4 @@
-package io.crismp.foxGame.Screens;
+package io.crismp.foxGame.screens;
 
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.Screen;
@@ -9,7 +9,7 @@ import com.badlogic.gdx.scenes.scene2d.Stage;
 import com.badlogic.gdx.scenes.scene2d.ui.Image;
 import com.badlogic.gdx.utils.viewport.FitViewport;
 import io.crismp.foxGame.FoxGame;
-import io.crismp.foxGame.Tools.AssetsManager;
+import io.crismp.foxGame.managers.AssetsManager;
 
 
 public class SplashScreen implements Screen {

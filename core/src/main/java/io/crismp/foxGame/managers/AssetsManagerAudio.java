@@ -1,4 +1,4 @@
-package io.crismp.foxGame.Tools;
+package io.crismp.foxGame.managers;
 
 import com.badlogic.gdx.assets.AssetManager;
 import com.badlogic.gdx.audio.Music;
@@ -10,6 +10,7 @@ public class AssetsManagerAudio {
     public static void load() {
         manager.load("audio/music/exploration.ogg", Music.class);
         manager.load("audio/music/joyful.ogg", Music.class);
+        manager.load("audio/music/world wanderer.ogg", Music.class);
         manager.load("audio/music/To Suffer a Loss (Game Over).ogg", Music.class);
         manager.load("audio/music/Victorious.ogg", Music.class);
         manager.load("audio/sounds/ui/Wood1.wav", Sound.class);

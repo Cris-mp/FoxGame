@@ -1,4 +1,4 @@
-package io.crismp.foxGame.Tools;
+package io.crismp.foxGame.tools;
 
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.Preferences;
@@ -15,7 +15,9 @@ public class GamePreferences {
 
     // Inicializar preferencias
     public static void load() {
-        prefs = Gdx.app.getPreferences(PREFS_NAME);
+        if (prefs == null) {  // 💡 Evita problemas de inicialización
+            prefs = Gdx.app.getPreferences(PREFS_NAME);
+        }
     }
 
     // Guardar volumen de música
@@ -50,12 +52,14 @@ public class GamePreferences {
 
     // Guardar idioma
     public static void setLanguage(String language) {
+        load();
         prefs.putString(LANGUAGE, language);
         prefs.flush();
     }
 
     public static String getLanguage() {
-        return prefs.getString(LANGUAGE, "Espanol");  // Español por defecto
+        load();
+        return prefs.getString(LANGUAGE, "es");  // Español por defecto
     }
 
     // Guardar record de puntuación

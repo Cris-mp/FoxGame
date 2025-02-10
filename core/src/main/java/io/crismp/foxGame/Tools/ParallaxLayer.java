@@ -1,4 +1,4 @@
-package io.crismp.foxGame.Tools;
+package io.crismp.foxGame.tools;
 
 import com.badlogic.gdx.graphics.Camera;
 import com.badlogic.gdx.graphics.Texture;

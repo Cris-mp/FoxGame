@@ -1,4 +1,4 @@
-package io.crismp.foxGame.Tools;
+package io.crismp.foxGame.tools;
 
 import java.util.ArrayList;
 
@@ -13,12 +13,12 @@ import com.badlogic.gdx.physics.box2d.PolygonShape;
 import com.badlogic.gdx.physics.box2d.World;
 
 import io.crismp.foxGame.FoxGame;
-import io.crismp.foxGame.Screens.PlayScreen;
-import io.crismp.foxGame.Sprites.enemies.Zarigueya;
-import io.crismp.foxGame.Sprites.items.Cherry;
-import io.crismp.foxGame.Sprites.items.Gem;
-import io.crismp.foxGame.Sprites.tileObjects.Escalera;
-import io.crismp.foxGame.Sprites.tileObjects.Pinchos;
+import io.crismp.foxGame.screens.PlayScreen;
+import io.crismp.foxGame.sprites.enemies.Zarigueya;
+import io.crismp.foxGame.sprites.items.Cherry;
+import io.crismp.foxGame.sprites.items.Gem;
+import io.crismp.foxGame.sprites.tileObjects.Escalera;
+import io.crismp.foxGame.sprites.tileObjects.Pinchos;
 
 /**
  * Crea y configura los objetos del mundo del juego a partir de un mapa de

@@ -1,4 +1,4 @@
-package io.crismp.foxGame.Sprites.items;
+package io.crismp.foxGame.sprites.items;
 
 import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.graphics.g2d.Animation;
@@ -11,9 +11,9 @@ import com.badlogic.gdx.physics.box2d.PolygonShape;
 import com.badlogic.gdx.utils.Array;
 
 import io.crismp.foxGame.FoxGame;
-import io.crismp.foxGame.Screens.PlayScreen;
-import io.crismp.foxGame.Sprites.Foxy;
-import io.crismp.foxGame.Tools.AssetsManager;
+import io.crismp.foxGame.managers.AssetsManager;
+import io.crismp.foxGame.screens.PlayScreen;
+import io.crismp.foxGame.sprites.Foxy;
 
 public class Cherry extends Item {
 

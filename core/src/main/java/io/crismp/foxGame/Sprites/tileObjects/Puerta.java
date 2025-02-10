@@ -1,9 +1,9 @@
-package io.crismp.foxGame.Sprites.tileObjects;
+package io.crismp.foxGame.sprites.tileObjects;
 
 import com.badlogic.gdx.math.Rectangle;
 
 import io.crismp.foxGame.FoxGame;
-import io.crismp.foxGame.Screens.PlayScreen;
+import io.crismp.foxGame.screens.PlayScreen;
 
 public class Puerta extends InteractiveTiledObject {
 

@@ -1,4 +1,4 @@
-package io.crismp.foxGame.Screens;
+package io.crismp.foxGame.screens;
 
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.Screen;
@@ -18,8 +18,9 @@ import com.badlogic.gdx.utils.Align;
 import com.badlogic.gdx.utils.viewport.FitViewport;
 
 import io.crismp.foxGame.FoxGame;
-import io.crismp.foxGame.Tools.AssetsManager;
-import io.crismp.foxGame.Tools.GamePreferences;
+import io.crismp.foxGame.managers.AssetsManager;
+import io.crismp.foxGame.managers.LanguageManager;
+import io.crismp.foxGame.tools.GamePreferences;
 
 public class SettingMenuScreen implements Screen {
     private FoxGame game;
@@ -45,6 +46,7 @@ public class SettingMenuScreen implements Screen {
         lastSoundVolume = GamePreferences.getSoundVolume();
         stage = new Stage(new FitViewport(FoxGame.V_WIDTH * 2, FoxGame.V_HEIGHT * 2, new OrthographicCamera()));
         Gdx.input.setInputProcessor(stage);
+        LanguageManager.loadLanguage();
 
         // Fondo del menú
         backgroundTexture = AssetsManager.getTexture("ui/background.png");
@@ -56,15 +58,15 @@ public class SettingMenuScreen implements Screen {
         labelStyle.font = font;
 
         // Labels
-        Label lblOpciones = new Label("AJUSTES", labelStyle);
+        Label lblOpciones = new Label(LanguageManager.get("options").toUpperCase(), labelStyle);
         lblOpciones.setFontScale(1.25f);
-        Label lblMusica = new Label("MUSICA", labelStyle);
-        Label lblSonidos = new Label("SONIDOS", labelStyle);
-        Label lblVibracion = new Label("VIBRACION", labelStyle);
-        lblIdioma = new Label("IDIOMA", labelStyle);
+        Label lblMusica = new Label(LanguageManager.get("music").toUpperCase(), labelStyle);
+        Label lblSonidos = new Label(LanguageManager.get("sound").toUpperCase(), labelStyle);
+        Label lblVibracion = new Label(LanguageManager.get("vibration").toUpperCase(), labelStyle);
+        lblIdioma = new Label(LanguageManager.get("language").toUpperCase(), labelStyle);
 
         // Botón para cambiar de idioma
-        btnIdioma = createTextButton(GamePreferences.getLanguage(), () -> toggleIdioma());
+        btnIdioma = createTextButton(GamePreferences.getLanguage().equals("en")? "Espanol" : "English", () -> toggleIdioma());
         btnIdioma.padBottom(8);
 
         // Botones de Música, Sonido y Vibración (Toggle)
@@ -85,8 +87,8 @@ public class SettingMenuScreen implements Screen {
                 () -> game.setScreen(new MainMenuScreen(game)));
 
         // Botones de Créditos y Ayuda
-        TextButton btnCreditos = createTextButton("CREDITOS", () -> mostrarPopUp("ui/boton.png"));
-        TextButton btnAyuda = createTextButton("AYUDA", () -> mostrarPopUp("ui/boton.png"));
+        TextButton btnCreditos = createTextButton(LanguageManager.get("credits").toUpperCase(), () -> mostrarPopUp("ui/boton.png"));
+        TextButton btnAyuda = createTextButton(LanguageManager.get("help").toUpperCase(), () -> mostrarPopUp("ui/boton.png"));
 
         // Tabla para organizar los elementos
         Table table = new Table()
@@ -134,10 +136,10 @@ public class SettingMenuScreen implements Screen {
                 boolean newState = button.isChecked();
                 button.getStyle().imageUp = newState ? normal : pressed;
 
-                //Guardar en preferencias y actualizar slider en funcion de lo marcado
+                // Guardar en preferencias y actualizar slider en funcion de lo marcado
                 if (normalPath.equals("ui/musica.png")) {
                     if (GamePreferences.getMusicVolume() > 0) {
-                        lastMusicVolume = GamePreferences.getMusicVolume(); 
+                        lastMusicVolume = GamePreferences.getMusicVolume();
                         GamePreferences.setMusicVolume(0);
                     } else {
                         GamePreferences.setMusicVolume(lastMusicVolume > 0 ? lastMusicVolume : 0.5f);
@@ -214,6 +216,7 @@ public class SettingMenuScreen implements Screen {
                 game.playSound(game.clickSound2);
                 float value = slider.getValue();
 
+                
                 if (isMusic) {
                     musicVolume = value;
                     GamePreferences.setMusicVolume(value);
@@ -231,9 +234,15 @@ public class SettingMenuScreen implements Screen {
     // Método para cambiar idioma
     private void toggleIdioma() {
         game.playSound(game.clickSound3);
-        String nuevoIdioma = btnIdioma.getText().toString().contains("Espanol") ? "Ingles" : "Espanol";
-        btnIdioma.setText(nuevoIdioma);
+        System.out.println("Estaba en:"+GamePreferences.getLanguage());
+        String nuevoIdioma = GamePreferences.getLanguage().equals("es") ? "en" : "es";
         GamePreferences.setLanguage(nuevoIdioma);
+        LanguageManager.setLanguage(nuevoIdioma);
+        System.out.println("Idioma cambiado a: " + nuevoIdioma);
+        LanguageManager.loadLanguage();
+        System.out.println("Idioma cargado: " + LanguageManager.get("options"));
+        // Recargar la pantalla con el nuevo idioma
+        game.setScreen(new SettingMenuScreen(game));
     }
 
     // Método para mostrar un pop-up con una imagen
@@ -272,6 +281,7 @@ public class SettingMenuScreen implements Screen {
     @Override
     public void show() {
         game.playMusic("audio/music/joyful.ogg", true);
+        
     }
 
     @Override

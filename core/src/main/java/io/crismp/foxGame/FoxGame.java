@@ -8,10 +8,11 @@ import com.badlogic.gdx.audio.Music;
 import com.badlogic.gdx.audio.Sound;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 
-import io.crismp.foxGame.Screens.SplashScreen;
-import io.crismp.foxGame.Tools.AssetsManagerAudio;
-import io.crismp.foxGame.Tools.AssetsManager;
-import io.crismp.foxGame.Tools.GamePreferences;
+import io.crismp.foxGame.managers.AssetsManager;
+import io.crismp.foxGame.managers.AssetsManagerAudio;
+import io.crismp.foxGame.managers.LanguageManager;
+import io.crismp.foxGame.screens.SplashScreen;
+import io.crismp.foxGame.tools.GamePreferences;
 
 public class FoxGame extends Game {
 
@@ -50,6 +51,8 @@ public class FoxGame extends Game {
 
         // Cargar preferencias del juego
         GamePreferences.load();
+        LanguageManager.loadLanguage();
+    
 
         clickSound = AssetsManagerAudio.getSound("audio/sounds/ui/Wood1.wav");
         clickSound2 = AssetsManagerAudio.getSound("audio/sounds/ui/Wood2.wav");

@@ -1,4 +1,4 @@
-package io.crismp.foxGame.Sprites.tileObjects;
+package io.crismp.foxGame.sprites.tileObjects;
 
 import com.badlogic.gdx.physics.box2d.Body;
 import com.badlogic.gdx.physics.box2d.BodyDef;
@@ -9,7 +9,7 @@ import com.badlogic.gdx.physics.box2d.PolygonShape;
 import com.badlogic.gdx.physics.box2d.World;
 
 import io.crismp.foxGame.FoxGame;
-import io.crismp.foxGame.Screens.PlayScreen;
+import io.crismp.foxGame.screens.PlayScreen;
 
 import com.badlogic.gdx.maps.tiled.TiledMap;
 import com.badlogic.gdx.maps.tiled.TiledMapTile;

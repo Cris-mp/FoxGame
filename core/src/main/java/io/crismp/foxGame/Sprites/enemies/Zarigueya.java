@@ -1,4 +1,4 @@
-package io.crismp.foxGame.Sprites.enemies;
+package io.crismp.foxGame.sprites.enemies;
 
 import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.graphics.g2d.Animation;
@@ -12,8 +12,8 @@ import com.badlogic.gdx.physics.box2d.PolygonShape;
 import com.badlogic.gdx.utils.Array;
 
 import io.crismp.foxGame.FoxGame;
-import io.crismp.foxGame.Screens.PlayScreen;
-import io.crismp.foxGame.Tools.AssetsManager;
+import io.crismp.foxGame.managers.AssetsManager;
+import io.crismp.foxGame.screens.PlayScreen;
 
 public class Zarigueya extends Enemy {
     public enum State {
