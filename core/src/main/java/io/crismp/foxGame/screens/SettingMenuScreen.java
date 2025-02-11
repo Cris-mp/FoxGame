@@ -89,9 +89,9 @@ public class SettingMenuScreen implements Screen {
 
         // Botones de Créditos y Ayuda
         TextButton btnCreditos = createTextButton(LanguageManager.get("credits").toUpperCase(),
-                () -> mostrarPopUp("player/zorrito.png"));
+                () -> mostrarPopUp(false));
         TextButton btnAyuda = createTextButton(LanguageManager.get("help").toUpperCase(),
-                () -> mostrarPopUp("ui/boton.png"));
+                () -> mostrarPopUp(true));
 
         // Tabla para organizar los elementos
         Table table = new Table()
@@ -248,7 +248,7 @@ public class SettingMenuScreen implements Screen {
     }
 
     // Método para mostrar un pop-up con una imagen
-    private void mostrarPopUp(String imagePath) {
+    private void mostrarPopUp(boolean help) {
         Skin skin = new Skin();
         skin.add("default-font", font);
 
@@ -259,7 +259,7 @@ public class SettingMenuScreen implements Screen {
         skin.add("default", buttonStyle);
 
         TextButton btnSalir = new TextButton(LanguageManager.get("exit").toUpperCase(), buttonStyle);
-        btnSalir.getLabel().setFontScale(0.8f); 
+        btnSalir.getLabel().setFontScale(0.8f);
         btnSalir.setSize(100, 30);
 
         Window.WindowStyle windowStyle = new Window.WindowStyle();
@@ -271,46 +271,73 @@ public class SettingMenuScreen implements Screen {
 
         // 🟢 Crear la tabla para el contenido
         Table table = new Table();
-        
-       
-        // Agregar títulos y descripciones con imágenes
-        table.add(new Label(LanguageManager.get("help_1"), new Label.LabelStyle(font, Color.CYAN))).colspan(2);
-        table.row();
-        table.add(new Image(new Texture("ui/help/casa.png"))).colspan(2); // Imagen de Foxy
-        table.row();
-        table.add(new Label(LanguageManager.get("help1_2"), new Label.LabelStyle(font, Color.WHITE))).colspan(2).padTop(10);
-        table.row();
 
-        table.add(new Label(LanguageManager.get("help_2"), new Label.LabelStyle(font, Color.GREEN))).colspan(2).padTop(10);
-        table.row();
-        table.add(new Image(new Texture("ui/help/cherry.png"))).size(40,40);
-        table.add(new Label(LanguageManager.get("help2_1"), new Label.LabelStyle(font, Color.WHITE)));
-        table.row();
-        table.add(new Image(new Texture("ui/help/gema.png"))).size(40,40);
-        table.add(new Label(LanguageManager.get("help2_2"), new Label.LabelStyle(font, Color.WHITE)));
-        table.row();
+        if (help) {
+            // *** TABLA DE AYUDA ***
+            table.add(new Label(LanguageManager.get("help_1"), new Label.LabelStyle(font, Color.CYAN))).colspan(2);
+            table.row();
+            table.add(new Image(new Texture("ui/help/casa.png"))).colspan(2); // Imagen de Foxy
+            table.row();
+            table.add(new Label(LanguageManager.get("help1_2"), new Label.LabelStyle(font, Color.WHITE))).colspan(2)
+                    .padTop(10);
+            table.row();
 
-        table.add(new Label(LanguageManager.get("help_3"), new Label.LabelStyle(font, Color.RED))).colspan(2).padTop(10).padBottom(10);
-        table.row();
-        table.add(new Image(new Texture("ui/help/matar.png"))).size(50,60).padRight(-20);
-        Label enemigos = new Label(LanguageManager.get("help3_1"), new Label.LabelStyle(font, Color.WHITE));
-        enemigos.setWrap(true);
-        table.add(enemigos).width(200).padLeft(20);
-        table.row();
+            table.add(new Label(LanguageManager.get("help_2"), new Label.LabelStyle(font, Color.GREEN))).colspan(2)
+                    .padTop(10);
+            table.row();
+            table.add(new Image(new Texture("ui/help/cherry.png"))).size(40, 40);
+            table.add(new Label(LanguageManager.get("help2_1"), new Label.LabelStyle(font, Color.WHITE)));
+            table.row();
+            table.add(new Image(new Texture("ui/help/gema.png"))).size(40, 40);
+            table.add(new Label(LanguageManager.get("help2_2"), new Label.LabelStyle(font, Color.WHITE)));
+            table.row();
 
-        table.add(new Label(LanguageManager.get("help_4"), new Label.LabelStyle(font, Color.ORANGE))).colspan(2).padTop(10).padBottom(10);
-        table.row();
-        table.add(new Image(new Texture("ui/help/pinchos.png"))).size(50,50).padRight(-20);
-        Label pinchos = new Label(LanguageManager.get("help4_1"), new Label.LabelStyle(font, Color.WHITE));
-        pinchos.setWrap(true);
-        table.add(pinchos).width(200).padLeft(20);
-        table.row();
+            table.add(new Label(LanguageManager.get("help_3"), new Label.LabelStyle(font, Color.RED))).colspan(2)
+                    .padTop(10).padBottom(10);
+            table.row();
+            table.add(new Image(new Texture("ui/help/matar.png"))).size(50, 60).padRight(-20);
+            Label enemigos = new Label(LanguageManager.get("help3_1"), new Label.LabelStyle(font, Color.WHITE));
+            enemigos.setWrap(true);
+            table.add(enemigos).width(200).padLeft(20);
+            table.row();
 
+            table.add(new Label(LanguageManager.get("help_4"), new Label.LabelStyle(font, Color.ORANGE))).colspan(2)
+                    .padTop(10).padBottom(10);
+            table.row();
+            table.add(new Image(new Texture("ui/help/pinchos.png"))).size(50, 50).padRight(-20);
+            Label pinchos = new Label(LanguageManager.get("help4_1"), new Label.LabelStyle(font, Color.WHITE));
+            pinchos.setWrap(true);
+            table.add(pinchos).width(200).padLeft(20);
+            table.row();
+
+        } else {
+            // *** TABLA DE CREDITOS ***
+            table.add(new Label(LanguageManager.get("credits").toUpperCase(), new Label.LabelStyle(font, Color.GREEN)));
+            table.row();
+            Label cod = new Label(LanguageManager.get("autor"), new Label.LabelStyle(font, Color.WHITE));
+            cod.setWrap(true);
+            table.add(cod).width(250).padLeft(20);
+
+            table.row();
+            table.add(new Label(LanguageManager.get("art"), new Label.LabelStyle(font, Color.WHITE)))
+                    .padTop(10);
+            table.row();
+            table.add(new Label(LanguageManager.get("art_music"), new Label.LabelStyle(font, Color.WHITE)))
+                    .padTop(10);
+            table.row();
+
+            table.add(new Label(LanguageManager.get("acknowledgment").toUpperCase(), new Label.LabelStyle(font, Color.GREEN)))
+                    .padTop(10);
+            table.row();
+            table.add(new Label(LanguageManager.get("ack1"), new Label.LabelStyle(font, Color.WHITE)));
+            table.row();
+            table.add(new Label(LanguageManager.get("ack2"), new Label.LabelStyle(font, Color.WHITE)));
+        }
 
         // 🟢 Agregar la tabla a un ScrollPane
         ScrollPane scrollPane = new ScrollPane(table);
         scrollPane.setScrollingDisabled(true, false);
-    
+
         dialog.getContentTable().add(scrollPane).size(300, 300).padTop(20);
         dialog.button(btnSalir).padBottom(20);
         dialog.show(stage);
