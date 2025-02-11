@@ -7,6 +7,7 @@ import com.badlogic.gdx.physics.box2d.Fixture;
 import com.badlogic.gdx.physics.box2d.Manifold;
 
 import io.crismp.foxGame.FoxGame;
+import io.crismp.foxGame.screens.PlayScreen;
 import io.crismp.foxGame.sprites.Foxy;
 import io.crismp.foxGame.sprites.enemies.Enemy;
 import io.crismp.foxGame.sprites.items.Item;
@@ -26,6 +27,11 @@ public class WorldContactListener implements ContactListener {
         System.out.println("Colisión detectada: " + fixA.getFilterData().categoryBits + " con "
                 + fixB.getFilterData().categoryBits);
         switch (cDef) {
+            case FoxGame.FOX_BIT | FoxGame.GROUND_BIT:
+            case FoxGame.FOX_BIT | FoxGame.OBSTACLE_BIT:
+            PlayScreen.colision=true;
+            break;
+
             case FoxGame.FOX_BIT | FoxGame.ENEMY_HEAD_BIT:
                 if (fixA.getFilterData().categoryBits == FoxGame.ENEMY_HEAD_BIT)
                     ((Enemy) fixA.getUserData()).hitOnHead();
@@ -48,6 +54,7 @@ public class WorldContactListener implements ContactListener {
                 break;
 
             case FoxGame.FOX_BIT | FoxGame.PINCHOS_BIT:
+                 PlayScreen.colision=true;
             case FoxGame.FOX_BIT | FoxGame.ENEMY_BIT:
                 System.out.println("entro");
                 Foxy foxy = null;

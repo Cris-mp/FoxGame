@@ -52,13 +52,10 @@ public class PlayScreen implements Screen {
     VirtualJoystick joystick;
     float accumulator;
     float timeStep;
+    public static boolean colision;
 
-    // Parallax
-    // private ParallaxLayer backgroundLayer1;
-    // private ParallaxLayer backgroundLayer2;
-    // private Texture bgTexture1;
-    // private Texture bgTexture2;
     float mapWidthInUnits, mapHeightInUnits;
+
 
     public PlayScreen(FoxGame game, int nivelActual) {
         accumulator = 0f;
@@ -66,6 +63,7 @@ public class PlayScreen implements Screen {
         cherriesCollected = 0;
         gemsCollected = 0;
         newLife = 6;
+        colision = false;
         this.game = game;
         this.joystick = new VirtualJoystick(0, 0, 2, 1);
         gamecam = new OrthographicCamera();
@@ -108,19 +106,7 @@ public class PlayScreen implements Screen {
 
         world.setContactListener(new WorldContactListener());
 
-
-        // // Cargar texturas del fondo
-        // bgTexture1 = new Texture("maps/back.png");
-        // bgTexture2 = new Texture("maps/middle.png");
-
-        // // Crear capas de parallax
-        // backgroundLayer1 = new ParallaxLayer(bgTexture1, 0.2f, true, false, 0); //
-        // Capa más lejana
-        // backgroundLayer2 = new ParallaxLayer(bgTexture2, 0.5f, true, false, 260); //
-        // Capa intermedia más abajo
-        // backgroundLayer1.setCamera(new OrthographicCamera());
-        // backgroundLayer2.setCamera(new OrthographicCamera());
-
+        // Obtenemos las propiedades del mapa
         MapProperties prop = map.getProperties();
         int mapWidth = prop.get("width", Integer.class);
         int mapHeight = prop.get("height", Integer.class);
@@ -129,6 +115,7 @@ public class PlayScreen implements Screen {
         // Calcular el tamaño total del mapa en unidades del mundo
         mapWidthInUnits = (mapWidth * tileSize) / FoxGame.PPM;
         mapHeightInUnits = (mapHeight * tileSize) / FoxGame.PPM;
+
     }
 
     public int getCherriesCollected() {
@@ -149,14 +136,16 @@ public class PlayScreen implements Screen {
             player.velX = 0;
             if (Gdx.app.getType() == ApplicationType.Android) {
                 if (joystick.isJumpPressed() && player.jumpCounter < 2) {
+                    player.body.setLinearVelocity(0, 0);
                     player.body.applyLinearImpulse(new Vector2(0, 2.5f), player.body.getWorldCenter(), true);
                     player.jumpCounter++;
                     joystick.setJumpPressed(false);
                 }
 
                 // reseteamos el contador de salto
-                if (player.body.getLinearVelocity().y == 0) {
+                if (player.body.getLinearVelocity().y == 0 && colision) {
                     player.jumpCounter = 0;
+                    colision = false;
                 }
 
                 if (player.getOnLadder() && joystick.getDirection().y > 0) {
@@ -176,12 +165,14 @@ public class PlayScreen implements Screen {
                 }
 
                 if (Gdx.input.isKeyJustPressed(Input.Keys.SPACE) && player.jumpCounter < 2) {
+                    player.body.setLinearVelocity(0, 0);
                     player.body.applyLinearImpulse(new Vector2(0, 2.5f), player.body.getWorldCenter(), true);
                     player.jumpCounter++;
                 }
                 // reseteamos el contador de salto
-                if (player.body.getLinearVelocity().y == 0) {
+                if (player.body.getLinearVelocity().y == 0 && colision) {
                     player.jumpCounter = 0;
+                    colision = false;
                 }
 
                 if (player.getOnLadder() && Gdx.input.isKeyPressed(Input.Keys.W)) {
@@ -195,6 +186,7 @@ public class PlayScreen implements Screen {
     }
 
     public void update(float dt) {
+        System.out.println(colision);
         // Asegura que las físicas se actualicen con una tasa fija, sin importar la tasa
         // de refresco de la pantalla.
         accumulator += dt;
@@ -261,13 +253,14 @@ public class PlayScreen implements Screen {
 
         // renderizador del juego
         renderer.render();
+
         // renderizamos el Box2DDebugLines
         b2dr.render(world, gamecam.combined);
 
         game.batch.setProjectionMatrix(gamecam.combined);
+
         game.batch.begin();
-        // backgroundLayer1.render(game.batch); // Dibujar capa más lejana
-        // backgroundLayer2.render(game.batch); // Dibujar capa intermedia
+
         player.draw(game.batch);
 
         for (Enemy enemy : creator.getZarigueyas()) {
@@ -339,9 +332,6 @@ public class PlayScreen implements Screen {
         world.dispose();
         b2dr.dispose();
         hud.dispose();
-
-        // bgTexture1.dispose();
-        // bgTexture2.dispose();
     }
 
     public FoxGame getGame() {
