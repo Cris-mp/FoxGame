@@ -13,6 +13,7 @@ import com.badlogic.gdx.utils.Array;
 
 import io.crismp.foxGame.FoxGame;
 import io.crismp.foxGame.managers.AssetsManager;
+import io.crismp.foxGame.managers.AssetsManagerAudio;
 import io.crismp.foxGame.screens.PlayScreen;
 
 public class Zarigueya extends Enemy {
@@ -116,6 +117,7 @@ public class Zarigueya extends Enemy {
     @Override
     public void hitOnHead() {
         setToDestroy = true;
+        AssetsManagerAudio.getSound("audio/sounds/player/Impact.wav").play();
     }
 
     public TextureRegion getFrame(float delta) {

@@ -16,7 +16,9 @@ public class AssetsManagerAudio {
         manager.load("audio/sounds/ui/Wood1.wav", Sound.class);
         manager.load("audio/sounds/ui/Wood2.wav", Sound.class);
         manager.load("audio/sounds/ui/Wood3.wav", Sound.class);
-        
+        manager.load("audio/sounds/player/SFX_Jump_07.wav", Sound.class);
+        manager.load("audio/sounds/player/Stone Run 2.wav", Sound.class);
+        manager.load("audio/sounds/player/Impact.wav", Sound.class);
     }
     public static void finishLoading() {
         manager.finishLoading();

@@ -4,6 +4,7 @@ import com.badlogic.gdx.Application.ApplicationType;
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.Input;
 import com.badlogic.gdx.Screen;
+import com.badlogic.gdx.audio.Sound;
 import com.badlogic.gdx.graphics.GL20;
 import com.badlogic.gdx.graphics.OrthographicCamera;
 import com.badlogic.gdx.maps.MapProperties;
@@ -16,6 +17,7 @@ import com.badlogic.gdx.physics.box2d.World;
 import com.badlogic.gdx.utils.viewport.FitViewport;
 import com.badlogic.gdx.utils.viewport.Viewport;
 import io.crismp.foxGame.FoxGame;
+import io.crismp.foxGame.managers.AssetsManagerAudio;
 import io.crismp.foxGame.scenes.Hud;
 import io.crismp.foxGame.sprites.Foxy;
 import io.crismp.foxGame.sprites.enemies.Enemy;
@@ -55,6 +57,7 @@ public class PlayScreen implements Screen {
     public static boolean colision;
 
     float mapWidthInUnits, mapHeightInUnits;
+    Sound jump,run;
 
 
     public PlayScreen(FoxGame game, int nivelActual) {
@@ -116,6 +119,11 @@ public class PlayScreen implements Screen {
         mapWidthInUnits = (mapWidth * tileSize) / FoxGame.PPM;
         mapHeightInUnits = (mapHeight * tileSize) / FoxGame.PPM;
 
+        jump=AssetsManagerAudio.getSound("audio/sounds/player/SFX_Jump_07.wav");
+        run=AssetsManagerAudio.getSound("audio/sounds/player/Stone Run 2.wav");
+
+       
+
     }
 
     public int getCherriesCollected() {
@@ -158,6 +166,7 @@ public class PlayScreen implements Screen {
                 }
             } else {
                 if (Gdx.input.isKeyPressed(Input.Keys.D)) {
+                   
                     player.velX = 1f;
                 }
                 if (Gdx.input.isKeyPressed(Input.Keys.A)) {
@@ -165,6 +174,7 @@ public class PlayScreen implements Screen {
                 }
 
                 if (Gdx.input.isKeyJustPressed(Input.Keys.SPACE) && player.jumpCounter < 2) {
+                    jump.play();
                     player.body.setLinearVelocity(0, 0);
                     player.body.applyLinearImpulse(new Vector2(0, 2.5f), player.body.getWorldCenter(), true);
                     player.jumpCounter++;
@@ -181,9 +191,13 @@ public class PlayScreen implements Screen {
 
                 player.body.setLinearVelocity(player.velX * player.speed,
                         Math.min(player.body.getLinearVelocity().y, 15));
+                        
             }
         }
     }
+
+    private float stepTimer = 0f;
+private float stepInterval = 0.3f;
 
     public void update(float dt) {
         System.out.println(colision);
@@ -196,6 +210,16 @@ public class PlayScreen implements Screen {
         }
         // world.step(dt, 6, 2);
         handleInput(dt);
+
+        if ((Gdx.input.isKeyPressed(Input.Keys.A) || Gdx.input.isKeyPressed(Input.Keys.D)&&player.body.getLinearVelocity().y==0)) { 
+            stepTimer += dt;
+            if (stepTimer >= stepInterval) {
+                stepTimer = 0;
+                run.play();
+            }
+        } else {
+            stepTimer = 0; // Reiniciar cuando no se mueve
+        }
 
         player.update(dt);
         hud.updateHud(newLife, cherriesCollected, gemsCollected);
