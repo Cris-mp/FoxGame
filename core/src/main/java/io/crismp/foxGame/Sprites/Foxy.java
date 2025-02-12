@@ -36,7 +36,7 @@ public class Foxy extends Sprite {
 		FALLING, JUMPING, STANDING, RUNNING, CLIMBING, HURT, DEAD
 	}
 
-	private static final float HURT_DURATION = 2f;
+	private static final float HURT_DURATION = 1f;
 
 	protected PlayScreen screen;
 	public State currenState;
@@ -227,7 +227,7 @@ public class Foxy extends Sprite {
 		if (body.getLinearVelocity().x != 0 && !onLadder) {
 			return State.RUNNING;
 		}
-		if (body.getLinearVelocity().y > 0 && onLadder) {
+		if (body.getLinearVelocity().y !=0 && onLadder) {
 			return State.CLIMBING;
 		}
 		return State.STANDING;

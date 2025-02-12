@@ -25,24 +25,25 @@ public class Cherry extends Item {
     private float stateTime;
     private Fixture fixture;
     private Sound itemSound;
+    private boolean collected;
 
     public Cherry(PlayScreen screen, Rectangle rect) {
         super(screen, rect);
-
+        collected = false;
         cherryTexture = AssetsManager.getTexture("items/cherry.png");
         Array<TextureRegion> frames = new Array<TextureRegion>();
         for (int i = 0; i < 5; i++) {
             frames.add(new TextureRegion(cherryTexture, i * 21, 0, cherryTexture.getWidth() / 5,
                     cherryTexture.getHeight()));
         }
-        for (int i = 5-1; i >= 0; i--) {
+        for (int i = 5 - 1; i >= 0; i--) {
             frames.add(new TextureRegion(cherryTexture, i * 21, 0, cherryTexture.getWidth() / 5,
                     cherryTexture.getHeight()));
         }
         cherryAnimation = new Animation<>(0.1f, frames);
 
         stateTime = 0;
-        itemSound=AssetsManagerAudio.getSound("audio/sounds/coin.ogg");
+        itemSound = AssetsManagerAudio.getSound("audio/sounds/item/coin.ogg");
     }
 
     @Override
@@ -61,16 +62,20 @@ public class Cherry extends Item {
         fdef.filter.maskBits = FoxGame.FOX_BIT;
 
         fdef.shape = shape;
-        fixture=body.createFixture(fdef);
+        fixture = body.createFixture(fdef);
         fixture.setUserData(this);
         fixture.setSensor(true);
     }
 
     @Override
     public void use(Foxy foxy) {
-        screen.addCherry();
-        screen.game.playSound(itemSound);
-        destroy();
+        if (!collected) { // Asegura que solo se recoja una vez
+            collected = true;
+            System.out.println("Gem Collected");
+            screen.addCherry();
+            screen.game.playSound(itemSound);
+            destroy();
+        }
     }
 
     @Override

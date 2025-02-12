@@ -57,8 +57,7 @@ public class PlayScreen implements Screen {
     public static boolean colision;
 
     float mapWidthInUnits, mapHeightInUnits;
-    Sound jump,run;
-
+    Sound jump, run;
 
     public PlayScreen(FoxGame game, int nivelActual) {
         accumulator = 0f;
@@ -119,8 +118,8 @@ public class PlayScreen implements Screen {
         mapWidthInUnits = (mapWidth * tileSize) / FoxGame.PPM;
         mapHeightInUnits = (mapHeight * tileSize) / FoxGame.PPM;
 
-        jump=AssetsManagerAudio.getSound("audio/sounds/player/jump.ogg");
-        run=AssetsManagerAudio.getSound("audio/sounds/player/grass.ogg");
+        jump = AssetsManagerAudio.getSound("audio/sounds/player/jump.ogg");
+        run = AssetsManagerAudio.getSound("audio/sounds/player/Step_rock.ogg");
 
     }
 
@@ -155,14 +154,18 @@ public class PlayScreen implements Screen {
                     colision = false;
                 }
 
-                if (player.getOnLadder() && joystick.getDirection().y > 0) {
-
-                    player.body.setLinearVelocity(0, player.velY = 1f);
-                } else {
-                    player.body.setLinearVelocity(joystick.getDirection().x * player.speed,
-
-                            Math.min(player.body.getLinearVelocity().y, 15));
+                if (player.getOnLadder() && joystick.getDirection().y > 0.9f) {
+                    player.body.setLinearVelocity(0, player.velY = 0.5f);
+                } else if (player.getOnLadder() && joystick.getDirection().y < -0.9f) {
+                    player.body.setLinearVelocity(0, player.velY = -0.5f);
+                } else if (player.getOnLadder()){
+                    player.body.setLinearVelocity(0, 0);
                 }
+
+                player.body.setLinearVelocity(joystick.getDirection().x * player.speed,
+                Math.min(player.body.getLinearVelocity().y, 15));
+
+
             } else {
                 if (Gdx.input.isKeyPressed(Input.Keys.D)) {
 
@@ -185,8 +188,14 @@ public class PlayScreen implements Screen {
                 }
 
                 if (player.getOnLadder() && Gdx.input.isKeyPressed(Input.Keys.W)) {
-                    player.body.setLinearVelocity(0, player.velY = 1f);
-                }
+                        player.body.setLinearVelocity(0, player.velY = 0.5f);
+                    } else if (player.getOnLadder() && Gdx.input.isKeyPressed(Input.Keys.S)) {
+                        player.body.setLinearVelocity(0, player.velY = -0.5f);
+                    } else if (player.getOnLadder()){
+                        player.body.setLinearVelocity(0, 0);
+                        player.velY = 0;
+                    }
+                
 
                 player.body.setLinearVelocity(player.velX * player.speed,
                         Math.min(player.body.getLinearVelocity().y, 15));
@@ -196,10 +205,10 @@ public class PlayScreen implements Screen {
     }
 
     private float stepTimer = 0f;
-private float stepInterval = 0.3f;
+    private float stepInterval = 0.3f;
 
     public void update(float dt) {
-
+        System.out.println(player.getOnLadder());
         // Asegura que las físicas se actualicen con una tasa fija, sin importar la tasa
         // de refresco de la pantalla.
         accumulator += dt;
@@ -209,8 +218,12 @@ private float stepInterval = 0.3f;
         }
         // world.step(dt, 6, 2);
         handleInput(dt);
-
-        if ((player.body.getLinearVelocity().x!=0&&player.body.getLinearVelocity().y==0)) {
+        if (player.getOnLadder()) {
+            world.setGravity(new Vector2(0, 0));  // Desactiva la gravedad mientras está en la escalera
+        } else {
+            world.setGravity(new Vector2(0, -9.8f));  // Vuelve a la gravedad normal
+        }
+        if ((player.body.getLinearVelocity().x != 0 && player.body.getLinearVelocity().y == 0)) {
             stepTimer += dt;
             if (stepTimer >= stepInterval) {
                 stepTimer = 0;

@@ -117,7 +117,7 @@ public class Zarigueya extends Enemy {
     @Override
     public void hitOnHead() {
         setToDestroy = true;
-        screen.game.playSound(AssetsManagerAudio.getSound("audio/sounds/player/Impact.wav"));
+        screen.game.playSound(AssetsManagerAudio.getSound("audio/sounds/player/Impact.ogg"));
     }
 
     public TextureRegion getFrame(float delta) {

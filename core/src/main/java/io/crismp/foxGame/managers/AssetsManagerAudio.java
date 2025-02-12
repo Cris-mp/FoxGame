@@ -17,10 +17,11 @@ public class AssetsManagerAudio {
         manager.load("audio/sounds/ui/Wood2.wav", Sound.class);
         manager.load("audio/sounds/ui/Wood3.wav", Sound.class);
         manager.load("audio/sounds/player/jump.ogg", Sound.class);
-        manager.load("audio/sounds/player/grass.ogg", Sound.class);
-        manager.load("audio/sounds/player/Impact.wav", Sound.class);
+        manager.load("audio/sounds/player/Step_rock.ogg", Sound.class);
+        manager.load("audio/sounds/player/Impact.ogg", Sound.class);
         manager.load("audio/sounds/player/hit.ogg", Sound.class);
-        manager.load("audio/sounds/coin.ogg", Sound.class);
+        manager.load("audio/sounds/item/coin.ogg", Sound.class);
+        manager.load("audio/sounds/item/gem.ogg", Sound.class);
     }
     public static void finishLoading() {
         manager.finishLoading();

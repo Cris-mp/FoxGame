@@ -15,9 +15,6 @@ import io.crismp.foxGame.sprites.tileObjects.Pinchos;
 
 //Que ocurre cuando dos accesorios de Box2D chocan entre si
 public class WorldContactListener implements ContactListener {
-    Foxy player;
-
-
 
     // inicio de conexion o colision
     @Override

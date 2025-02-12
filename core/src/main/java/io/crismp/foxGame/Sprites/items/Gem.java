@@ -23,10 +23,11 @@ public class Gem extends Item{
     private float stateTime;
     private Fixture fixture;
         private Sound itemSound;
+        private boolean collected;
 
     public Gem(PlayScreen screen, Rectangle rect) {
         super(screen, rect);
-
+        collected = false;
         gemTexture = AssetsManager.getTexture("items/gem.png");
         Array<TextureRegion> frames = new Array<TextureRegion>();
         for (int i = 0; i < 5; i++) {
@@ -36,7 +37,7 @@ public class Gem extends Item{
         gemAnimation = new Animation<>(0.1f, frames);
 
         stateTime = 0;
-        itemSound=AssetsManagerAudio.getSound("audio/sounds/coin.ogg");
+        itemSound=AssetsManagerAudio.getSound("audio/sounds/item/gem.ogg");
 
     }
 
@@ -63,9 +64,13 @@ public class Gem extends Item{
 
     @Override
     public void use(Foxy foxy) {
+        if (!collected) { // Asegura que solo se recoja una vez
+            collected = true; 
+        System.out.println("Gem Collected");
         screen.addGem();
         screen.game.playSound(itemSound);
         destroy();
+        }
     }
 
     @Override
