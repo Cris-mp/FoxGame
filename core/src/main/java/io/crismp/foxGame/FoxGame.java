@@ -33,7 +33,7 @@ public class FoxGame extends Game {
     public static final short ENEMY_HEAD_BIT = 128; // 0000000010000000
 
     public static final short LADDER_BIT = 256; // 0000000100000000
-    public static final short PINCHOS_BIT = 512; // 0000001000000000
+    public static final short SPIKES_BIT = 512; // 0000001000000000
     public static final short ITEM_BIT = 1024; // 0000010000000000
     public static final short END_GAME_BIT = 2048; // 0000100000000000
 
@@ -52,7 +52,7 @@ public class FoxGame extends Game {
         // Cargar preferencias del juego
         GamePreferences.load();
         LanguageManager.loadLanguage();
-    
+
 
         clickSound = AssetsManagerAudio.getSound("audio/sounds/ui/Wood1.wav");
         clickSound2 = AssetsManagerAudio.getSound("audio/sounds/ui/Wood2.wav");

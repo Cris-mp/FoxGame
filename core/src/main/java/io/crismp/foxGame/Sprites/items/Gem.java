@@ -1,5 +1,6 @@
 package io.crismp.foxGame.sprites.items;
 
+import com.badlogic.gdx.audio.Sound;
 import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.graphics.g2d.Animation;
 import com.badlogic.gdx.graphics.g2d.TextureRegion;
@@ -12,6 +13,7 @@ import com.badlogic.gdx.utils.Array;
 
 import io.crismp.foxGame.FoxGame;
 import io.crismp.foxGame.managers.AssetsManager;
+import io.crismp.foxGame.managers.AssetsManagerAudio;
 import io.crismp.foxGame.screens.PlayScreen;
 import io.crismp.foxGame.sprites.Foxy;
 
@@ -20,6 +22,7 @@ public class Gem extends Item{
     private Texture gemTexture;
     private float stateTime;
     private Fixture fixture;
+        private Sound itemSound;
 
     public Gem(PlayScreen screen, Rectangle rect) {
         super(screen, rect);
@@ -33,6 +36,7 @@ public class Gem extends Item{
         gemAnimation = new Animation<>(0.1f, frames);
 
         stateTime = 0;
+        itemSound=AssetsManagerAudio.getSound("audio/sounds/coin.ogg");
 
     }
 
@@ -60,6 +64,7 @@ public class Gem extends Item{
     @Override
     public void use(Foxy foxy) {
         screen.addGem();
+        screen.game.playSound(itemSound);
         destroy();
     }
 

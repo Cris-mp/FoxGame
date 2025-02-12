@@ -1,5 +1,6 @@
 package io.crismp.foxGame.sprites.items;
 
+import com.badlogic.gdx.audio.Sound;
 import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.graphics.g2d.Animation;
 import com.badlogic.gdx.graphics.g2d.TextureRegion;
@@ -12,15 +13,18 @@ import com.badlogic.gdx.utils.Array;
 
 import io.crismp.foxGame.FoxGame;
 import io.crismp.foxGame.managers.AssetsManager;
+import io.crismp.foxGame.managers.AssetsManagerAudio;
 import io.crismp.foxGame.screens.PlayScreen;
 import io.crismp.foxGame.sprites.Foxy;
 
 public class Cherry extends Item {
 
     private Animation<TextureRegion> cherryAnimation;
+
     private Texture cherryTexture;
     private float stateTime;
     private Fixture fixture;
+    private Sound itemSound;
 
     public Cherry(PlayScreen screen, Rectangle rect) {
         super(screen, rect);
@@ -38,7 +42,7 @@ public class Cherry extends Item {
         cherryAnimation = new Animation<>(0.1f, frames);
 
         stateTime = 0;
-
+        itemSound=AssetsManagerAudio.getSound("audio/sounds/coin.ogg");
     }
 
     @Override
@@ -65,6 +69,7 @@ public class Cherry extends Item {
     @Override
     public void use(Foxy foxy) {
         screen.addCherry();
+        screen.game.playSound(itemSound);
         destroy();
     }
 

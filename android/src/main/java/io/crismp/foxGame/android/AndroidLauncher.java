@@ -7,7 +7,6 @@ import com.badlogic.gdx.backends.android.AndroidApplicationConfiguration;
 import java.util.Locale;
 
 import io.crismp.foxGame.FoxGame;
-import io.crismp.foxGame.tools.GamePreferences;
 
 /** Launches the Android application. */
 public class AndroidLauncher extends AndroidApplication {

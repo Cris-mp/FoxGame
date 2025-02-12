@@ -28,7 +28,7 @@ import io.crismp.foxGame.tools.VirtualJoystick;
 import io.crismp.foxGame.tools.WorldContactListener;
 
 public class PlayScreen implements Screen {
-    private FoxGame game;
+    public FoxGame game;
 
     private OrthographicCamera gamecam;
 
@@ -119,10 +119,8 @@ public class PlayScreen implements Screen {
         mapWidthInUnits = (mapWidth * tileSize) / FoxGame.PPM;
         mapHeightInUnits = (mapHeight * tileSize) / FoxGame.PPM;
 
-        jump=AssetsManagerAudio.getSound("audio/sounds/player/SFX_Jump_07.wav");
-        run=AssetsManagerAudio.getSound("audio/sounds/player/Stone Run 2.wav");
-
-       
+        jump=AssetsManagerAudio.getSound("audio/sounds/player/jump.ogg");
+        run=AssetsManagerAudio.getSound("audio/sounds/player/grass.ogg");
 
     }
 
@@ -144,6 +142,7 @@ public class PlayScreen implements Screen {
             player.velX = 0;
             if (Gdx.app.getType() == ApplicationType.Android) {
                 if (joystick.isJumpPressed() && player.jumpCounter < 2) {
+                    game.playSound(jump);
                     player.body.setLinearVelocity(0, 0);
                     player.body.applyLinearImpulse(new Vector2(0, 2.5f), player.body.getWorldCenter(), true);
                     player.jumpCounter++;
@@ -166,7 +165,7 @@ public class PlayScreen implements Screen {
                 }
             } else {
                 if (Gdx.input.isKeyPressed(Input.Keys.D)) {
-                   
+
                     player.velX = 1f;
                 }
                 if (Gdx.input.isKeyPressed(Input.Keys.A)) {
@@ -174,7 +173,7 @@ public class PlayScreen implements Screen {
                 }
 
                 if (Gdx.input.isKeyJustPressed(Input.Keys.SPACE) && player.jumpCounter < 2) {
-                    jump.play();
+                    game.playSound(jump);
                     player.body.setLinearVelocity(0, 0);
                     player.body.applyLinearImpulse(new Vector2(0, 2.5f), player.body.getWorldCenter(), true);
                     player.jumpCounter++;
@@ -191,7 +190,7 @@ public class PlayScreen implements Screen {
 
                 player.body.setLinearVelocity(player.velX * player.speed,
                         Math.min(player.body.getLinearVelocity().y, 15));
-                        
+
             }
         }
     }
@@ -200,7 +199,7 @@ public class PlayScreen implements Screen {
 private float stepInterval = 0.3f;
 
     public void update(float dt) {
-        System.out.println(colision);
+
         // Asegura que las físicas se actualicen con una tasa fija, sin importar la tasa
         // de refresco de la pantalla.
         accumulator += dt;
@@ -211,11 +210,11 @@ private float stepInterval = 0.3f;
         // world.step(dt, 6, 2);
         handleInput(dt);
 
-        if ((Gdx.input.isKeyPressed(Input.Keys.A) || Gdx.input.isKeyPressed(Input.Keys.D)&&player.body.getLinearVelocity().y==0)) { 
+        if ((player.body.getLinearVelocity().x!=0&&player.body.getLinearVelocity().y==0)) {
             stepTimer += dt;
             if (stepTimer >= stepInterval) {
                 stepTimer = 0;
-                run.play();
+                game.playSound(run);
             }
         } else {
             stepTimer = 0; // Reiniciar cuando no se mueve

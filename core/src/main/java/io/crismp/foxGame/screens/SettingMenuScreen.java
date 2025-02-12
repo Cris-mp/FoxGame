@@ -236,13 +236,12 @@ public class SettingMenuScreen implements Screen {
     // Método para cambiar idioma
     private void toggleIdioma() {
         game.playSound(game.clickSound3);
-        System.out.println("Estaba en:" + GamePreferences.getLanguage());
+
         String nuevoIdioma = GamePreferences.getLanguage().equals("es") ? "en" : "es";
         GamePreferences.setLanguage(nuevoIdioma);
         LanguageManager.setLanguage(nuevoIdioma);
-        System.out.println("Idioma cambiado a: " + nuevoIdioma);
         LanguageManager.loadLanguage();
-        System.out.println("Idioma cargado: " + LanguageManager.get("options"));
+
         // Recargar la pantalla con el nuevo idioma
         game.setScreen(new SettingMenuScreen(game));
     }
@@ -326,7 +325,8 @@ public class SettingMenuScreen implements Screen {
                     .padTop(10);
             table.row();
 
-            table.add(new Label(LanguageManager.get("acknowledgment").toUpperCase(), new Label.LabelStyle(font, Color.GREEN)))
+            table.add(new Label(LanguageManager.get("acknowledgment").toUpperCase(),
+                    new Label.LabelStyle(font, Color.GREEN)))
                     .padTop(10);
             table.row();
             table.add(new Label(LanguageManager.get("ack1"), new Label.LabelStyle(font, Color.WHITE)));

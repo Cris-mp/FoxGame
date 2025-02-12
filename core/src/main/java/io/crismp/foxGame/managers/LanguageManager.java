@@ -30,7 +30,6 @@ public class LanguageManager {
 
     // Cambiar idioma manualmente
     public static void setLanguage(String langCode) {
-        System.out.println("Entro enleng" + langCode);
         prefs.putString("language", langCode);
         prefs.flush();
         loadLanguage();

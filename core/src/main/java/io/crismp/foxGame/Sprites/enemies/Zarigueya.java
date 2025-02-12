@@ -87,7 +87,7 @@ public class Zarigueya extends Enemy {
         fdef.filter.maskBits = FoxGame.GROUND_BIT | FoxGame.FLOOR_BIT |
                                FoxGame.WALL_BIT | FoxGame.OBSTACLE_BIT |
                                FoxGame.LADDER_BIT | FoxGame.FOX_BIT |
-                               FoxGame.PINCHOS_BIT;
+                               FoxGame.SPIKES_BIT;
         fdef.shape = shape;
         fdef.density = 200f; // 🔥 Aumentar densidad para evitar que Foxy lo mueva
         fdef.friction = 2f; // 🔥 Aumentar fricción para que no resbale
@@ -117,7 +117,7 @@ public class Zarigueya extends Enemy {
     @Override
     public void hitOnHead() {
         setToDestroy = true;
-        AssetsManagerAudio.getSound("audio/sounds/player/Impact.wav").play();
+        screen.game.playSound(AssetsManagerAudio.getSound("audio/sounds/player/Impact.wav"));
     }
 
     public TextureRegion getFrame(float delta) {

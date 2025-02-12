@@ -22,6 +22,7 @@ import com.badlogic.gdx.utils.Array;
 
 import io.crismp.foxGame.FoxGame;
 import io.crismp.foxGame.managers.AssetsManager;
+import io.crismp.foxGame.managers.AssetsManagerAudio;
 import io.crismp.foxGame.screens.PlayScreen;
 import io.crismp.foxGame.sprites.enemies.Enemy;
 import io.crismp.foxGame.sprites.tileObjects.Pinchos;
@@ -244,6 +245,7 @@ public class Foxy extends Sprite {
 			foxyIsHurt = true;
 			hurtTimer = 0;
 			life--;
+            screen.game.playSound(AssetsManagerAudio.getSound("audio/sounds/player/hit.ogg"));
             if(GamePreferences.isVibrationEnabled() && !foxyIsDead){
                 Gdx.input.vibrate(1000);
             }
@@ -271,7 +273,7 @@ public class Foxy extends Sprite {
 		fdef.filter.categoryBits = FoxGame.FOX_BIT;
 		fdef.filter.maskBits = FoxGame.GROUND_BIT | FoxGame.FLOOR_BIT |
 							   FoxGame.WALL_BIT | FoxGame.OBSTACLE_BIT|
-							   FoxGame.ENEMY_BIT | FoxGame.PINCHOS_BIT |
+							   FoxGame.ENEMY_BIT | FoxGame.SPIKES_BIT |
 							   FoxGame.LADDER_BIT | FoxGame.ITEM_BIT|
 							   FoxGame.ENEMY_HEAD_BIT|FoxGame.END_GAME_BIT;
 		fdef.shape = shape;
