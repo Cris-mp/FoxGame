@@ -59,7 +59,7 @@ public class Cherry extends Item {
         PolygonShape shape = new PolygonShape();
         shape.setAsBox(5 / FoxGame.PPM, 5 / FoxGame.PPM);
         fdef.filter.categoryBits = FoxGame.ITEM_BIT;
-        fdef.filter.maskBits = FoxGame.FOX_BIT;
+        fdef.filter.maskBits = FoxGame.FOX_BIT| FoxGame.FOX_HEAD_BIT;
 
         fdef.shape = shape;
         fixture = body.createFixture(fdef);
@@ -71,7 +71,6 @@ public class Cherry extends Item {
     public void use(Foxy foxy) {
         if (!collected) { // Asegura que solo se recoja una vez
             collected = true;
-            System.out.println("Gem Collected");
             screen.addCherry();
             screen.game.playSound(itemSound);
             destroy();

@@ -28,12 +28,9 @@ import io.crismp.foxGame.sprites.enemies.Enemy;
 import io.crismp.foxGame.sprites.tileObjects.Pinchos;
 import io.crismp.foxGame.tools.GamePreferences;
 
-
-
-
 public class Foxy extends Sprite {
 	public enum State {
-		FALLING, JUMPING, STANDING, RUNNING, CLIMBING, HURT, DEAD
+		FALLING, JUMPING, STANDING, RUNNING, CLIMBING, CLIMB, HURT, DEAD
 	}
 
 	private static final float HURT_DURATION = 1f;
@@ -46,12 +43,13 @@ public class Foxy extends Sprite {
 
 	private Animation<TextureRegion> foxRun;
 	private Animation<TextureRegion> foxSt;
-	private Animation<TextureRegion> foxClimb;
+	private Animation<TextureRegion> foxClimbing;
 	private Animation<TextureRegion> foxHurt;
 
 	TextureRegion foxJump;
 	TextureRegion foxFall;
 	TextureRegion foxDead;
+	TextureRegion foxClimb;
 
 	public World world;
 	public Body body;
@@ -59,6 +57,8 @@ public class Foxy extends Sprite {
 	public float velX, velY, speed;
 	public int jumpCounter;
 	public boolean onLadder;
+	public boolean headInLadder;
+
 	private boolean foxyIsHurt;
 	private float hurtTimer;
 	private boolean foxyIsDead;
@@ -78,6 +78,10 @@ public class Foxy extends Sprite {
 		onLadder = inLadder;
 	}
 
+	public void setHeadInLadder(Boolean inLadder) {
+		headInLadder = inLadder;
+	}
+
 	public Foxy(PlayScreen screen) {
 		super(AssetsManager.getTexture("player/zorrito.png"), 16, 16);
 		this.screen = screen;
@@ -90,10 +94,10 @@ public class Foxy extends Sprite {
 		this.life = 6;
 		this.onLadder = false;
 		this.foxyIsHurt = false;
-		this.endGame=false;
+		this.endGame = false;
 		enemiesInContact = new ArrayList<>();
 		pinchosInContact = new ArrayList<>();
-
+		headInLadder = false;
 
 		// animaciones
 		currenState = State.STANDING;
@@ -116,7 +120,8 @@ public class Foxy extends Sprite {
 			frames.add(new TextureRegion(getTexture(), i * 16 * 2, 16 * 4, getTexture().getWidth() / 6,
 					getTexture().getHeight() / 12));
 		}
-		foxClimb = new Animation<>(0.1f, frames);
+		foxClimbing = new Animation<>(0.1f, frames);
+		foxClimb = frames.get(0);
 		frames.clear();
 
 		// STAND
@@ -162,16 +167,18 @@ public class Foxy extends Sprite {
 			hurtTimer += dt; // Aumenta el tiempo en estado HURT
 			if (hurtTimer >= HURT_DURATION) {
 				foxyIsHurt = false; // Después de 1 segundos, vuelve a la normalidad
-				if ((!enemiesInContact.isEmpty()||!pinchosInContact.isEmpty())) {
+				if ((!enemiesInContact.isEmpty() || !pinchosInContact.isEmpty())) {
 					hit();
 				}
 			}
 		}
+		System.out.println(headInLadder);
 	}
 
 	public TextureRegion getFrame(float delta) {
 		currenState = getState();
 		TextureRegion region;
+		System.out.println(currenState);
 		switch (currenState) {
 			case JUMPING:
 				region = foxJump;
@@ -189,7 +196,10 @@ public class Foxy extends Sprite {
 				region = (TextureRegion) foxRun.getKeyFrame(stateTimer, true);
 				break;
 			case CLIMBING:
-				region = (TextureRegion) foxClimb.getKeyFrame(stateTimer, true);
+				region = (TextureRegion) foxClimbing.getKeyFrame(stateTimer, true);
+				break;
+			case CLIMB:
+				region = foxClimb;
 				break;
 			case STANDING:
 			default:
@@ -227,8 +237,11 @@ public class Foxy extends Sprite {
 		if (body.getLinearVelocity().x != 0 && !onLadder) {
 			return State.RUNNING;
 		}
-		if (body.getLinearVelocity().y !=0 && onLadder) {
+		if (body.getLinearVelocity().y != 0 && onLadder) {
 			return State.CLIMBING;
+		}
+		if (body.getLinearVelocity().y == 0 && headInLadder) {
+			return State.CLIMB;
 		}
 		return State.STANDING;
 	}
@@ -236,7 +249,8 @@ public class Foxy extends Sprite {
 	public boolean isDead() {
 		return foxyIsDead;
 	}
-	public float getStateTimer(){
+
+	public float getStateTimer() {
 		return stateTimer;
 	}
 
@@ -245,10 +259,10 @@ public class Foxy extends Sprite {
 			foxyIsHurt = true;
 			hurtTimer = 0;
 			life--;
-            screen.game.playSound(AssetsManagerAudio.getSound("audio/sounds/player/hit.ogg"));
-            if(GamePreferences.isVibrationEnabled() && !foxyIsDead){
-                Gdx.input.vibrate(1000);
-            }
+			screen.game.playSound(AssetsManagerAudio.getSound("audio/sounds/player/hit.ogg"));
+			if (GamePreferences.isVibrationEnabled() && !foxyIsDead) {
+				Gdx.input.vibrate(1000);
+			}
 			screen.restLife(life);
 			if (life <= 0) {
 				foxyIsDead = true;
@@ -272,14 +286,22 @@ public class Foxy extends Sprite {
 		shape.setRadius(5 / FoxGame.PPM);
 		fdef.filter.categoryBits = FoxGame.FOX_BIT;
 		fdef.filter.maskBits = FoxGame.GROUND_BIT | FoxGame.FLOOR_BIT |
-							   FoxGame.WALL_BIT | FoxGame.OBSTACLE_BIT|
-							   FoxGame.ENEMY_BIT | FoxGame.SPIKES_BIT |
-							   FoxGame.LADDER_BIT | FoxGame.ITEM_BIT|
-							   FoxGame.ENEMY_HEAD_BIT|FoxGame.END_GAME_BIT;
+				FoxGame.WALL_BIT | FoxGame.OBSTACLE_BIT |
+				FoxGame.ENEMY_BIT | FoxGame.SPIKES_BIT |
+				FoxGame.LADDER_BIT | FoxGame.ITEM_BIT |
+				FoxGame.ENEMY_HEAD_BIT | FoxGame.END_GAME_BIT;
 		fdef.shape = shape;
 		body.createFixture(fdef).setUserData(this);
 		shape.setPosition(new Vector2(0, 8 / FoxGame.PPM));
-		body.createFixture(fdef).setUserData(this);
+
+		// Cabeza
+		fdef.filter.categoryBits = FoxGame.FOX_HEAD_BIT;
+		fdef.filter.maskBits = FoxGame.ENEMY_BIT | FoxGame.SPIKES_BIT |
+				FoxGame.ITEM_BIT | FoxGame.OBSTACLE_BIT |
+				FoxGame.FLOOR_BIT | FoxGame.LADDER_BIT | FoxGame.WALL_BIT |
+				FoxGame.GROUND_BIT;
+		Fixture headFixture = body.createFixture(fdef);
+		headFixture.setUserData(this);
 	}
 
 }

@@ -208,7 +208,7 @@ public class PlayScreen implements Screen {
     private float stepInterval = 0.3f;
 
     public void update(float dt) {
-        System.out.println(player.getOnLadder());
+     
         // Asegura que las físicas se actualicen con una tasa fija, sin importar la tasa
         // de refresco de la pantalla.
         accumulator += dt;
@@ -223,6 +223,8 @@ public class PlayScreen implements Screen {
         } else {
             world.setGravity(new Vector2(0, -9.8f));  // Vuelve a la gravedad normal
         }
+
+        //sonido de pasos
         if ((player.body.getLinearVelocity().x != 0 && player.body.getLinearVelocity().y == 0)) {
             stepTimer += dt;
             if (stepTimer >= stepInterval) {

@@ -54,7 +54,7 @@ public class Gem extends Item{
         PolygonShape shape = new PolygonShape();
         shape.setAsBox(5 / FoxGame.PPM, 5 / FoxGame.PPM);
         fdef.filter.categoryBits = FoxGame.ITEM_BIT;
-        fdef.filter.maskBits = FoxGame.FOX_BIT;
+        fdef.filter.maskBits = FoxGame.FOX_BIT| FoxGame.FOX_HEAD_BIT;
 
         fdef.shape = shape;
         fixture=body.createFixture(fdef);
