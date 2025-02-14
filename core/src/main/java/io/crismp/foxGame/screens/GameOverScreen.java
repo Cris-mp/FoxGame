@@ -6,13 +6,16 @@ import com.badlogic.gdx.Screen;
 import com.badlogic.gdx.graphics.GL20;
 import com.badlogic.gdx.graphics.OrthographicCamera;
 import com.badlogic.gdx.graphics.g2d.BitmapFont;
+import com.badlogic.gdx.graphics.g2d.TextureRegion;
 import com.badlogic.gdx.scenes.scene2d.Stage;
+import com.badlogic.gdx.scenes.scene2d.ui.Image;
 import com.badlogic.gdx.scenes.scene2d.ui.Label;
 import com.badlogic.gdx.scenes.scene2d.ui.Table;
 import com.badlogic.gdx.utils.viewport.FitViewport;
 import com.badlogic.gdx.utils.viewport.Viewport;
 
 import io.crismp.foxGame.FoxGame;
+import io.crismp.foxGame.managers.AssetsManager;
 
 public class GameOverScreen implements Screen{
     private Viewport viewport;
@@ -35,14 +38,17 @@ public class GameOverScreen implements Screen{
         Table table = new Table();
         table.center();
         table.setFillParent(true);
+        // Image background = new Image(new TextureRegionDrawable(AssetsManager.getTexture("ui/background.png")));
+        // background.setFillParent(true); // Hace que ocupe toda la pantalla
 
-        Label gameOverLabel = new Label("GAME OVER", labelStyle);
-        Label playAgainLabel = new Label("Click to Play Again", labelStyle);
+        Label gameOverLabel = new Label("GAME OVER",labelStyle);
+       Image skull = (new Image(new TextureRegion(AssetsManager.getTexture("hud/skull2.png"), 0, 0, 430, 414)));
 
         table.add(gameOverLabel).expandX();
         table.row();
-        table.add(playAgainLabel).expandX().padTop(10f);
+        table.add(skull).size(100, 100);
 
+        //stage.addActor(background);
         stage.addActor(table);
     }
 

@@ -34,7 +34,7 @@ public class PlayScreen implements Screen {
 
     // HUD
     private Viewport gamePort;
-    private Hud hud;
+    public Hud hud;
     private int cherriesCollected;
     private int gemsCollected;
     private int newLife;
@@ -54,7 +54,7 @@ public class PlayScreen implements Screen {
     VirtualJoystick joystick;
     float accumulator;
     float timeStep;
-    public static boolean colision;
+    public boolean colision;
 
     float mapWidthInUnits, mapHeightInUnits;
     Sound jump, run;
@@ -106,7 +106,7 @@ public class PlayScreen implements Screen {
         // creamos a foxy
         player = new Foxy(this);
 
-        world.setContactListener(new WorldContactListener());
+        world.setContactListener(new WorldContactListener(this));
 
         // Obtenemos las propiedades del mapa
         MapProperties prop = map.getProperties();
@@ -137,6 +137,7 @@ public class PlayScreen implements Screen {
     }
 
     public void handleInput(float dt) {
+    
         if (player.currenState != Foxy.State.DEAD) {
             player.velX = 0;
             if (Gdx.app.getType() == ApplicationType.Android) {
@@ -154,9 +155,9 @@ public class PlayScreen implements Screen {
                     colision = false;
                 }
 
-                if (player.getOnLadder() && joystick.getDirection().y > 0.9f) {
+                if (player.getOnLadder() && joystick.getDirection().y > 0.5f) {
                     player.body.setLinearVelocity(0, player.velY = 0.5f);
-                } else if (player.getOnLadder() && joystick.getDirection().y < -0.9f) {
+                } else if (player.getOnLadder() && joystick.getDirection().y < -0.5f) {
                     player.body.setLinearVelocity(0, player.velY = -0.5f);
                 } else if (player.getOnLadder()){
                     player.body.setLinearVelocity(0, 0);
@@ -216,7 +217,8 @@ public class PlayScreen implements Screen {
             world.step(timeStep, 6, 2); // Actualiza el mundo con un paso de tiempo fijo
             accumulator -= timeStep;
         }
-        // world.step(dt, 6, 2);
+
+        
         handleInput(dt);
         if (player.getOnLadder()) {
             world.setGravity(new Vector2(0, 0));  // Desactiva la gravedad mientras está en la escalera

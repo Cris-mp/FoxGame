@@ -17,6 +17,7 @@ import io.crismp.foxGame.screens.PlayScreen;
 import io.crismp.foxGame.sprites.enemies.Zarigueya;
 import io.crismp.foxGame.sprites.items.Cherry;
 import io.crismp.foxGame.sprites.items.Gem;
+import io.crismp.foxGame.sprites.tileObjects.Cartel;
 import io.crismp.foxGame.sprites.tileObjects.Escalera;
 import io.crismp.foxGame.sprites.tileObjects.Pinchos;
 
@@ -110,6 +111,12 @@ public class B2WorldCreator {
         if (map.getLayers().get("puerta") != null) {
             for (MapObject object : map.getLayers().get("puerta").getObjects().getByType(RectangleMapObject.class)) {
                 define(object, FoxGame.END_GAME_BIT);
+            }
+        }
+        if (map.getLayers().get("cartel") != null) {
+            for (MapObject object : map.getLayers().get("cartel").getObjects().getByType(RectangleMapObject.class)) {
+                Rectangle rectangle = ((RectangleMapObject) object).getRectangle();
+                new Cartel(screen, rectangle,object);
             }
         }
     }

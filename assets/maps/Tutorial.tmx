@@ -80,21 +80,45 @@
 </data>
  </layer>
  <objectgroup color="#ffaaff" id="23" name="cartel">
-  <object id="43" x="128" y="144" width="16" height="16"/>
-  <object id="44" x="432" y="112" width="16" height="16"/>
-  <object id="45" x="704" y="144" width="16" height="16"/>
-  <object id="46" x="896" y="144" width="16" height="16"/>
-  <object id="47" x="1056" y="64" width="16" height="16"/>
-  <object id="48" x="1360" y="144" width="16" height="16"/>
+  <object id="43" x="128" y="144" width="16" height="16">
+   <properties>
+    <property name="id" type="int" value="6"/>
+   </properties>
+  </object>
+  <object id="44" x="432" y="112" width="16" height="16">
+   <properties>
+    <property name="id" type="int" value="5"/>
+   </properties>
+  </object>
+  <object id="45" x="704" y="144" width="16" height="16">
+   <properties>
+    <property name="id" type="int" value="4"/>
+   </properties>
+  </object>
+  <object id="46" x="896" y="144" width="16" height="16">
+   <properties>
+    <property name="id" type="int" value="3"/>
+   </properties>
+  </object>
+  <object id="47" x="1056" y="64" width="16" height="16">
+   <properties>
+    <property name="id" type="int" value="2"/>
+   </properties>
+  </object>
+  <object id="48" x="1360" y="144" width="16" height="16">
+   <properties>
+    <property name="id" type="int" value="1"/>
+   </properties>
+  </object>
  </objectgroup>
  <objectgroup color="#55007f" id="9" name="zarigueya">
   <object id="25" x="609" y="147"/>
  </objectgroup>
  <objectgroup color="#ff5500" id="11" name="cherries">
-  <object id="28" x="167.667" y="121.667"/>
+  <object id="28" x="187.667" y="121.667"/>
  </objectgroup>
  <objectgroup color="#0000ff" id="12" name="gems">
-  <object id="29" x="232.333" y="120.667"/>
+  <object id="29" x="264.333" y="122"/>
  </objectgroup>
  <objectgroup color="#55ff00" id="14" name="escaleras">
   <object id="39" x="928" y="80" width="16" height="80"/>

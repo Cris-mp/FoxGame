@@ -7,19 +7,21 @@ import com.badlogic.gdx.graphics.GL20;
 import com.badlogic.gdx.graphics.OrthographicCamera;
 import com.badlogic.gdx.graphics.g2d.BitmapFont;
 import com.badlogic.gdx.scenes.scene2d.Stage;
+import com.badlogic.gdx.scenes.scene2d.ui.Image;
 import com.badlogic.gdx.scenes.scene2d.ui.Label;
 import com.badlogic.gdx.scenes.scene2d.ui.Table;
+import com.badlogic.gdx.scenes.scene2d.utils.TextureRegionDrawable;
+import com.badlogic.gdx.utils.Align;
 import com.badlogic.gdx.utils.viewport.FitViewport;
 import com.badlogic.gdx.utils.viewport.Viewport;
 
 import io.crismp.foxGame.FoxGame;
+import io.crismp.foxGame.managers.AssetsManager;
 
 public class FinalLevelScreen implements Screen {
     private Viewport viewport;
     private Stage stage;
     private BitmapFont font;
-
-
 
     private Game game;
 
@@ -30,29 +32,32 @@ public class FinalLevelScreen implements Screen {
         game.playMusic("audio/music/Victorious.ogg",false);
 
         font = new BitmapFont(Gdx.files.internal("fonts/wood.fnt"));
-        font.getData().setScale(1f);
+        font.getData().setScale(0.6f);
         Label.LabelStyle labelStyle = new Label.LabelStyle();
         labelStyle.font = font;
+        Image background = new Image(new TextureRegionDrawable(AssetsManager.getTexture("ui/background.png")));
+        background.setFillParent(true); // Hace que ocupe toda la pantalla
 
         Table table = new Table();
-        table.center();
-        table.setFillParent(true);
+        table.setSize((FoxGame.V_WIDTH/2)+60, (FoxGame.V_HEIGHT/2)+40);
+        table.setPosition(FoxGame.V_WIDTH/2-table.getWidth()/2, FoxGame.V_HEIGHT/2-table.getHeight()/2);
+        table.background(new TextureRegionDrawable(AssetsManager.getTexture("ui/backSettings.png")));
 
         Label levelCompletedLbl = new Label("NIVEL COMPLETADO", labelStyle);
         Label lblCherries= new Label(String.format("%d Cerezas x 25 pts : %d", screen.getCherriesCollected(),screen.getCherriesCollected()*25), labelStyle);
         Label lblGems= new Label(String.format("%d Gemas x 100 pts : %d", screen.getGemsCollected(),screen.getGemsCollected()*100), labelStyle);
         Label lblTotal= new Label(String.format("Total: %d pts", (screen.getCherriesCollected()*25)+(screen.getCherriesCollected()*100)), labelStyle);
-        Label playAgainLbl = new Label("Click to Play Again", labelStyle);
+      
 
-        table.add(levelCompletedLbl).expandX();
+        table.add(levelCompletedLbl);
         table.row();
-        table.add(lblCherries).expandX().padTop(10f);
+        table.add(lblCherries).padTop(10f);
         table.row();
-        table.add(lblGems).expandX().padTop(10f);
+        table.add(lblGems).padTop(10f);
         table.row();
-        table.add(lblTotal).expandX().padTop(10f);
-        table.row();
-        table.add(playAgainLbl).expandX().padTop(10f);
+        table.add(lblTotal).padTop(10f);
+
+        stage.addActor(background);
         stage.addActor(table);
     }
 

@@ -68,7 +68,9 @@ public class AssetsManager {
         manager.load("ui/vibracion.png", Texture.class);
         manager.load("ui/vibracion_pulsado.png", Texture.class);
         // HUD
+        manager.load("hud/backLabel.png", Texture.class);
         manager.load("hud/heart.png", Texture.class);
+        manager.load("hud/skull2.png", Texture.class);
 
         // ------FONTS------
         manager.load("fonts/wood.fnt", BitmapFont.class);

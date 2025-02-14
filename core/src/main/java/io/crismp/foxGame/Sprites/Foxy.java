@@ -172,13 +172,11 @@ public class Foxy extends Sprite {
 				}
 			}
 		}
-		System.out.println(headInLadder);
 	}
 
 	public TextureRegion getFrame(float delta) {
 		currenState = getState();
 		TextureRegion region;
-		System.out.println(currenState);
 		switch (currenState) {
 			case JUMPING:
 				region = foxJump;
@@ -255,7 +253,7 @@ public class Foxy extends Sprite {
 	}
 
 	public void hit() {
-		if (!foxyIsHurt) {
+		if (!foxyIsHurt && !foxyIsDead) {
 			foxyIsHurt = true;
 			hurtTimer = 0;
 			life--;
@@ -289,7 +287,8 @@ public class Foxy extends Sprite {
 				FoxGame.WALL_BIT | FoxGame.OBSTACLE_BIT |
 				FoxGame.ENEMY_BIT | FoxGame.SPIKES_BIT |
 				FoxGame.LADDER_BIT | FoxGame.ITEM_BIT |
-				FoxGame.ENEMY_HEAD_BIT | FoxGame.END_GAME_BIT;
+				FoxGame.ENEMY_HEAD_BIT | FoxGame.END_GAME_BIT |
+				FoxGame.CARTEL_BIT;
 		fdef.shape = shape;
 		body.createFixture(fdef).setUserData(this);
 		shape.setPosition(new Vector2(0, 8 / FoxGame.PPM));

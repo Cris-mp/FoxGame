@@ -70,3 +70,5 @@ char id=120  x=166 y=101 width=12  height=19  xoffset=0   yoffset=0   xadvance=1
 char id=121  x=1   y=126 width=12  height=24  xoffset=0   yoffset=0   xadvance=15  page=0  chnl=0  # y
 char id=122  x=16  y=126 width=12  height=19  xoffset=0   yoffset=0   xadvance=15  page=0  chnl=0  # z
 char id=58   x=31  y=126 width=12  height=19  xoffset=0   yoffset=0   xadvance=15  page=0  chnl=0  # :
+
+char id=32   x=46  y=126 width=12  height=19  xoffset=0   yoffset=0   xadvance=15  page=0  chnl=0  # space

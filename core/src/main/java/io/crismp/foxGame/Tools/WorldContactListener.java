@@ -15,6 +15,11 @@ import io.crismp.foxGame.sprites.tileObjects.Pinchos;
 
 //Que ocurre cuando dos accesorios de Box2D chocan entre si
 public class WorldContactListener implements ContactListener {
+    PlayScreen screen;
+
+    public WorldContactListener(PlayScreen screen) {
+        this.screen = screen;
+    }
 
     // inicio de conexion o colision
     @Override
@@ -23,13 +28,14 @@ public class WorldContactListener implements ContactListener {
         Fixture fixA = contact.getFixtureA();
         Fixture fixB = contact.getFixtureB();
         int cDef = fixA.getFilterData().categoryBits | fixB.getFilterData().categoryBits;
-        System.out.println("Colisión detectada: " + fixA.getFilterData().categoryBits + " con "
-                 + fixB.getFilterData().categoryBits);
+        System.out.println("Colisión detectada: " + fixA.getFilterData().categoryBits
+        + " con "
+        + fixB.getFilterData().categoryBits);
         switch (cDef) {
             case FoxGame.FOX_BIT | FoxGame.GROUND_BIT:
             case FoxGame.FOX_BIT | FoxGame.OBSTACLE_BIT:
-            PlayScreen.colision=true;
-            break;
+                screen.colision = true;
+                break;
 
             case FoxGame.FOX_BIT | FoxGame.ENEMY_HEAD_BIT:
                 if (fixA.getFilterData().categoryBits == FoxGame.ENEMY_HEAD_BIT)
@@ -54,13 +60,14 @@ public class WorldContactListener implements ContactListener {
                 break;
 
             case FoxGame.FOX_BIT | FoxGame.SPIKES_BIT:
-                 PlayScreen.colision=true;
-            case FoxGame.FOX_HEAD_BIT| FoxGame.SPIKES_BIT:
+                screen.colision = true;
+            case FoxGame.FOX_HEAD_BIT | FoxGame.SPIKES_BIT:
             case FoxGame.FOX_BIT | FoxGame.ENEMY_BIT:
                 Foxy foxy = null;
                 Enemy enemy = null;
                 Pinchos pinchos = null;
-                if (fixA.getFilterData().categoryBits == FoxGame.FOX_BIT || fixA.getFilterData().categoryBits == FoxGame.FOX_HEAD_BIT) {
+                if (fixA.getFilterData().categoryBits == FoxGame.FOX_BIT
+                        || fixA.getFilterData().categoryBits == FoxGame.FOX_HEAD_BIT) {
                     foxy = (Foxy) fixA.getUserData();
                     if (fixB.getFilterData().categoryBits == FoxGame.ENEMY_BIT) {
                         enemy = (Enemy) fixB.getUserData();
@@ -99,12 +106,12 @@ public class WorldContactListener implements ContactListener {
                         ((Foxy) fixB.getUserData()).setOnLadder(true);
                 }
                 break;
-                case FoxGame.FOX_HEAD_BIT | FoxGame.LADDER_BIT:
-                    if (fixA.getFilterData().categoryBits == FoxGame.FOX_HEAD_BIT)
+            case FoxGame.FOX_HEAD_BIT | FoxGame.LADDER_BIT:
+                if (fixA.getFilterData().categoryBits == FoxGame.FOX_HEAD_BIT)
                     ((Foxy) fixA.getUserData()).setHeadInLadder(true);
-                    else
+                else
                     ((Foxy) fixB.getUserData()).setHeadInLadder(true);
-                        
+
                 break;
 
             case FoxGame.FOX_BIT | FoxGame.END_GAME_BIT:
@@ -115,6 +122,17 @@ public class WorldContactListener implements ContactListener {
                     else
                         ((Foxy) fixB.getUserData()).setEndGame(true);
                 }
+                break;
+            case FoxGame.FOX_BIT | FoxGame.CARTEL_BIT:
+            
+                int cartelID = 0;
+                if (fixA.getFilterData().categoryBits == FoxGame.CARTEL_BIT) {
+                    cartelID = (int) fixA.getUserData(); // Obtener ID desde Tiled
+                } else {
+                    cartelID = (int) fixB.getUserData();
+                }
+                System.out.println("Colisión con cartel " + cartelID);
+                screen.hud.showCartel(cartelID); // Muestra la etiqueta correcta
                 break;
             default:
                 break;
@@ -131,11 +149,11 @@ public class WorldContactListener implements ContactListener {
 
         switch (cDef) {
             case FoxGame.FOX_HEAD_BIT | FoxGame.LADDER_BIT:
-                    if (fixA.getFilterData().categoryBits == FoxGame.FOX_HEAD_BIT)
+                if (fixA.getFilterData().categoryBits == FoxGame.FOX_HEAD_BIT)
                     ((Foxy) fixA.getUserData()).setHeadInLadder(false);
-                    else
+                else
                     ((Foxy) fixB.getUserData()).setHeadInLadder(false);
-                        
+
                 break;
             case FoxGame.FOX_BIT | FoxGame.LADDER_BIT:
                 if (fixA.getFilterData().categoryBits == FoxGame.FOX_BIT)
@@ -171,6 +189,17 @@ public class WorldContactListener implements ContactListener {
                         foxy.pinchosInContact.remove(pinchos);
                     }
                 }
+                break;
+            case FoxGame.FOX_BIT | FoxGame.CARTEL_BIT:
+                int cartelID = 0;
+
+                if (fixA.getFilterData().categoryBits == FoxGame.CARTEL_BIT) {
+                    cartelID = (int) fixA.getUserData();
+                } else {
+                    cartelID = (int) fixB.getUserData();
+                }
+
+                screen.hud.hideCartel(cartelID); // Oculta la etiqueta correcta
                 break;
             default:
                 break;

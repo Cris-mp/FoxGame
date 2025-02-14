@@ -338,7 +338,7 @@ public class SettingMenuScreen implements Screen {
         ScrollPane scrollPane = new ScrollPane(table);
         scrollPane.setScrollingDisabled(true, false);
 
-        dialog.getContentTable().add(scrollPane).size(300, 300).padTop(20);
+        dialog.getContentTable().add(scrollPane).size(350, 300).padTop(20);
         dialog.button(btnSalir).padBottom(20);
         dialog.show(stage);
     }

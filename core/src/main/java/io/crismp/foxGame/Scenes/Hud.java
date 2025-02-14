@@ -1,7 +1,10 @@
 package io.crismp.foxGame.scenes;
 
 import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.Map;
 
+import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.graphics.OrthographicCamera;
 import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.graphics.g2d.BitmapFont;
@@ -11,6 +14,7 @@ import com.badlogic.gdx.scenes.scene2d.Stage;
 import com.badlogic.gdx.scenes.scene2d.ui.Image;
 import com.badlogic.gdx.scenes.scene2d.ui.Label;
 import com.badlogic.gdx.scenes.scene2d.ui.Table;
+import com.badlogic.gdx.scenes.scene2d.utils.TextureRegionDrawable;
 import com.badlogic.gdx.utils.Disposable;
 import com.badlogic.gdx.utils.viewport.FitViewport;
 import com.badlogic.gdx.utils.viewport.Viewport;
@@ -36,6 +40,10 @@ public class Hud implements Disposable {
     Image gem;
 
     private BitmapFont font;
+   
+
+
+    private Map<Integer, Label> cartelesLabels;
 
     public Hud(SpriteBatch sb) {
 
@@ -85,6 +93,16 @@ public class Hud implements Disposable {
         rootTable.add(rightTable).expandX().right();
 
         stage.addActor(rootTable);
+
+        //--------- TUTORIAL LABELS ---------
+        cartelesLabels = new HashMap<>();
+        agregarCartel(1, "Ya casi has acabado\n Entra en casa para estar a salvo", 200, 250);
+        agregarCartel(2, "Los pinchos tambien son peligrosos\n No te caigas en ellos",  100, 100);
+        agregarCartel(3, "Puedes subir por las escaleras\nAcercate y sube", 150, 300);
+        agregarCartel(4, "Pulsa dos veces el boton y\nharas un doble salto",  150, 250);
+        agregarCartel(5, "Ten cuidado con los enemigos\nSaltar sobre ellos los mata", 300, 250);
+        agregarCartel(6, "Las cerezas y las gemas dan puntos.\n Recogelas", 275, 200);
+
     }
 
     public void updateHud(int newLife, int newCherries, int newGems) {
@@ -97,10 +115,53 @@ public class Hud implements Disposable {
         }
     }
 
+    private void agregarCartel(int id, String mensaje, float x, float y) {
+        Label label = createLabel(mensaje);
+        label.setVisible(false); // Oculto por defecto
+        label.setPosition(x, y);
+        cartelesLabels.put(id, label);
+        stage.addActor(label);
+    }
+
+    public void showCartel(int id) {
+        if (cartelesLabels.containsKey(id)) {
+            cartelesLabels.get(id).setVisible(true);
+        }
+    }
+
+    public void hideCartel(int id) {
+        if (cartelesLabels.containsKey(id)) {
+            cartelesLabels.get(id).setVisible(false);
+        }
+    }
+
     @Override
     public void dispose() {
         font.dispose();
         stage.dispose();
     }
+
+    private Label createLabel(String text) {
+    // Cargar la imagen de fondo desde los assets
+  
+    TextureRegionDrawable backgroundDrawable = new TextureRegionDrawable(AssetsManager.getTexture("hud/backLabel.png"));
+    BitmapFont littleFont = new BitmapFont(Gdx.files.internal("fonts/wood.fnt"));
+    littleFont.getData().setScale(0.6f);
+
+    // Crear estilo de la etiqueta
+    Label.LabelStyle style = new Label.LabelStyle();
+    style.background = backgroundDrawable; // Asignar la imagen como fondo
+    
+    style.font = littleFont; // Asignar la fuente
+
+    // Crear la etiqueta
+    Label label = new Label(text, style);
+
+    // 🔹 Ajustar tamaño del Label para que cubra el texto
+    label.setSize(label.getPrefWidth() + 40, label.getPrefHeight()); // Aumentar ancho y alto
+    label.setAlignment(1); // Centrar texto
+    System.out.println(label.getPrefWidth());
+    return label;
+}
 
 }
