@@ -71,12 +71,12 @@ public class SettingMenuScreen implements Screen {
         btnIdioma.padBottom(8);
 
         // Botones de Música, Sonido y Vibración (Toggle)
-        btnMusica = createToggleButton("ui/musica.png", "ui/musica_pulsado.png", () -> isMusicOn = !isMusicOn,
+        btnMusica = createToggleButton("ui/button/tglMusic_on.png", "ui/button/tglMusic_off.png", () -> isMusicOn = !isMusicOn,
                 isMusicOn);
-        btnSonidos = createToggleButton("ui/sonidos.png", "ui/sonidos_pulsado.png",
+        btnSonidos = createToggleButton("ui/button/tglSound_on.png", "ui/button/tglSound_off.png",
                 () -> isSoundOn = !isSoundOn,
                 isSoundOn);
-        btnVibracion = createToggleButton("ui/vibracion.png", "ui/vibracion_pulsado.png",
+        btnVibracion = createToggleButton("ui/button/tglVibration_on.png", "ui/button/tglVibration_off.png",
                 () -> isVibrationOn = !isVibrationOn, isVibrationOn);
 
         // Sliders para controlar el volumen
@@ -84,7 +84,7 @@ public class SettingMenuScreen implements Screen {
         sliderSonidos = createSlider(soundVolume, false);
 
         // Botón de regreso al menú principal
-        ImageButton btnMainMenu = createIconButton("ui/mainMenu.png", "ui/mainMenu_pulsado.png",
+        ImageButton btnMainMenu = createIconButton("ui/button/btnMainMenu.png", "ui/button/btnMainMenu_p.png",
                 () -> game.setScreen(new MainMenuScreen(game)));
 
         // Botones de Créditos y Ayuda
@@ -140,7 +140,7 @@ public class SettingMenuScreen implements Screen {
                 button.getStyle().imageUp = newState ? normal : pressed;
 
                 // Guardar en preferencias y actualizar slider en funcion de lo marcado
-                if (normalPath.equals("ui/musica.png")) {
+                if (normalPath.equals("ui/button/tglMusic_on.png")) {
                     if (GamePreferences.getMusicVolume() > 0) {
                         lastMusicVolume = GamePreferences.getMusicVolume();
                         GamePreferences.setMusicVolume(0);
@@ -148,7 +148,7 @@ public class SettingMenuScreen implements Screen {
                         GamePreferences.setMusicVolume(lastMusicVolume > 0 ? lastMusicVolume : 0.5f);
                     }
                     sliderMusica.setValue(GamePreferences.getMusicVolume());
-                } else if (normalPath.equals("ui/sonidos.png")) {
+                } else if (normalPath.equals("ui/button/tglSound_on.png")) {
                     if (GamePreferences.getSoundVolume() > 0) {
                         lastSoundVolume = GamePreferences.getSoundVolume();
                         GamePreferences.setSoundVolume(0);
@@ -156,7 +156,7 @@ public class SettingMenuScreen implements Screen {
                         GamePreferences.setSoundVolume(lastSoundVolume > 0 ? lastSoundVolume : 0.5f);
                     }
                     sliderSonidos.setValue(GamePreferences.getSoundVolume());
-                } else if (normalPath.equals("ui/vibracion.png")) {
+                } else if (normalPath.equals("ui/button/tglVibration_on.png")) {
                     GamePreferences.setVibration(isVibrationOn);
                 }
             }
@@ -169,8 +169,8 @@ public class SettingMenuScreen implements Screen {
     private TextButton createTextButton(String text, Runnable action) {
         TextButton.TextButtonStyle estilo = new TextButton.TextButtonStyle();
         estilo.font = font;
-        estilo.up = new TextureRegionDrawable(AssetsManager.getTexture("ui/boton.png"));
-        estilo.down = new TextureRegionDrawable(AssetsManager.getTexture("ui/boton_pulsado.png"));
+        estilo.up = new TextureRegionDrawable(AssetsManager.getTexture("ui/button/btnOval.png"));
+        estilo.down = new TextureRegionDrawable(AssetsManager.getTexture("ui/button/btnOval_p.png"));
         TextButton button = new TextButton(text, estilo);
         button.addListener(new ClickListener() {
             @Override
@@ -207,8 +207,10 @@ public class SettingMenuScreen implements Screen {
     // Método para crear Sliders
     private Slider createSlider(float initialValue, boolean isMusic) {
         Slider.SliderStyle sliderStyle = new Slider.SliderStyle();
-        sliderStyle.background = new TextureRegionDrawable(AssetsManager.getTexture("ui/slide.png"));
-        sliderStyle.knob = new TextureRegionDrawable(AssetsManager.getTexture("ui/slide_b.png"));
+        
+        sliderStyle.background = new TextureRegionDrawable(AssetsManager.getTexture("ui/button/backSlide.png"));
+        sliderStyle.knob = new TextureRegionDrawable(AssetsManager.getTexture("ui/button/btnSlide.png"));
+        
 
         Slider slider = new Slider(0, 1, 0.1f, false, sliderStyle);
         slider.setValue(initialValue);
@@ -253,8 +255,8 @@ public class SettingMenuScreen implements Screen {
 
         TextButton.TextButtonStyle buttonStyle = new TextButton.TextButtonStyle();
         buttonStyle.font = font;
-        buttonStyle.up = new TextureRegionDrawable(AssetsManager.getTexture("ui/boton.png"));
-        buttonStyle.down = new TextureRegionDrawable(AssetsManager.getTexture("ui/boton_pulsado.png"));
+        buttonStyle.up = new TextureRegionDrawable(AssetsManager.getTexture("ui/button/btnOval.png"));
+        buttonStyle.down = new TextureRegionDrawable(AssetsManager.getTexture("ui/button/btnOval_p.png"));
         skin.add("default", buttonStyle);
 
         TextButton btnSalir = new TextButton(LanguageManager.get("exit").toUpperCase(), buttonStyle);

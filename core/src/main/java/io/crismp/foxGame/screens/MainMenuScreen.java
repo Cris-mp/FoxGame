@@ -58,12 +58,12 @@ public class MainMenuScreen implements Screen {
         title.setSize(FoxGame.V_WIDTH * 1.5f,FoxGame.V_HEIGHT / 2);
        
 
-        btnNormal = new TextureRegionDrawable(AssetsManager.getTexture("ui/boton.png"));
-        btnPressed = new TextureRegionDrawable(AssetsManager.getTexture("ui/boton_pulsado.png"));
-        iconoOpciones = new TextureRegionDrawable(AssetsManager.getTexture("ui/opciones.png"));
-        iconoOpcionesPulsado = new TextureRegionDrawable(AssetsManager.getTexture("ui/opciones_pulsado.png"));
-        iconoRecords = new TextureRegionDrawable(AssetsManager.getTexture("ui/records.png"));
-        iconoRecordsPulsado = new TextureRegionDrawable(AssetsManager.getTexture("ui/records_pulsado.png"));
+        btnNormal = new TextureRegionDrawable(AssetsManager.getTexture("ui/button/btnOval.png"));
+        btnPressed = new TextureRegionDrawable(AssetsManager.getTexture("ui/button/btnOval_p.png"));
+        iconoOpciones = new TextureRegionDrawable(AssetsManager.getTexture("ui/button/btnOptions.png"));
+        iconoOpcionesPulsado = new TextureRegionDrawable(AssetsManager.getTexture("ui/button/btnOptions_p.png"));
+        iconoRecords = new TextureRegionDrawable(AssetsManager.getTexture("ui/button/btnRecords.png"));
+        iconoRecordsPulsado = new TextureRegionDrawable(AssetsManager.getTexture("ui/button/btnRecords_p.png"));
 
         TextButton.TextButtonStyle estiloBoton = new TextButton.TextButtonStyle();
         estiloBoton.font = font;
@@ -198,8 +198,8 @@ public class MainMenuScreen implements Screen {
 
         TextButton.TextButtonStyle buttonStyle = new TextButton.TextButtonStyle();
         buttonStyle.font = font;
-        buttonStyle.up = new TextureRegionDrawable(AssetsManager.getTexture("ui/boton.png"));
-        buttonStyle.down = new TextureRegionDrawable(AssetsManager.getTexture("ui/boton_pulsado.png"));
+        buttonStyle.up = new TextureRegionDrawable(AssetsManager.getTexture("ui/button/btnOval.png"));
+        buttonStyle.down = new TextureRegionDrawable(AssetsManager.getTexture("ui/button/btnOval_p.png"));
         skin.add("default", buttonStyle);
 
         Window.WindowStyle windowStyle = new Window.WindowStyle();

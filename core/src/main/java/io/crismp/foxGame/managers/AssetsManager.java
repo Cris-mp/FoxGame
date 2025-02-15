@@ -44,30 +44,37 @@ public class AssetsManager {
         // UI
         manager.load("ui/background.png", Texture.class);
         manager.load("ui/backSettings.png", Texture.class);
-        manager.load("ui/boton_cua.png", Texture.class);
-        manager.load("ui/boton_cua_pulsado.png", Texture.class);
-        manager.load("ui/boton_p.png", Texture.class);
-        manager.load("ui/boton_p_pulsado.png", Texture.class);
-        manager.load("ui/boton.png", Texture.class);
-        manager.load("ui/boton_pulsado.png", Texture.class);
-        manager.load("ui/mainMenu.png", Texture.class);
-        manager.load("ui/mainMenu_pulsado.png", Texture.class);
-        manager.load("ui/musica.png", Texture.class);
-        manager.load("ui/musica_pulsado.png", Texture.class);
-        manager.load("ui/opciones.png", Texture.class);
-        manager.load("ui/opciones_pulsado.png", Texture.class);
-        manager.load("ui/records.png", Texture.class);
-        manager.load("ui/records_pulsado.png", Texture.class);
-        manager.load("ui/slide.png", Texture.class);
-        manager.load("ui/slide_b.png", Texture.class);
-        manager.load("ui/sonidos.png", Texture.class);
-        manager.load("ui/sonidos_pulsado.png", Texture.class);
-        manager.load("ui/splashBack.png", Texture.class);
-        manager.load("ui/splash_press.png", Texture.class);
-        manager.load("ui/splash_pulsa.png", Texture.class);
         manager.load("ui/title.png", Texture.class);
-        manager.load("ui/vibracion.png", Texture.class);
-        manager.load("ui/vibracion_pulsado.png", Texture.class);
+        //---- Botones -----
+        // manager.load("ui/button/btnRect.png", Texture.class);
+        // manager.load("ui/button/btnRect_p.png", Texture.class);
+        // manager.load("ui/button/btnCuadrado.png", Texture.class);
+        // manager.load("ui/button/btnCuadrado_p.png", Texture.class);
+
+        manager.load("ui/button/btnOval.png", Texture.class);
+        manager.load("ui/button/btnOval_p.png", Texture.class);
+        manager.load("ui/button/btnOptions.png", Texture.class);
+        manager.load("ui/button/btnOptions_p.png", Texture.class);
+        manager.load("ui/button/btnMainMenu.png", Texture.class);
+        manager.load("ui/button/btnMainMenu_p.png", Texture.class);
+        manager.load("ui/button/btnRecords.png", Texture.class);
+        manager.load("ui/button/btnRecords_p.png", Texture.class);
+
+        manager.load("ui/button/tglMusic_on.png", Texture.class);
+        manager.load("ui/button/tglMusic_off.png", Texture.class);
+        manager.load("ui/button/tglSound_on.png", Texture.class);
+        manager.load("ui/button/tglSound_off.png", Texture.class);
+        manager.load("ui/button/tglVibration_on.png", Texture.class);
+        manager.load("ui/button/tglVibration_off.png", Texture.class);
+        
+        manager.load("ui/button/btnSlide.png", Texture.class);
+        manager.load("ui/button/backSlide.png", Texture.class);
+        
+        // ----Splash----
+        manager.load("ui/splash/splashBack.png", Texture.class);
+        manager.load("ui/splash/splash_press.png", Texture.class);
+        manager.load("ui/splash/splash_pulsa.png", Texture.class);
+
         // HUD
         manager.load("hud/backLabel.png", Texture.class);
         manager.load("hud/heart.png", Texture.class);

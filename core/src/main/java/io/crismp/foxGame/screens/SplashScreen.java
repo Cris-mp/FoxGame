@@ -28,7 +28,7 @@ public class SplashScreen implements Screen {
         Gdx.input.setInputProcessor(stage);
 
         // Cargar imágenes
-        backgroundTexture = AssetsManager.getTexture("ui/splashBack.png"); // Imagen de fondo
+        backgroundTexture = AssetsManager.getTexture("ui/splash/splashBack.png"); // Imagen de fondo
         pressTexture = AssetsManager.getTexture(LanguageManager.get("pulse")); // Imagen de "Presiona para continuar"
 
         // Crear imagen de presionar pantalla
