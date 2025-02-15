@@ -8,9 +8,14 @@ import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.graphics.g2d.BitmapFont;
 import com.badlogic.gdx.scenes.scene2d.InputEvent;
 import com.badlogic.gdx.scenes.scene2d.Stage;
+import com.badlogic.gdx.scenes.scene2d.ui.Dialog;
+import com.badlogic.gdx.scenes.scene2d.ui.Image;
 import com.badlogic.gdx.scenes.scene2d.ui.ImageButton;
+import com.badlogic.gdx.scenes.scene2d.ui.Label;
+import com.badlogic.gdx.scenes.scene2d.ui.Skin;
 import com.badlogic.gdx.scenes.scene2d.ui.Table;
 import com.badlogic.gdx.scenes.scene2d.ui.TextButton;
+import com.badlogic.gdx.scenes.scene2d.ui.Window;
 import com.badlogic.gdx.scenes.scene2d.utils.ClickListener;
 import com.badlogic.gdx.scenes.scene2d.utils.TextureRegionDrawable;
 import com.badlogic.gdx.utils.Align;
@@ -20,6 +25,7 @@ import com.badlogic.gdx.utils.viewport.Viewport;
 import io.crismp.foxGame.FoxGame;
 import io.crismp.foxGame.managers.AssetsManager;
 import io.crismp.foxGame.managers.LanguageManager;
+import io.crismp.foxGame.tools.GamePreferences;
 
 public class MainMenuScreen implements Screen {
     private FoxGame game;
@@ -36,12 +42,21 @@ public class MainMenuScreen implements Screen {
         viewport = new FitViewport(FoxGame.V_WIDTH * 2, FoxGame.V_HEIGHT * 2, new OrthographicCamera());
         stage = new Stage(viewport, game.batch);
         Gdx.input.setInputProcessor(stage);
-
+        
         font = AssetsManager.getFont("fonts/wood.fnt");
         font.getData().setScale(1.15f);
-
+        
         backgroundTexture = AssetsManager.getTexture("ui/background.png");
+        Image background = new Image(new TextureRegionDrawable(backgroundTexture));
+        background.setSize(viewport.getWorldWidth(), viewport.getWorldHeight());
+        background.setPosition(0, 0);
+        stage.addActor(background);
         titleTexture = AssetsManager.getTexture("ui/title.png");
+        Image title = new Image(new TextureRegionDrawable(titleTexture));
+        stage.addActor(title);
+        title.setPosition(FoxGame.V_WIDTH / 4, FoxGame.V_HEIGHT * 1.25f);
+        title.setSize(FoxGame.V_WIDTH * 1.5f,FoxGame.V_HEIGHT / 2);
+       
 
         btnNormal = new TextureRegionDrawable(AssetsManager.getTexture("ui/boton.png"));
         btnPressed = new TextureRegionDrawable(AssetsManager.getTexture("ui/boton_pulsado.png"));
@@ -94,7 +109,7 @@ public class MainMenuScreen implements Screen {
             @Override
             public void clicked(InputEvent event, float x, float y) {
                 game.playSound(game.clickSound);
-                game.setScreen(new PlayScreen(game,1));
+                game.setScreen(new PlayScreen(game, 1));
             }
         });
 
@@ -102,7 +117,7 @@ public class MainMenuScreen implements Screen {
             @Override
             public void clicked(InputEvent event, float x, float y) {
                 game.playSound(game.clickSound);
-                game.setScreen(new PlayScreen(game,2)); 
+                game.setScreen(new PlayScreen(game, 2));
             }
         });
 
@@ -127,28 +142,25 @@ public class MainMenuScreen implements Screen {
         btnRecords.addListener(new ClickListener() {
             @Override
             public void clicked(InputEvent event, float x, float y) {
-                game.playSound(game.clickSound);
-                game.setScreen(new PlayScreen(game,2)); // Aquí puedes poner la pantalla de récords si tienes una
+                showRecordsDialog();
             }
         });
     }
 
     @Override
     public void show() {
-        game.playMusic("audio/music/joyful.ogg",true);
+        game.playMusic("audio/music/joyful.ogg", true);
     }
 
     @Override
     public void render(float delta) {
+
         Gdx.gl.glClearColor(0, 0, 0, 1);
         Gdx.gl.glClear(GL20.GL_COLOR_BUFFER_BIT);
-        game.batch.begin();
-        game.batch.draw(backgroundTexture, 0, 0, FoxGame.V_WIDTH * 2, FoxGame.V_HEIGHT * 2);
-        game.batch.draw(titleTexture, FoxGame.V_WIDTH / 4, FoxGame.V_HEIGHT * 1.25f, FoxGame.V_WIDTH * 1.5f,
-                FoxGame.V_HEIGHT / 2);
-        game.batch.end();
-        stage.act(Math.min(Gdx.graphics.getDeltaTime(), 1 / 60f));
+
+        stage.act(delta);
         stage.draw();
+
     }
 
     @Override
@@ -175,4 +187,36 @@ public class MainMenuScreen implements Screen {
         font.dispose();
         stage.dispose();
     }
+
+    private void showRecordsDialog() {
+
+        int[] scores = GamePreferences.getHighScores();
+        Skin skin = new Skin();
+
+        Label.LabelStyle labelStyle = new Label.LabelStyle();
+        labelStyle.font = font;
+
+        TextButton.TextButtonStyle buttonStyle = new TextButton.TextButtonStyle();
+        buttonStyle.font = font;
+        buttonStyle.up = new TextureRegionDrawable(AssetsManager.getTexture("ui/boton.png"));
+        buttonStyle.down = new TextureRegionDrawable(AssetsManager.getTexture("ui/boton_pulsado.png"));
+        skin.add("default", buttonStyle);
+
+        Window.WindowStyle windowStyle = new Window.WindowStyle();
+        windowStyle.titleFont = font;
+        windowStyle.background = new TextureRegionDrawable(AssetsManager.getTexture("ui/backSettings.png"));
+        skin.add("default", windowStyle);
+
+        Dialog dialog = new Dialog("", skin);
+        Table contentTable = new Table();
+
+        for (int i = 0; i < scores.length; i++) {
+            contentTable.add(new Label((i + 1) + ": " + scores[i] + " "+LanguageManager.get("points"), labelStyle)).row();
+        }
+
+        dialog.getContentTable().add(contentTable);
+        dialog.button(LanguageManager.get("exit"));
+        dialog.show(stage);
+    }
+
 }

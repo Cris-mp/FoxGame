@@ -311,27 +311,60 @@ public class SettingMenuScreen implements Screen {
 
         } else {
             // *** TABLA DE CREDITOS ***
-            table.add(new Label(LanguageManager.get("credits").toUpperCase(), new Label.LabelStyle(font, Color.GREEN)));
+            table.add(new Label(LanguageManager.get("credits").toUpperCase(), new Label.LabelStyle(font, Color.BLUE)));
             table.row();
-            Label cod = new Label(LanguageManager.get("autor"), new Label.LabelStyle(font, Color.WHITE));
-            cod.setWrap(true);
-            table.add(cod).width(250).padLeft(20);
-
+            table.add(new Label(LanguageManager.get("code").toUpperCase(), new Label.LabelStyle(font, Color.GREEN)))
+                    .padTop(20).padBottom(20);
             table.row();
-            table.add(new Label(LanguageManager.get("art"), new Label.LabelStyle(font, Color.WHITE)))
-                    .padTop(10);
+            table.add(new Label(LanguageManager.get("autor"), new Label.LabelStyle(font, Color.WHITE)));
             table.row();
-            table.add(new Label(LanguageManager.get("art_music"), new Label.LabelStyle(font, Color.WHITE)))
-                    .padTop(10);
+            table.add(new Label(LanguageManager.get("art").toUpperCase(), new Label.LabelStyle(font, Color.RED)))
+                    .padTop(20).padBottom(20);
             table.row();
-
+            table.add(new Label(LanguageManager.get("art_1"), new Label.LabelStyle(font, Color.WHITE)));
+            table.row();
+            table.add(new Label(LanguageManager.get("art_2"), new Label.LabelStyle(font, Color.WHITE)));
+            table.row();
+            table.add(new Label(LanguageManager.get("art_3"), new Label.LabelStyle(font, Color.WHITE)));
+            table.row();
+            table.add(new Label(LanguageManager.get("music_c").toUpperCase(), new Label.LabelStyle(font, Color.RED)))
+                    .padTop(20).padBottom(20);
+            table.row();
+            table.add(new Label(LanguageManager.get("music_1"), new Label.LabelStyle(font, Color.WHITE)));
+            table.row();
+            table.add(new Label(LanguageManager.get("music_2"), new Label.LabelStyle(font, Color.WHITE)));
+            table.row();
+            table.add(new Label(LanguageManager.get("sound_c").toUpperCase(), new Label.LabelStyle(font, Color.RED)))
+                    .padTop(20).padBottom(20);
+            table.row();
+            table.add(new Label(LanguageManager.get("sound_1"), new Label.LabelStyle(font, Color.WHITE)));
+            table.row();
+            table.add(new Label(LanguageManager.get("sound_2"), new Label.LabelStyle(font, Color.WHITE)));
+            table.row();
             table.add(new Label(LanguageManager.get("acknowledgment").toUpperCase(),
                     new Label.LabelStyle(font, Color.GREEN)))
-                    .padTop(10);
+                    .padTop(20).padBottom(20);
             table.row();
-            table.add(new Label(LanguageManager.get("ack1"), new Label.LabelStyle(font, Color.WHITE)));
+            Label cod = new Label(LanguageManager.get("ack_1"), new Label.LabelStyle(font, Color.WHITE));
+            cod.setWrap(true);
+            cod.setAlignment(Align.center);
+            table.add(cod).width(250).padLeft(20).padBottom(20);
             table.row();
-            table.add(new Label(LanguageManager.get("ack2"), new Label.LabelStyle(font, Color.WHITE)));
+            cod = new Label(LanguageManager.get("ack_2"), new Label.LabelStyle(font, Color.WHITE));
+            cod.setWrap(true);
+            cod.setAlignment(Align.center);
+            table.add(cod).width(250).padLeft(20).padBottom(20);
+            table.row();
+            cod = new Label(LanguageManager.get("ack_3"), new Label.LabelStyle(font, Color.WHITE));
+            cod.setWrap(true);
+            cod.setAlignment(Align.center);
+            table.add(cod).width(250).padLeft(20).padBottom(20);
+            table.row();
+            cod = new Label(LanguageManager.get("ack_4"), new Label.LabelStyle(font, Color.WHITE));
+            cod.setWrap(true);
+            cod.setAlignment(Align.center);
+            table.add(cod).width(250).padLeft(20);
+            
         }
 
         // 🟢 Agregar la tabla a un ScrollPane
@@ -347,9 +380,11 @@ public class SettingMenuScreen implements Screen {
     public void render(float delta) {
         Gdx.gl.glClearColor(0, 0, 0, 1);
         Gdx.gl.glClear(GL20.GL_COLOR_BUFFER_BIT);
+
         game.batch.begin();
         game.batch.draw(backgroundTexture, 0, 0, FoxGame.V_WIDTH * 2, FoxGame.V_HEIGHT * 2);
         game.batch.end();
+        
         stage.act(delta);
         stage.draw();
     }

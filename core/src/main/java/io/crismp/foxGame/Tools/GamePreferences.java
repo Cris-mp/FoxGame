@@ -9,7 +9,7 @@ public class GamePreferences {
     private static final String SOUND_VOLUME = "soundVolume";
     private static final String VIBRATION = "vibration";
     private static final String LANGUAGE = "language";
-    private static final String HIGH_SCORE = "highScore";
+    private static final String HIGH_SCORES = "highScores";
 
     private static Preferences prefs;
 
@@ -62,13 +62,56 @@ public class GamePreferences {
         return prefs.getString(LANGUAGE, "es");  // Español por defecto
     }
 
-    // Guardar record de puntuación
-    public static void setHighScore(int score) {
-        prefs.putInteger(HIGH_SCORE, score);
-        prefs.flush();
+     // 🔹 Guardar nueva puntuación, manteniendo solo las 5 mejores
+     public static void saveScore(int newScore) {
+        load();
+        String scoresString = prefs.getString(HIGH_SCORES, "0,0,0,0,0");
+        String[] scoresArray = scoresString.split(",");
+    
+        // Convertimos a enteros
+        int[] scores = new int[scoresArray.length];
+        for (int i = 0; i < scoresArray.length; i++) {
+            scores[i] = Integer.parseInt(scoresArray[i]);
+        }
+    
+        // Verificar si la nueva puntuación es mejor que la más baja (última del ranking)
+        if (newScore > scores[scores.length - 1]) {
+            scores[scores.length - 1] = newScore; // Reemplazar solo si es mayor
+            java.util.Arrays.sort(scores); // Ordenar ascendente
+            reverseArray(scores); // Invertir para que queden en orden descendente
+    
+            // Guardar en Preferences
+            StringBuilder newScores = new StringBuilder();
+            for (int i = 0; i < scores.length; i++) {
+                newScores.append(scores[i]);
+                if (i < scores.length - 1) newScores.append(",");
+            }
+    
+            prefs.putString(HIGH_SCORES, newScores.toString());
+            prefs.flush(); // Guardar cambios
+        }
     }
 
-    public static int getHighScore() {
-        return prefs.getInteger(HIGH_SCORE, 0);  // Valor por defecto: 0
+    // 🔹 Obtener las 5 mejores puntuaciones como un array de enteros
+    public static int[] getHighScores() {
+        load();
+        String scoresString = prefs.getString(HIGH_SCORES, "0,0,0,0,0");
+        String[] scoresArray = scoresString.split(",");
+        int[] scores = new int[scoresArray.length];
+
+        for (int i = 0; i < scoresArray.length; i++) {
+            scores[i] = Integer.parseInt(scoresArray[i]);
+        }
+
+        return scores;
+    }
+
+    // 🔹 Método auxiliar para invertir el array (ya que Arrays.sort() es ascendente)
+    private static void reverseArray(int[] array) {
+        for (int i = 0; i < array.length / 2; i++) {
+            int temp = array[i];
+            array[i] = array[array.length - 1 - i];
+            array[array.length - 1 - i] = temp;
+        }
     }
 }

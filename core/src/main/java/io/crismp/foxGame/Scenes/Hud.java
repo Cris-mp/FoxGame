@@ -21,6 +21,7 @@ import com.badlogic.gdx.utils.viewport.Viewport;
 
 import io.crismp.foxGame.FoxGame;
 import io.crismp.foxGame.managers.AssetsManager;
+import io.crismp.foxGame.managers.LanguageManager;
 
 public class Hud implements Disposable {
     public Stage stage;
@@ -96,12 +97,12 @@ public class Hud implements Disposable {
 
         //--------- TUTORIAL LABELS ---------
         cartelesLabels = new HashMap<>();
-        agregarCartel(1, "Ya casi has acabado\n Entra en casa para estar a salvo", 200, 250);
-        agregarCartel(2, "Los pinchos tambien son peligrosos\n No te caigas en ellos",  100, 100);
-        agregarCartel(3, "Puedes subir por las escaleras\nAcercate y sube", 150, 300);
-        agregarCartel(4, "Pulsa dos veces el boton y\nharas un doble salto",  150, 250);
-        agregarCartel(5, "Ten cuidado con los enemigos\nSaltar sobre ellos los mata", 300, 250);
-        agregarCartel(6, "Las cerezas y las gemas dan puntos.\n Recogelas", 275, 200);
+        agregarCartel(6, LanguageManager.get("sign_1"), 275, 200);
+        agregarCartel(5, LanguageManager.get("sign_2"), 300, 250);
+        agregarCartel(4, LanguageManager.get("sign_3"),  150, 250);
+        agregarCartel(3, LanguageManager.get("sign_4"), 150, 300);
+        agregarCartel(2, LanguageManager.get("sign_5"),  100, 100);
+        agregarCartel(1, LanguageManager.get("sign_6"), 200, 250);
 
     }
 

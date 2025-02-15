@@ -64,6 +64,7 @@ public class AssetsManager {
         manager.load("ui/sonidos_pulsado.png", Texture.class);
         manager.load("ui/splashBack.png", Texture.class);
         manager.load("ui/splash_press.png", Texture.class);
+        manager.load("ui/splash_pulsa.png", Texture.class);
         manager.load("ui/title.png", Texture.class);
         manager.load("ui/vibracion.png", Texture.class);
         manager.load("ui/vibracion_pulsado.png", Texture.class);

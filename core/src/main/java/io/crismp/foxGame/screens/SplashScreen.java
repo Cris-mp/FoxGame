@@ -10,6 +10,7 @@ import com.badlogic.gdx.scenes.scene2d.ui.Image;
 import com.badlogic.gdx.utils.viewport.FitViewport;
 import io.crismp.foxGame.FoxGame;
 import io.crismp.foxGame.managers.AssetsManager;
+import io.crismp.foxGame.managers.LanguageManager;
 
 
 public class SplashScreen implements Screen {
@@ -28,7 +29,7 @@ public class SplashScreen implements Screen {
 
         // Cargar imágenes
         backgroundTexture = AssetsManager.getTexture("ui/splashBack.png"); // Imagen de fondo
-        pressTexture = AssetsManager.getTexture("ui/splash_press.png"); // Imagen de "Presiona para continuar"
+        pressTexture = AssetsManager.getTexture(LanguageManager.get("pulse")); // Imagen de "Presiona para continuar"
 
         // Crear imagen de presionar pantalla
         pressImage = new Image(pressTexture);

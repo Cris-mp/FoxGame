@@ -16,6 +16,7 @@ import com.badlogic.gdx.utils.viewport.Viewport;
 
 import io.crismp.foxGame.FoxGame;
 import io.crismp.foxGame.managers.AssetsManager;
+import io.crismp.foxGame.managers.LanguageManager;
 
 public class GameOverScreen implements Screen{
     private Viewport viewport;
@@ -41,7 +42,7 @@ public class GameOverScreen implements Screen{
         // Image background = new Image(new TextureRegionDrawable(AssetsManager.getTexture("ui/background.png")));
         // background.setFillParent(true); // Hace que ocupe toda la pantalla
 
-        Label gameOverLabel = new Label("GAME OVER",labelStyle);
+        Label gameOverLabel = new Label(LanguageManager.get("game_over"),labelStyle);
        Image skull = (new Image(new TextureRegion(AssetsManager.getTexture("hud/skull2.png"), 0, 0, 430, 414)));
 
         table.add(gameOverLabel).expandX();

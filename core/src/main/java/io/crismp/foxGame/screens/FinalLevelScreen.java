@@ -11,12 +11,13 @@ import com.badlogic.gdx.scenes.scene2d.ui.Image;
 import com.badlogic.gdx.scenes.scene2d.ui.Label;
 import com.badlogic.gdx.scenes.scene2d.ui.Table;
 import com.badlogic.gdx.scenes.scene2d.utils.TextureRegionDrawable;
-import com.badlogic.gdx.utils.Align;
 import com.badlogic.gdx.utils.viewport.FitViewport;
 import com.badlogic.gdx.utils.viewport.Viewport;
 
 import io.crismp.foxGame.FoxGame;
 import io.crismp.foxGame.managers.AssetsManager;
+import io.crismp.foxGame.managers.LanguageManager;
+import io.crismp.foxGame.tools.GamePreferences;
 
 public class FinalLevelScreen implements Screen {
     private Viewport viewport;
@@ -25,11 +26,11 @@ public class FinalLevelScreen implements Screen {
 
     private Game game;
 
-      public FinalLevelScreen(FoxGame game, PlayScreen screen){
+    public FinalLevelScreen(FoxGame game, PlayScreen screen) {
         this.game = game;
         viewport = new FitViewport(FoxGame.V_WIDTH, FoxGame.V_HEIGHT, new OrthographicCamera());
         stage = new Stage(viewport, ((FoxGame) game).batch);
-        game.playMusic("audio/music/Victorious.ogg",false);
+        game.playMusic("audio/music/Victorious.ogg", false);
 
         font = new BitmapFont(Gdx.files.internal("fonts/wood.fnt"));
         font.getData().setScale(0.6f);
@@ -39,15 +40,20 @@ public class FinalLevelScreen implements Screen {
         background.setFillParent(true); // Hace que ocupe toda la pantalla
 
         Table table = new Table();
-        table.setSize((FoxGame.V_WIDTH/2)+60, (FoxGame.V_HEIGHT/2)+40);
-        table.setPosition(FoxGame.V_WIDTH/2-table.getWidth()/2, FoxGame.V_HEIGHT/2-table.getHeight()/2);
+        table.setSize((FoxGame.V_WIDTH / 2) + 60, (FoxGame.V_HEIGHT / 2) + 40);
+        table.setPosition(FoxGame.V_WIDTH / 2 - table.getWidth() / 2, FoxGame.V_HEIGHT / 2 - table.getHeight() / 2);
         table.background(new TextureRegionDrawable(AssetsManager.getTexture("ui/backSettings.png")));
 
-        Label levelCompletedLbl = new Label("NIVEL COMPLETADO", labelStyle);
-        Label lblCherries= new Label(String.format("%d Cerezas x 25 pts : %d", screen.getCherriesCollected(),screen.getCherriesCollected()*25), labelStyle);
-        Label lblGems= new Label(String.format("%d Gemas x 100 pts : %d", screen.getGemsCollected(),screen.getGemsCollected()*100), labelStyle);
-        Label lblTotal= new Label(String.format("Total: %d pts", (screen.getCherriesCollected()*25)+(screen.getCherriesCollected()*100)), labelStyle);
-      
+        Label levelCompletedLbl = new Label(LanguageManager.get("complete"), labelStyle);
+        Label lblCherries = new Label(String.format(LanguageManager.get("cherries"), screen.getCherriesCollected(),
+                screen.getCherriesCollected() * 25), labelStyle);
+        Label lblGems = new Label(
+                String.format(LanguageManager.get("gems"), screen.getGemsCollected(), screen.getGemsCollected() * 100),
+                labelStyle);
+        int totalScore = ((screen.getCherriesCollected() * 25) + (screen.getGemsCollected() * 100));
+        Label lblTotal = new Label(String.format(LanguageManager.get("total_score"),
+                totalScore), labelStyle);
+        GamePreferences.saveScore(totalScore);
 
         table.add(levelCompletedLbl);
         table.row();
@@ -67,7 +73,7 @@ public class FinalLevelScreen implements Screen {
 
     @Override
     public void render(float delta) {
-        if(Gdx.input.justTouched()) {
+        if (Gdx.input.justTouched()) {
             game.setScreen(new MainMenuScreen((FoxGame) game));
             dispose();
         }
