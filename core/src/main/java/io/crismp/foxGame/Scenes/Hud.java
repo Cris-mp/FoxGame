@@ -97,12 +97,12 @@ public class Hud implements Disposable {
 
         //--------- TUTORIAL LABELS ---------
         cartelesLabels = new HashMap<>();
-        agregarCartel(6, LanguageManager.get("sign_1"), 275, 200);
-        agregarCartel(5, LanguageManager.get("sign_2"), 300, 250);
-        agregarCartel(4, LanguageManager.get("sign_3"),  150, 250);
-        agregarCartel(3, LanguageManager.get("sign_4"), 150, 300);
-        agregarCartel(2, LanguageManager.get("sign_5"),  100, 100);
-        agregarCartel(1, LanguageManager.get("sign_6"), 200, 250);
+        agregarCartel(1, LanguageManager.get("sign_1"), 275, 200);
+        agregarCartel(2, LanguageManager.get("sign_2"), 300, 250);
+        agregarCartel(3, LanguageManager.get("sign_3"),  150, 250);
+        agregarCartel(4, LanguageManager.get("sign_4"), 150, 300);
+        agregarCartel(5, LanguageManager.get("sign_5"),  100, 100);
+        agregarCartel(6, LanguageManager.get("sign_6"), 200, 250);
 
     }
 

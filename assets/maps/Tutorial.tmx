@@ -82,32 +82,32 @@
  <objectgroup color="#ffaaff" id="23" name="cartel">
   <object id="43" x="128" y="144" width="16" height="16">
    <properties>
-    <property name="id" type="int" value="6"/>
+    <property name="id" type="int" value="1"/>
    </properties>
   </object>
   <object id="44" x="432" y="112" width="16" height="16">
    <properties>
-    <property name="id" type="int" value="5"/>
+    <property name="id" type="int" value="2"/>
    </properties>
   </object>
   <object id="45" x="704" y="144" width="16" height="16">
    <properties>
-    <property name="id" type="int" value="4"/>
+    <property name="id" type="int" value="3"/>
    </properties>
   </object>
   <object id="46" x="896" y="144" width="16" height="16">
    <properties>
-    <property name="id" type="int" value="3"/>
+    <property name="id" type="int" value="4"/>
    </properties>
   </object>
   <object id="47" x="1056" y="64" width="16" height="16">
    <properties>
-    <property name="id" type="int" value="2"/>
+    <property name="id" type="int" value="5"/>
    </properties>
   </object>
   <object id="48" x="1360" y="144" width="16" height="16">
    <properties>
-    <property name="id" type="int" value="1"/>
+    <property name="id" type="int" value="6"/>
    </properties>
   </object>
  </objectgroup>
