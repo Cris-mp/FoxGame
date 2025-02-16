@@ -68,10 +68,6 @@ public class FinalLevelScreen implements Screen {
     }
 
     @Override
-    public void show() {
-    }
-
-    @Override
     public void render(float delta) {
         if (Gdx.input.justTouched()) {
             game.setScreen(new MainMenuScreen((FoxGame) game));
@@ -83,7 +79,19 @@ public class FinalLevelScreen implements Screen {
     }
 
     @Override
+    public void dispose() {
+        font.dispose();
+        stage.dispose();
+    }
+
+    @Override
     public void resize(int width, int height) {
+        stage.getViewport().update(width, height, true);
+    }
+
+    // Métodos no utilizados, pero necesarios por la interfaz Screen
+    @Override
+    public void show() {
     }
 
     @Override
@@ -98,9 +106,4 @@ public class FinalLevelScreen implements Screen {
     public void hide() {
     }
 
-    @Override
-    public void dispose() {
-        font.dispose();
-        stage.dispose();
-    }
 }

@@ -12,57 +12,68 @@ import io.crismp.foxGame.FoxGame;
 import io.crismp.foxGame.managers.AssetsManager;
 import io.crismp.foxGame.managers.LanguageManager;
 
-
+/**
+ * Pantalla de bienvenida del juego (Splash Screen).
+ * Muestra una imagen de fondo y un mensaje de "Presiona para continuar",
+ * con un efecto de parpadeo. Al tocar la pantalla, se avanza al menú principal.
+ */
 public class SplashScreen implements Screen {
     private FoxGame game;
     private Stage stage;
     private Texture backgroundTexture, pressTexture;
     private Image pressImage;
-    public  Music music;
+    public Music music;
+    private float parpadeo = 0;
 
-    private float elapsedTime = 0; // Tiempo transcurrido para efecto de parpadeo
-
+    /**
+     * Constructor de la pantalla de bienvenida.
+     * 
+     * @param game Instancia principal del juego.
+     */
     public SplashScreen(FoxGame game) {
         this.game = game;
+        // Configurar el escenario y el viewport
         stage = new Stage(new FitViewport(FoxGame.V_WIDTH * 2, FoxGame.V_HEIGHT * 2), game.batch);
         Gdx.input.setInputProcessor(stage);
 
-        // Cargar imágenes
+        // Cargar imágenes desde el AssetManager
         backgroundTexture = AssetsManager.getTexture("ui/splash/splashBack.png"); // Imagen de fondo
         pressTexture = AssetsManager.getTexture(LanguageManager.get("pulse")); // Imagen de "Presiona para continuar"
 
-        // Crear imagen de presionar pantalla
+        // Crear la imagen de "Presiona para continuar"
         pressImage = new Image(pressTexture);
         pressImage.setScale(0.5f);
         pressImage.setPosition((stage.getWidth() - (pressImage.getWidth() / 2)) / 2, 50);
         stage.addActor(pressImage);
-        game.playMusic("audio/music/joyful.ogg",true);
+
+        // Reproducir música de fondo en bucle
+        game.playMusic("audio/music/joyful.ogg", true);
     }
 
     @Override
     public void render(float delta) {
-        elapsedTime += delta;
+        parpadeo += delta;
 
-        // Parpadeo del texto cada 0.5 segundos
-        pressImage.setVisible(((int) (elapsedTime * 2)) % 2 == 0);
+        // Alternar visibilidad de la imagen cada 0.5 segundos (efecto de parpadeo)
+        pressImage.setVisible(((int) (parpadeo * 2)) % 2 == 0);
 
-        // Detectar toque o clic para cambiar a MainMenuScreen
+        // Si el jugador toca la pantalla, cambiar a la pantalla de menú principal
         if (Gdx.input.justTouched()) {
             game.setScreen(new MainMenuScreen(game));
         }
 
-        // Dibujar fondo y elementos
+        // Limpiar la pantalla con un color negro
         Gdx.gl.glClearColor(0, 0, 0, 1);
         Gdx.gl.glClear(GL20.GL_COLOR_BUFFER_BIT);
+
+        // Dibujar la imagen de fondo
         game.batch.begin();
         game.batch.draw(backgroundTexture, 0, 0, FoxGame.V_WIDTH * 2, FoxGame.V_HEIGHT * 2);
         game.batch.end();
+
+        // Actualizar y dibujar la escena
         stage.act(delta);
         stage.draw();
-    }
-
-    @Override
-    public void show() {
     }
 
     @Override
@@ -70,11 +81,19 @@ public class SplashScreen implements Screen {
         stage.getViewport().update(width, height, true);
     }
 
+    /**
+     * Liberar memoria de las texturas
+     */
     @Override
     public void dispose() {
         backgroundTexture.dispose();
         pressTexture.dispose();
         stage.dispose();
+    }
+
+    // Métodos no utilizados, pero necesarios por la interfaz Screen
+    @Override
+    public void show() {
     }
 
     @Override

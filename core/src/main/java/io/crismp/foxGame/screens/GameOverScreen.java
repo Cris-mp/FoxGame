@@ -1,6 +1,6 @@
 package io.crismp.foxGame.screens;
 
-import com.badlogic.gdx.Game;
+
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.Screen;
 import com.badlogic.gdx.graphics.GL20;
@@ -18,58 +18,89 @@ import io.crismp.foxGame.FoxGame;
 import io.crismp.foxGame.managers.AssetsManager;
 import io.crismp.foxGame.managers.LanguageManager;
 
-public class GameOverScreen implements Screen{
+/**
+ * Pantalla de Game Over.
+ * Muestra un mensaje de "Game Over", una imagen de calavera y reproduce música
+ * triste.
+ * Al tocar la pantalla, el jugador regresa al menú principal.
+ */
+public class GameOverScreen implements Screen {
     private Viewport viewport;
     private Stage stage;
     private BitmapFont font;
+    private FoxGame game;
+    private float elapsedTime = 0;
 
-    private Game game;
-
-      public GameOverScreen(FoxGame game){
+    /**
+     * Constructor de la pantalla de Game Over.
+     * 
+     * @param game Instancia principal del juego.
+     */
+    public GameOverScreen(FoxGame game) {
         this.game = game;
-        viewport = new FitViewport(FoxGame.V_WIDTH, FoxGame.V_HEIGHT, new OrthographicCamera());
-        stage = new Stage(viewport, ((FoxGame) game).batch);
-        game.playMusic("audio/music/To Suffer a Loss (Game Over).ogg",false);
 
+        // Configurar la cámara y el viewport
+        viewport = new FitViewport(FoxGame.V_WIDTH, FoxGame.V_HEIGHT, new OrthographicCamera());
+        stage = new Stage(viewport, game.batch);
+
+        // Reproducir música de Game Over
+        game.playMusic("audio/music/To Suffer a Loss (Game Over).ogg", false);
+
+        // Configurar la fuente del texto
         font = new BitmapFont(Gdx.files.internal("fonts/wood.fnt"));
         font.getData().setScale(1f);
         Label.LabelStyle labelStyle = new Label.LabelStyle();
         labelStyle.font = font;
 
+        // Crear un contenedor (Table) para organizar elementos
         Table table = new Table();
         table.center();
         table.setFillParent(true);
-        // Image background = new Image(new TextureRegionDrawable(AssetsManager.getTexture("ui/background.png")));
-        // background.setFillParent(true); // Hace que ocupe toda la pantalla
 
-        Label gameOverLabel = new Label(LanguageManager.get("game_over"),labelStyle);
-       Image skull = (new Image(new TextureRegion(AssetsManager.getTexture("hud/skull2.png"), 0, 0, 430, 414)));
+        // Crear etiqueta de "Game Over" con soporte para múltiples idiomas
+        Label gameOverLabel = new Label(LanguageManager.get("game_over"), labelStyle);
 
+        // Cargar imagen de calavera desde el AssetManager
+        Image skull = (new Image(new TextureRegion(AssetsManager.getTexture("hud/skull2.png"), 0, 0, 430, 414)));
+
+        // Agregar elementos a la tabla y esta al escenario
         table.add(gameOverLabel).expandX();
         table.row();
         table.add(skull).size(100, 100);
-
-        //stage.addActor(background);
         stage.addActor(table);
     }
 
     @Override
-    public void show() {
-    }
-
-    @Override
     public void render(float delta) {
-        if(Gdx.input.justTouched()) {
-            game.setScreen(new MainMenuScreen((FoxGame) game));
+        elapsedTime += delta; // Acumular tiempo
+
+        // Permitir cambio de pantalla solo después de 1.5 segundos
+        if (elapsedTime > 1.5f && Gdx.input.justTouched()) {
+            game.setScreen(new MainMenuScreen(game));
             dispose();
         }
+        // Limpiar pantalla
         Gdx.gl.glClearColor(0, 0, 0, 1);
         Gdx.gl.glClear(GL20.GL_COLOR_BUFFER_BIT);
+
+        // Dibujar la escena
         stage.draw();
     }
 
     @Override
     public void resize(int width, int height) {
+        stage.getViewport().update(width, height, true);
+    }
+
+    @Override
+    public void dispose() {
+        font.dispose();
+        stage.dispose();
+    }
+
+    // Métodos no utilizados, pero necesarios por la interfaz Screen
+    @Override
+    public void show() {
     }
 
     @Override
@@ -83,11 +114,4 @@ public class GameOverScreen implements Screen{
     @Override
     public void hide() {
     }
-
-    @Override
-    public void dispose() {
-        font.dispose();
-        stage.dispose();
-    }
-    
 }

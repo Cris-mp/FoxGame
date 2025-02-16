@@ -27,49 +27,57 @@ import io.crismp.foxGame.managers.AssetsManager;
 import io.crismp.foxGame.managers.LanguageManager;
 import io.crismp.foxGame.tools.GamePreferences;
 
+/**
+ * Clase que representa la pantalla del menú principal del juego.
+ * Contiene los botones para iniciar el juego, acceder al tutorial, ver récords,
+ * abrir las opciones y salir del juego.
+ */
 public class MainMenuScreen implements Screen {
     private FoxGame game;
     private Stage stage;
     private Viewport viewport;
-    private Texture backgroundTexture;
-    private Texture titleTexture;
+    private Texture backgroundTexture, titleTexture;
     private BitmapFont font;
-    private TextureRegionDrawable btnNormal, btnPressed;
-    private TextureRegionDrawable iconoOpciones, iconoRecords, iconoOpcionesPulsado, iconoRecordsPulsado;
+    private Skin skin;
 
+    /**
+     * Constructor de la pantalla del menú principal.
+     *
+     * @param game Referencia a la instancia principal del juego
+     */
     public MainMenuScreen(FoxGame game) {
         this.game = game;
-        viewport = new FitViewport(FoxGame.V_WIDTH * 2, FoxGame.V_HEIGHT * 2, new OrthographicCamera());
+
+        // Configurar la vista con un FitViewport para mantener la relación de aspecto
+        viewport = new FitViewport(FoxGame.V_WIDTH * 2, FoxGame.V_HEIGHT * 2, new OrthographicCamera());// cambie aqui
         stage = new Stage(viewport, game.batch);
+        // Asignar el escenario como procesador de entrada
         Gdx.input.setInputProcessor(stage);
-        
+
+        // Cargar la fuente y ajustar su tamaño
         font = AssetsManager.getFont("fonts/wood.fnt");
         font.getData().setScale(1.15f);
-        
+
+        // Cargar texturas de fondo y título
         backgroundTexture = AssetsManager.getTexture("ui/background.png");
+        titleTexture = AssetsManager.getTexture("ui/title.png");
+
+        // Crear y añadir imagen de fondo
         Image background = new Image(new TextureRegionDrawable(backgroundTexture));
         background.setSize(viewport.getWorldWidth(), viewport.getWorldHeight());
-        background.setPosition(0, 0);
         stage.addActor(background);
-        titleTexture = AssetsManager.getTexture("ui/title.png");
+
+        // Crear y añadir imagen de título
         Image title = new Image(new TextureRegionDrawable(titleTexture));
-        stage.addActor(title);
-        title.setPosition(FoxGame.V_WIDTH / 4, FoxGame.V_HEIGHT * 1.25f);
-        title.setSize(FoxGame.V_WIDTH * 1.5f,FoxGame.V_HEIGHT / 2);
-       
+        title.setSize(FoxGame.V_WIDTH * 1.5f, FoxGame.V_HEIGHT / 2);
 
-        btnNormal = new TextureRegionDrawable(AssetsManager.getTexture("ui/button/btnOval.png"));
-        btnPressed = new TextureRegionDrawable(AssetsManager.getTexture("ui/button/btnOval_p.png"));
-        iconoOpciones = new TextureRegionDrawable(AssetsManager.getTexture("ui/button/btnOptions.png"));
-        iconoOpcionesPulsado = new TextureRegionDrawable(AssetsManager.getTexture("ui/button/btnOptions_p.png"));
-        iconoRecords = new TextureRegionDrawable(AssetsManager.getTexture("ui/button/btnRecords.png"));
-        iconoRecordsPulsado = new TextureRegionDrawable(AssetsManager.getTexture("ui/button/btnRecords_p.png"));
-
+        // Estilo para los botones
         TextButton.TextButtonStyle estiloBoton = new TextButton.TextButtonStyle();
         estiloBoton.font = font;
-        estiloBoton.up = btnNormal;
-        estiloBoton.down = btnPressed;
+        estiloBoton.up = new TextureRegionDrawable(AssetsManager.getTexture("ui/button/btnOval.png"));
+        estiloBoton.down = new TextureRegionDrawable(AssetsManager.getTexture("ui/button/btnOval_p.png"));
 
+        // Creación de botones
         TextButton btnJugar = new TextButton(LanguageManager.get("play").toUpperCase(), estiloBoton);
         TextButton btnTutorial = new TextButton(LanguageManager.get("tutorial").toUpperCase(), estiloBoton);
         TextButton btnSalir = new TextButton(LanguageManager.get("exit").toUpperCase(), estiloBoton);
@@ -77,34 +85,36 @@ public class MainMenuScreen implements Screen {
         btnTutorial.padBottom(8);
         btnSalir.padBottom(8);
 
-        ImageButton.ImageButtonStyle estiloOpciones = new ImageButton.ImageButtonStyle();
-        estiloOpciones.imageUp = iconoOpciones;
-        estiloOpciones.imageDown = iconoOpcionesPulsado;
+        // Botón de opciones
+        ImageButton btnOpciones = new ImageButton(
+                new TextureRegionDrawable(AssetsManager.getTexture("ui/button/btnOptions.png")),
+                new TextureRegionDrawable(AssetsManager.getTexture("ui/button/btnOptions_p.png")));
 
-        ImageButton.ImageButtonStyle estiloRecords = new ImageButton.ImageButtonStyle();
-        estiloRecords.imageUp = iconoRecords;
-        estiloRecords.imageDown = iconoRecordsPulsado;
+        // Botón de récords
+        ImageButton btnRecords = new ImageButton(
+                new TextureRegionDrawable(AssetsManager.getTexture("ui/button/btnRecords.png")),
+                new TextureRegionDrawable(AssetsManager.getTexture("ui/button/btnRecords_p.png")));
 
-        ImageButton btnOpciones = new ImageButton(estiloOpciones);
-        ImageButton btnRecords = new ImageButton(estiloRecords);
-
+        // Crear tabla para organizar los elementos
         Table table = new Table();
         table.setFillParent(true);
-        table.center().padTop(150);
+        table.add(title).pad(45).padBottom(10).row();
         table.add(btnJugar).pad(10).row();
         table.add(btnTutorial).pad(10).row();
-        table.add(btnSalir).pad(10).row();
+        table.add(btnSalir).pad(10).padBottom(20).row();
         stage.addActor(table);
 
+        // Posicionamiento de botones adicionales
         btnOpciones.setPosition((FoxGame.V_WIDTH * 2) - 20, (FoxGame.V_HEIGHT * 2) - 20, Align.topRight);
         btnOpciones.setTransform(true);
         btnOpciones.setScale(1.5f);
-        stage.addActor(btnOpciones);
         btnRecords.setPosition((FoxGame.V_WIDTH * 2) - 20, 20, Align.bottomRight);
         btnRecords.setTransform(true);
         btnRecords.setScale(1.5f);
+        stage.addActor(btnOpciones);
         stage.addActor(btnRecords);
 
+        // Asignar acciones a los botones
         btnJugar.addListener(new ClickListener() {
             @Override
             public void clicked(InputEvent event, float x, float y) {
@@ -127,7 +137,6 @@ public class MainMenuScreen implements Screen {
                 game.playSound(game.clickSound);
                 System.exit(0);
                 Gdx.app.exit();
-
             }
         });
 
@@ -142,9 +151,57 @@ public class MainMenuScreen implements Screen {
         btnRecords.addListener(new ClickListener() {
             @Override
             public void clicked(InputEvent event, float x, float y) {
+                game.playSound(game.clickSound);
                 showRecordsDialog();
             }
         });
+        skin = new Skin();
+    }
+
+    /**
+     * Muestra un diálogo con los récords del juego.
+     */
+    private void showRecordsDialog() {
+
+        int[] scores = GamePreferences.getHighScores();
+        Skin skin = new Skin();
+
+        Label.LabelStyle labelStyle = new Label.LabelStyle();
+        labelStyle.font = font;
+
+        TextButton.TextButtonStyle buttonStyle = new TextButton.TextButtonStyle();
+        buttonStyle.font = font;
+        buttonStyle.up = new TextureRegionDrawable(AssetsManager.getTexture("ui/button/btnOval.png"));
+        buttonStyle.down = new TextureRegionDrawable(AssetsManager.getTexture("ui/button/btnOval_p.png"));
+        skin.add("default", buttonStyle);
+
+        Window.WindowStyle windowStyle = new Window.WindowStyle();
+        windowStyle.titleFont = font;
+        windowStyle.background = new TextureRegionDrawable(AssetsManager.getTexture("ui/backSettings.png"));
+        skin.add("default", windowStyle);
+
+        Dialog dialog = new Dialog("", skin);
+        Table contentTable = new Table();
+
+        if (scores.length == 0) {
+            contentTable.add(new Label(LanguageManager.get("no_scores").toUpperCase(), labelStyle)).row();
+        } else {
+            contentTable.add(new Label(LanguageManager.get("high_scores").toUpperCase(), labelStyle)).padBottom(10).row();
+            for (int i = 0; i < scores.length; i++) {
+                contentTable
+                        .add(new Label((i + 1) + ": " + scores[i] + " " + LanguageManager.get("points"), labelStyle))
+                        .row();
+            }
+        }
+
+        dialog.getContentTable().add(contentTable);
+        dialog.button(LanguageManager.get("exit")).padBottom(40).addListener(new ClickListener() {
+            @Override
+            public void clicked(InputEvent event, float x, float y) {
+                game.playSound(game.clickSound);
+            }
+        });
+        dialog.show(stage);
     }
 
     @Override
@@ -169,6 +226,16 @@ public class MainMenuScreen implements Screen {
     }
 
     @Override
+    public void dispose() {
+        backgroundTexture.dispose();
+        titleTexture.dispose();
+        font.dispose();
+        stage.dispose();
+        skin.dispose();
+    }
+
+    // Métodos no utilizados, pero necesarios por la interfaz Screen
+    @Override
     public void pause() {
     }
 
@@ -179,44 +246,4 @@ public class MainMenuScreen implements Screen {
     @Override
     public void hide() {
     }
-
-    @Override
-    public void dispose() {
-        backgroundTexture.dispose();
-        titleTexture.dispose();
-        font.dispose();
-        stage.dispose();
-    }
-
-    private void showRecordsDialog() {
-
-        int[] scores = GamePreferences.getHighScores();
-        Skin skin = new Skin();
-
-        Label.LabelStyle labelStyle = new Label.LabelStyle();
-        labelStyle.font = font;
-
-        TextButton.TextButtonStyle buttonStyle = new TextButton.TextButtonStyle();
-        buttonStyle.font = font;
-        buttonStyle.up = new TextureRegionDrawable(AssetsManager.getTexture("ui/button/btnOval.png"));
-        buttonStyle.down = new TextureRegionDrawable(AssetsManager.getTexture("ui/button/btnOval_p.png"));
-        skin.add("default", buttonStyle);
-
-        Window.WindowStyle windowStyle = new Window.WindowStyle();
-        windowStyle.titleFont = font;
-        windowStyle.background = new TextureRegionDrawable(AssetsManager.getTexture("ui/backSettings.png"));
-        skin.add("default", windowStyle);
-
-        Dialog dialog = new Dialog("", skin);
-        Table contentTable = new Table();
-
-        for (int i = 0; i < scores.length; i++) {
-            contentTable.add(new Label((i + 1) + ": " + scores[i] + " "+LanguageManager.get("points"), labelStyle)).row();
-        }
-
-        dialog.getContentTable().add(contentTable);
-        dialog.button(LanguageManager.get("exit"));
-        dialog.show(stage);
-    }
-
 }

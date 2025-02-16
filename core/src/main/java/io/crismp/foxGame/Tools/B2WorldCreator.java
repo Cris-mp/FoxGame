@@ -22,144 +22,184 @@ import io.crismp.foxGame.sprites.tileObjects.Escalera;
 import io.crismp.foxGame.sprites.tileObjects.Pinchos;
 
 /**
- * Crea y configura los objetos del mundo del juego a partir de un mapa de
- * objetos (TiledMap). Cada objeto del mapa se asocia con un cuerpo físico en el
- * mundo de Box2D, permitiendo su interacción física.
- *
- * El constructor de esta clase itera sobre las capas del mapa que contienen los
- * objetos del juego, como suelos, paredes, techos, obstáculos, escaleras,
- * pinchos, zarigueyas, cerezas, gemas y la puerta de fin de nivel. Para cada
- * uno de estos objetos, se les asigna un cuerpo estático o dinámico,
- * según el caso, en el mundo físico.
+ * Clase encargada de generar y configurar los objetos del mundo físico (Box2D)
+ * a partir de un mapa de TiledMap. Se encarga de crear los cuerpos físicos
+ * correspondientes a los elementos del mapa, como suelos, paredes, enemigos,
+ * obstáculos y coleccionables.
  */
 public class B2WorldCreator {
-    World world;
-    TiledMap map;
+    private World world;  // Referencia al mundo físico (Box2D)
+    private TiledMap map; // Mapa del juego (TiledMap)
 
-    ArrayList<Zarigueya> zarigueyas;
-    ArrayList<Cherry> cherrys;
-    ArrayList<Gem> gems;
+    private ArrayList<Zarigueya> zarigueyas; // Lista de enemigos zarigüeyas
+    private ArrayList<Cherry> cherrys; // Lista de cerezas coleccionables
+    private ArrayList<Gem> gems; // Lista de gemas coleccionables
 
     /**
-     * Este método itera sobre las capas del mapa de objetos y crea los objetos
-     * correspondientes en el mundo físico (Box2D), asignándoles cuerpos físicos
-     * estáticos o dinámicos.
+     * Constructor de la clase B2WorldCreator.
+     * Se encarga de leer las capas del mapa y generar los cuerpos físicos
+     * correspondientes en el mundo de Box2D.
      *
-     * @param screen El objeto PlayScreen que gestiona la pantalla del juego,
-     *               proporcionando acceso al mundo físico y al mapa de objetos.
+     * @param screen La pantalla del juego que contiene el mundo físico y el mapa.
      */
     public B2WorldCreator(PlayScreen screen) {
+        this.world = screen.getWorld();
+        this.map = screen.getMap();
 
-        world = screen.getWorld();
-        map = screen.getMap();
+        // Crear colisiones para elementos del entorno
+        createStaticBodies("suelos", FoxGame.GROUND_BIT);
+        createStaticBodies("paredes", FoxGame.WALL_BIT);
+        createStaticBodies("techos", FoxGame.FLOOR_BIT);
+        createStaticBodies("obstaculos", FoxGame.OBSTACLE_BIT);
+        createStaticBodies("puerta", FoxGame.END_GAME_BIT);
 
-        if (map.getLayers().get("suelos") != null) {
-            for (MapObject object : map.getLayers().get("suelos").getObjects().getByType(RectangleMapObject.class)) {
-                define(object, FoxGame.GROUND_BIT);
-            }
-        }
-        if (map.getLayers().get("paredes") != null) {
-            for (MapObject object : map.getLayers().get("paredes").getObjects().getByType(RectangleMapObject.class)) {
-                define(object, FoxGame.WALL_BIT);
-            }
-        }
-        if (map.getLayers().get("techos") != null) {
-            for (MapObject object : map.getLayers().get("techos").getObjects().getByType(RectangleMapObject.class)) {
-                define(object, FoxGame.FLOOR_BIT);
-            }
-        }
-        if (map.getLayers().get("obstaculos") != null) {
-            for (MapObject object : map.getLayers().get("obstaculos").getObjects()
-                    .getByType(RectangleMapObject.class)) {
-                define(object, FoxGame.OBSTACLE_BIT);
-            }
-        }
-        if (map.getLayers().get("escaleras") != null) {
+        // Crear objetos interactivos
+        createLadders(screen);
+        createSpikes(screen);
+        createSigns(screen);
 
-            for (MapObject object : map.getLayers().get("escaleras").getObjects().getByType(RectangleMapObject.class)) {
-                Rectangle rectangle = ((RectangleMapObject) object).getRectangle();
-                new Escalera(screen, rectangle);
-            }
-        }
-        if (map.getLayers().get("pinchos") != null) {
-            for (MapObject object : map.getLayers().get("pinchos").getObjects().getByType(RectangleMapObject.class)) {
-                Rectangle rectangle = ((RectangleMapObject) object).getRectangle();
-                new Pinchos(screen, rectangle);
-            }
-        }
-        if (map.getLayers().get("zarigueya") != null) {
-            zarigueyas = new ArrayList<>();
-            for (MapObject object : map.getLayers().get("zarigueya").getObjects().getByType(RectangleMapObject.class)) {
-                Rectangle rectangle = ((RectangleMapObject) object).getRectangle();
-                zarigueyas.add(new Zarigueya(screen, rectangle));
-            }
-        }
-        if (map.getLayers().get("cherries") != null) {
-            cherrys = new ArrayList<>();
-            for (MapObject object : map.getLayers().get("cherries").getObjects().getByType(RectangleMapObject.class)) {
-                Rectangle rectangle = ((RectangleMapObject) object).getRectangle();
-                cherrys.add(new Cherry(screen, rectangle));
-            }
-        }
-        if (map.getLayers().get("gems") != null) {
-            gems = new ArrayList<>();
-            for (MapObject object : map.getLayers().get("gems").getObjects().getByType(RectangleMapObject.class)) {
-                Rectangle rectangle = ((RectangleMapObject) object).getRectangle();
-                gems.add(new Gem(screen, rectangle));
-            }
-        }
-        if (map.getLayers().get("puerta") != null) {
-            for (MapObject object : map.getLayers().get("puerta").getObjects().getByType(RectangleMapObject.class)) {
-                define(object, FoxGame.END_GAME_BIT);
-            }
-        }
-        if (map.getLayers().get("cartel") != null) {
-            for (MapObject object : map.getLayers().get("cartel").getObjects().getByType(RectangleMapObject.class)) {
-                Rectangle rectangle = ((RectangleMapObject) object).getRectangle();
-                new Cartel(screen, rectangle,object);
+        // Crear enemigos y coleccionables
+        zarigueyas = createEnemies(screen);
+        cherrys = createCherries(screen);
+        gems = createGems(screen);
+    }
+
+    /**
+     * Crea cuerpos estáticos en el mundo de Box2D para los objetos de una capa específica del mapa.
+     *
+     * @param layerName Nombre de la capa en el mapa.
+     * @param mask      Máscara de bits que define la colisión del objeto.
+     */
+    private void createStaticBodies(String layerName, short mask) {
+        if (map.getLayers().get(layerName) != null) {
+            for (MapObject object : map.getLayers().get(layerName).getObjects().getByType(RectangleMapObject.class)) {
+                defineStaticBody(object, mask);
             }
         }
     }
 
     /**
-     * Devuelve la lista de zarigueyas presentes en el juego.
+     * Crea las escaleras en el mundo del juego.
      *
-     * @return La lista de zarigueyas.
+     * @param screen Pantalla de juego.
+     */
+    private void createLadders(PlayScreen screen) {
+        if (map.getLayers().get("escaleras") != null) {
+            for (MapObject object : map.getLayers().get("escaleras").getObjects().getByType(RectangleMapObject.class)) {
+                new Escalera(screen, ((RectangleMapObject) object).getRectangle());
+            }
+        }
+    }
+
+    /**
+     * Crea los pinchos en el mundo del juego.
+     *
+     * @param screen Pantalla de juego.
+     */
+    private void createSpikes(PlayScreen screen) {
+        if (map.getLayers().get("pinchos") != null) {
+            for (MapObject object : map.getLayers().get("pinchos").getObjects().getByType(RectangleMapObject.class)) {
+                new Pinchos(screen, ((RectangleMapObject) object).getRectangle());
+            }
+        }
+    }
+
+    /**
+     * Crea los carteles en el mundo del juego.
+     *
+     * @param screen Pantalla de juego.
+     */
+    private void createSigns(PlayScreen screen) {
+        if (map.getLayers().get("cartel") != null) {
+            for (MapObject object : map.getLayers().get("cartel").getObjects().getByType(RectangleMapObject.class)) {
+                new Cartel(screen, ((RectangleMapObject) object).getRectangle(), object);
+            }
+        }
+    }
+
+    /**
+     * Crea la lista de enemigos zarigüeyas en el juego.
+     *
+     * @param screen Pantalla de juego.
+     * @return Lista de enemigos zarigüeyas.
+     */
+    private ArrayList<Zarigueya> createEnemies(PlayScreen screen) {
+        ArrayList<Zarigueya> enemies = new ArrayList<>();
+        if (map.getLayers().get("zarigueya") != null) {
+            for (MapObject object : map.getLayers().get("zarigueya").getObjects().getByType(RectangleMapObject.class)) {
+                enemies.add(new Zarigueya(screen, ((RectangleMapObject) object).getRectangle()));
+            }
+        }
+        return enemies;
+    }
+
+    /**
+     * Crea la lista de cerezas coleccionables en el juego.
+     *
+     * @param screen Pantalla de juego.
+     * @return Lista de cerezas coleccionables.
+     */
+    private ArrayList<Cherry> createCherries(PlayScreen screen) {
+        ArrayList<Cherry> items = new ArrayList<>();
+        if (map.getLayers().get("cherries") != null) {
+            for (MapObject object : map.getLayers().get("cherries").getObjects().getByType(RectangleMapObject.class)) {
+                items.add(new Cherry(screen, ((RectangleMapObject) object).getRectangle()));
+            }
+        }
+        return items;
+    }
+
+    /**
+     * Crea la lista de gemas coleccionables en el juego.
+     *
+     * @param screen Pantalla de juego.
+     * @return Lista de gemas coleccionables.
+     */
+    private ArrayList<Gem> createGems(PlayScreen screen) {
+        ArrayList<Gem> items = new ArrayList<>();
+        if (map.getLayers().get("gems") != null) {
+            for (MapObject object : map.getLayers().get("gems").getObjects().getByType(RectangleMapObject.class)) {
+                items.add(new Gem(screen, ((RectangleMapObject) object).getRectangle()));
+            }
+        }
+        return items;
+    }
+
+    /**
+     * Obtiene la lista de enemigos zarigüeyas.
+     *
+     * @return Lista de enemigos zarigüeyas.
      */
     public ArrayList<Zarigueya> getZarigueyas() {
         return zarigueyas;
     }
 
     /**
-     * Devuelve la lista de cerezas presentes en el juego.
+     * Obtiene la lista de cerezas coleccionables.
      *
-     * @return La lista de cerezas.
+     * @return Lista de cerezas coleccionables.
      */
     public ArrayList<Cherry> getCherries() {
         return cherrys;
     }
 
     /**
-     * Devuelve la lista de gemas presentes en el juego.
+     * Obtiene la lista de gemas coleccionables.
      *
-     * @return La lista de gemas.
+     * @return Lista de gemas coleccionables.
      */
     public ArrayList<Gem> getGems() {
         return gems;
     }
 
     /**
-     * Define un cuerpo estático en el mundo de Box2D para un objeto del mapa de
-     * tipo RectangleMapObject. Este método crea un cuerpo estático (sin movimiento)
-     * y lo coloca en la posición y tamaño del objeto en el mundo de acuerdo a las
-     * coordenadas del mapa.
+     * Define un cuerpo estático en el mundo de Box2D para un objeto del mapa.
+     * Los cuerpos estáticos no se mueven y sirven como colisión con el entorno.
      *
-     * @param object El objeto tipo RectangleMapObject que se utilizará para definir
-     *               el cuerpo en el mundo.
-     * @param mask   La máscara de bits que identifica el tipo de objeto creado en
-     *               el mundo físico.
+     * @param object Objeto del mapa a convertir en un cuerpo estático.
+     * @param mask   Máscara de colisión para diferenciar el tipo de objeto.
      */
-    private void define(Object object, short mask) {
+    private void defineStaticBody(MapObject object, short mask) {
         Rectangle rectangle = ((RectangleMapObject) object).getRectangle();
         BodyDef bdef = new BodyDef();
         FixtureDef fdef = new FixtureDef();
@@ -167,7 +207,8 @@ public class B2WorldCreator {
 
         bdef.type = BodyDef.BodyType.StaticBody;
         bdef.position.set((rectangle.getX() + rectangle.getWidth() / 2) / FoxGame.PPM,
-                (rectangle.getY() + rectangle.getHeight() / 2) / FoxGame.PPM);
+                          (rectangle.getY() + rectangle.getHeight() / 2) / FoxGame.PPM);
+
         Body body = world.createBody(bdef);
         shape.setAsBox((rectangle.getWidth() / 2) / FoxGame.PPM, (rectangle.getHeight() / 2) / FoxGame.PPM);
         fdef.shape = shape;
@@ -175,5 +216,4 @@ public class B2WorldCreator {
         fdef.friction = 0;
         body.createFixture(fdef);
     }
-
 }

@@ -3,6 +3,13 @@ package io.crismp.foxGame.tools;
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.Preferences;
 
+import java.util.ArrayList;
+import java.util.Collections;
+import java.util.List;
+
+/**
+ * Clase que maneja las preferencias del juego, como volumen, idioma, vibración y puntuaciones altas.
+ */
 public class GamePreferences {
     private static final String PREFS_NAME = "foxGamePrefs";  // Nombre del archivo de preferencias
     private static final String MUSIC_VOLUME = "musicVolume";
@@ -10,108 +17,146 @@ public class GamePreferences {
     private static final String VIBRATION = "vibration";
     private static final String LANGUAGE = "language";
     private static final String HIGH_SCORES = "highScores";
+    private static final int MAX_SCORES = 5;  // Número máximo de puntuaciones guardadas
 
     private static Preferences prefs;
 
-    // Inicializar preferencias
-    public static void load() {
-        if (prefs == null) {  // 💡 Evita problemas de inicialización
+    /**
+     * Obtiene las preferencias del juego, asegurándose de que estén cargadas.
+     *
+     * @return Objeto de preferencias.
+     */
+    private static Preferences getPreferences() {
+        if (prefs == null) {
             prefs = Gdx.app.getPreferences(PREFS_NAME);
         }
+        return prefs;
     }
 
-    // Guardar volumen de música
+    /**
+     * Establece el volumen de la música.
+     *
+     * @param volume Valor del volumen entre 0.0 y 1.0.
+     */
     public static void setMusicVolume(float volume) {
-        prefs.putFloat(MUSIC_VOLUME, volume);
-        prefs.flush();
+        getPreferences().putFloat(MUSIC_VOLUME, volume).flush();
     }
 
+    /**
+     * Obtiene el volumen de la música.
+     *
+     * @return Valor del volumen (por defecto 1.0 si no ha sido configurado).
+     */
     public static float getMusicVolume() {
-        return prefs.getFloat(MUSIC_VOLUME, 1.0f);  // Valor por defecto: 1.0
+        return getPreferences().getFloat(MUSIC_VOLUME, 1.0f);
     }
 
-    // Guardar volumen de sonido
+    /**
+     * Establece el volumen de los efectos de sonido.
+     *
+     * @param volume Valor del volumen entre 0.0 y 1.0.
+     */
     public static void setSoundVolume(float volume) {
-        prefs.putFloat(SOUND_VOLUME, volume);
-        prefs.flush();
+        getPreferences().putFloat(SOUND_VOLUME, volume).flush();
     }
 
+    /**
+     * Obtiene el volumen de los efectos de sonido.
+     *
+     * @return Valor del volumen (por defecto 1.0 si no ha sido configurado).
+     */
     public static float getSoundVolume() {
-        return prefs.getFloat(SOUND_VOLUME, 1.0f);
+        return getPreferences().getFloat(SOUND_VOLUME, 1.0f);
     }
 
-    // Guardar si la vibración está activada
+    /**
+     * Activa o desactiva la vibración en el juego.
+     *
+     * @param enabled {@code true} para activar la vibración, {@code false} para desactivarla.
+     */
     public static void setVibration(boolean enabled) {
-        prefs.putBoolean(VIBRATION, enabled);
-        prefs.flush();
+        getPreferences().putBoolean(VIBRATION, enabled).flush();
     }
 
+    /**
+     * Verifica si la vibración está activada.
+     *
+     * @return {@code true} si la vibración está activada, {@code false} si está desactivada.
+     */
     public static boolean isVibrationEnabled() {
-        return prefs.getBoolean(VIBRATION, true);  // Por defecto activado
+        return getPreferences().getBoolean(VIBRATION, true);
     }
 
-    // Guardar idioma
+    /**
+     * Establece el idioma del juego.
+     *
+     * @param language Código de idioma (ejemplo: "es" para español, "en" para inglés).
+     */
     public static void setLanguage(String language) {
-        load();
-        prefs.putString(LANGUAGE, language);
-        prefs.flush();
+        getPreferences().putString(LANGUAGE, language).flush();
     }
 
+    /**
+     * Obtiene el idioma configurado en el juego.
+     *
+     * @return Código de idioma actual (por defecto "es").
+     */
     public static String getLanguage() {
-        load();
-        return prefs.getString(LANGUAGE, "es");  // Español por defecto
+        return getPreferences().getString(LANGUAGE, "es");
     }
 
-     // 🔹 Guardar nueva puntuación, manteniendo solo las 5 mejores
-     public static void saveScore(int newScore) {
-        load();
-        String scoresString = prefs.getString(HIGH_SCORES, "0,0,0,0,0");
-        String[] scoresArray = scoresString.split(",");
-    
-        // Convertimos a enteros
-        int[] scores = new int[scoresArray.length];
-        for (int i = 0; i < scoresArray.length; i++) {
-            scores[i] = Integer.parseInt(scoresArray[i]);
+    /**
+     * Guarda una nueva puntuación en la lista de récords, manteniendo solo las 5 mejores puntuaciones.
+     *
+     * @param newScore La nueva puntuación a evaluar y almacenar si es suficientemente alta.
+     */
+    public static void saveScore(int newScore) {
+        List<Integer> scores = getHighScoresList();
+
+        // Agregar la nueva puntuación
+        scores.add(newScore);
+
+        // Ordenar en orden descendente
+        scores.sort(Collections.reverseOrder());
+
+        // Mantener solo las 5 mejores
+        if (scores.size() > MAX_SCORES) {
+            scores = scores.subList(0, MAX_SCORES);
         }
-    
-        // Verificar si la nueva puntuación es mejor que la más baja (última del ranking)
-        if (newScore > scores[scores.length - 1]) {
-            scores[scores.length - 1] = newScore; // Reemplazar solo si es mayor
-            java.util.Arrays.sort(scores); // Ordenar ascendente
-            reverseArray(scores); // Invertir para que queden en orden descendente
-    
-            // Guardar en Preferences
-            StringBuilder newScores = new StringBuilder();
-            for (int i = 0; i < scores.length; i++) {
-                newScores.append(scores[i]);
-                if (i < scores.length - 1) newScores.append(",");
-            }
-    
-            prefs.putString(HIGH_SCORES, newScores.toString());
-            prefs.flush(); // Guardar cambios
-        }
+
+        // Convertir la lista a String y guardar en preferencias
+        String scoresString = scores.toString().replaceAll("[\\[\\] ]", "");  // Formato "100,90,80,70,60"
+        getPreferences().putString(HIGH_SCORES, scoresString).flush();
     }
 
-    // 🔹 Obtener las 5 mejores puntuaciones como un array de enteros
+    /**
+     * Obtiene las 5 mejores puntuaciones almacenadas.
+     *
+     * @return Un array de enteros con las 5 mejores puntuaciones.
+     */
     public static int[] getHighScores() {
-        load();
-        String scoresString = prefs.getString(HIGH_SCORES, "0,0,0,0,0");
-        String[] scoresArray = scoresString.split(",");
-        int[] scores = new int[scoresArray.length];
+        List<Integer> scores = getHighScoresList();
+        return scores.stream().mapToInt(i -> i).toArray();
+    }
 
-        for (int i = 0; i < scoresArray.length; i++) {
-            scores[i] = Integer.parseInt(scoresArray[i]);
+    /**
+     * Obtiene la lista de puntuaciones almacenadas.
+     *
+     * @return Lista de enteros con las puntuaciones.
+     */
+    private static List<Integer> getHighScoresList() {
+        String scoresString = getPreferences().getString(HIGH_SCORES, "0,0,0,0,0");
+        String[] scoresArray = scoresString.split(",");
+        List<Integer> scores = new ArrayList<>();
+
+        for (String s : scoresArray) {
+            try {
+                scores.add(Integer.parseInt(s));
+            } catch (NumberFormatException e) {
+                scores.add(0);  // En caso de error, añadir un 0
+            }
         }
 
         return scores;
-    }
-
-    // 🔹 Método auxiliar para invertir el array (ya que Arrays.sort() es ascendente)
-    private static void reverseArray(int[] array) {
-        for (int i = 0; i < array.length / 2; i++) {
-            int temp = array[i];
-            array[i] = array[array.length - 1 - i];
-            array[array.length - 1 - i] = temp;
-        }
     }
 }

@@ -51,7 +51,6 @@ public class FoxGame extends Game {
         AssetsManagerAudio.finishLoading();
 
         // Cargar preferencias del juego
-        GamePreferences.load();
         LanguageManager.loadLanguage();
 
 
