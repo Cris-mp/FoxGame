@@ -4,7 +4,6 @@ import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.Screen;
 import com.badlogic.gdx.graphics.GL20;
 import com.badlogic.gdx.graphics.OrthographicCamera;
-import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.graphics.g2d.BitmapFont;
 import com.badlogic.gdx.scenes.scene2d.InputEvent;
 import com.badlogic.gdx.scenes.scene2d.Stage;
@@ -36,7 +35,6 @@ public class MainMenuScreen implements Screen {
     private FoxGame game;
     private Stage stage;
     private Viewport viewport;
-    private Texture backgroundTexture, titleTexture;
     private BitmapFont font;
     private Skin skin;
 
@@ -49,7 +47,7 @@ public class MainMenuScreen implements Screen {
         this.game = game;
 
         // Configurar la vista con un FitViewport para mantener la relación de aspecto
-        viewport = new FitViewport(FoxGame.V_WIDTH * 2, FoxGame.V_HEIGHT * 2, new OrthographicCamera());// cambie aqui
+        viewport = new FitViewport(FoxGame.V_WIDTH * 2, FoxGame.V_HEIGHT * 2, new OrthographicCamera());
         stage = new Stage(viewport, game.batch);
         // Asignar el escenario como procesador de entrada
         Gdx.input.setInputProcessor(stage);
@@ -58,17 +56,13 @@ public class MainMenuScreen implements Screen {
         font = AssetsManager.getFont("fonts/wood.fnt");
         font.getData().setScale(1.15f);
 
-        // Cargar texturas de fondo y título
-        backgroundTexture = AssetsManager.getTexture("ui/background.png");
-        titleTexture = AssetsManager.getTexture("ui/title.png");
-
         // Crear y añadir imagen de fondo
-        Image background = new Image(new TextureRegionDrawable(backgroundTexture));
+        Image background = new Image(new TextureRegionDrawable(AssetsManager.getTexture("ui/background.png")));
         background.setSize(viewport.getWorldWidth(), viewport.getWorldHeight());
         stage.addActor(background);
 
         // Crear y añadir imagen de título
-        Image title = new Image(new TextureRegionDrawable(titleTexture));
+        Image title = new Image(new TextureRegionDrawable(AssetsManager.getTexture("ui/title.png")));
         title.setSize(FoxGame.V_WIDTH * 1.5f, FoxGame.V_HEIGHT / 2);
 
         // Estilo para los botones
@@ -211,13 +205,10 @@ public class MainMenuScreen implements Screen {
 
     @Override
     public void render(float delta) {
-
         Gdx.gl.glClearColor(0, 0, 0, 1);
         Gdx.gl.glClear(GL20.GL_COLOR_BUFFER_BIT);
-
         stage.act(delta);
         stage.draw();
-
     }
 
     @Override
@@ -227,8 +218,6 @@ public class MainMenuScreen implements Screen {
 
     @Override
     public void dispose() {
-        backgroundTexture.dispose();
-        titleTexture.dispose();
         font.dispose();
         stage.dispose();
         skin.dispose();

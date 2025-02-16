@@ -264,6 +264,7 @@ public class Foxy extends Sprite {
 			screen.restLife(life);
 			if (life <= 0) {
 				foxyIsDead = true;
+				stateTimer=0;//para el tiempo se espra de game over
 				Filter filter = new Filter();
 				filter.maskBits = FoxGame.NOTHING_BIT;
 				for (Fixture fix : body.getFixtureList())

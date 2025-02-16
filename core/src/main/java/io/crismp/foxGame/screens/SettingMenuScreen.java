@@ -22,19 +22,40 @@ import io.crismp.foxGame.managers.AssetsManager;
 import io.crismp.foxGame.managers.LanguageManager;
 import io.crismp.foxGame.tools.GamePreferences;
 
+/**
+ * Pantalla de configuración del juego, donde el usuario puede ajustar el
+ * volumen de música y efectos, activar o desactivar la vibración y cambiar el
+ * idioma.
+ */
 public class SettingMenuScreen implements Screen {
     private FoxGame game;
     private Stage stage;
-    private Texture backgroundTexture;
     private BitmapFont font;
     private float musicVolume = 0.5f, soundVolume = 0.5f;
     private ImageButton btnMusica, btnSonidos, btnVibracion;
     private boolean isVibrationOn, isMusicOn, isSoundOn;
-    private Label lblIdioma;
     private TextButton btnIdioma;
     private float lastMusicVolume, lastSoundVolume;
-    Slider sliderMusica, sliderSonidos;
+    private Slider sliderMusica, sliderSonidos;
 
+    /**
+     * Constructor de la pantalla de configuración del juego.
+     * <p>
+     * Este constructor inicializa los valores de configuración del juego
+     * relacionados con el volumen de música, volumen de sonido y vibración,
+     * así como los estados de los controles de música y sonido. También establece
+     * la vista del escenario utilizando un viewport ajustado a las dimensiones de
+     * la pantalla del juego, y carga el idioma actual utilizando el
+     * LanguageManager.
+     * Además, se configura la entrada del usuario para que se procese mediante el
+     * escenario actual. Finalmente, se agrega una imagen de fondo a la pantalla
+     * y se inicializan los elementos de la interfaz de usuario (UI).
+     * </p>
+     *
+     * @param game El objeto de la clase FoxGame que representa el juego actual.
+     *             Se utiliza para acceder a las preferencias y otros recursos del
+     *             juego.
+     */
     public SettingMenuScreen(FoxGame game) {
         this.game = game;
         musicVolume = GamePreferences.getMusicVolume();
@@ -48,30 +69,47 @@ public class SettingMenuScreen implements Screen {
         Gdx.input.setInputProcessor(stage);
         LanguageManager.loadLanguage();
 
-        // Fondo del menú
-        backgroundTexture = AssetsManager.getTexture("ui/background.png");
+        // Crear y añadir imagen de fondo
+        Image background = new Image(new TextureRegionDrawable(AssetsManager.getTexture("ui/background.png")));
+        background.setSize(stage.getViewport().getWorldWidth(), stage.getViewport().getWorldHeight());
+        stage.addActor(background);
 
         // Fuente
         font = AssetsManager.getFont("fonts/wood.fnt");
         font.getData().setScale(0.8f);
+
+        inicializarUI();
+    }
+
+    /**
+     * Inicializa la interfaz de usuario (UI) del menú de configuración.
+     * <p>
+     * Esta función crea y configura todos los elementos visuales del menú de
+     * opciones, como etiquetas de texto, botones de alternancia (toggle buttons)
+     * para música, sonido y vibración, sliders para ajustar los volúmenes,
+     * un botón para cambiar el idioma, y botones para acceder a los créditos y la
+     * ayuda. Los elementos se organizan en una tabla que se añade al escenario de
+     * la
+     * aplicación. También se incluyen efectos visuales como el cambio de
+     * imágenes en los botones y la actualización de los valores de configuración
+     * cuando se interactúa con los controles.
+     * </p>
+     */
+    private void inicializarUI() {
+        // Crear etiquetas de texto
         Label.LabelStyle labelStyle = new Label.LabelStyle();
         labelStyle.font = font;
 
-        // Labels
         Label lblOpciones = new Label(LanguageManager.get("options").toUpperCase(), labelStyle);
         lblOpciones.setFontScale(1.25f);
         Label lblMusica = new Label(LanguageManager.get("music").toUpperCase(), labelStyle);
         Label lblSonidos = new Label(LanguageManager.get("sound").toUpperCase(), labelStyle);
         Label lblVibracion = new Label(LanguageManager.get("vibration").toUpperCase(), labelStyle);
-        lblIdioma = new Label(LanguageManager.get("language").toUpperCase(), labelStyle);
-
-        // Botón para cambiar de idioma
-        btnIdioma = createTextButton(GamePreferences.getLanguage().equals("en") ? "Espanol" : "English",
-                () -> toggleIdioma());
-        btnIdioma.padBottom(8);
+        Label lblIdioma = new Label(LanguageManager.get("language").toUpperCase(), labelStyle);
 
         // Botones de Música, Sonido y Vibración (Toggle)
-        btnMusica = createToggleButton("ui/button/tglMusic_on.png", "ui/button/tglMusic_off.png", () -> isMusicOn = !isMusicOn,
+        btnMusica = createToggleButton("ui/button/tglMusic_on.png", "ui/button/tglMusic_off.png",
+                () -> isMusicOn = !isMusicOn,
                 isMusicOn);
         btnSonidos = createToggleButton("ui/button/tglSound_on.png", "ui/button/tglSound_off.png",
                 () -> isSoundOn = !isSoundOn,
@@ -82,6 +120,11 @@ public class SettingMenuScreen implements Screen {
         // Sliders para controlar el volumen
         sliderMusica = createSlider(musicVolume, true);
         sliderSonidos = createSlider(soundVolume, false);
+
+        // Botón para cambiar de idioma
+        btnIdioma = createTextButton(GamePreferences.getLanguage().equals("en") ? "English" : "Espanol",
+                () -> toggleIdioma());
+        btnIdioma.padBottom(8);
 
         // Botón de regreso al menú principal
         ImageButton btnMainMenu = createIconButton("ui/button/btnMainMenu.png", "ui/button/btnMainMenu_p.png",
@@ -117,7 +160,32 @@ public class SettingMenuScreen implements Screen {
         stage.addActor(btnMainMenu);
     }
 
-    // Método para crear botones con estado ON/OFF
+    /**
+     * Crea un botón de tipo toggle (interruptor) con imágenes para los estados
+     * normal y presionado.
+     * <p>
+     * Esta función crea un botón de tipo <code>ImageButton</code> que puede
+     * alternar entre dos estados (activado o desactivado).
+     * Dependiendo del estado <code>isChecked</code>, se muestra una imagen
+     * diferente para el estado normal del botón.
+     * Al hacer clic en el botón, se ejecuta una acción proporcionada como
+     * parámetro, y el estado del botón (checked o unchecked) se alterna.
+     * Además, se actualizan las preferencias del juego (volumen de
+     * música, volumen de sonido o vibración) y se ajustan los valores de
+     * los sliders correspondientes.
+     * </p>
+     *
+     * @param normalPath   Ruta de la imagen que representa el estado normal del
+     *                     botón (cuando está activado).
+     * @param pressedPath  Ruta de la imagen que representa el estado presionado del
+     *                     botón.
+     * @param toggleAction Acción que se ejecuta cuando el usuario hace clic en el
+     *                     botón para alternar el estado.
+     * @param isChecked    Estado inicial del botón (true si está activado, false si
+     *                     está desactivado).
+     * @return Un <code>ImageButton</code> configurado con las imágenes, la acción y
+     *         el estado inicial proporcionado.
+     */
     private ImageButton createToggleButton(String normalPath, String pressedPath, Runnable toggleAction,
             boolean isChecked) {
 
@@ -136,8 +204,7 @@ public class SettingMenuScreen implements Screen {
             public void clicked(InputEvent event, float x, float y) {
                 game.playSound(game.clickSound3);
                 toggleAction.run();
-                boolean newState = button.isChecked();
-                button.getStyle().imageUp = newState ? normal : pressed;
+                button.getStyle().imageUp = button.isChecked() ? normal : pressed;
 
                 // Guardar en preferencias y actualizar slider en funcion de lo marcado
                 if (normalPath.equals("ui/button/tglMusic_on.png")) {
@@ -161,11 +228,24 @@ public class SettingMenuScreen implements Screen {
                 }
             }
         });
-
         return button;
     }
 
-    // Método para crear botones de texto
+    /**
+     * Crea un botón de texto con una acción asociada al hacer clic.
+     * <p>
+     * Esta función crea un botón de tipo <code>TextButton</code> con un texto
+     * proporcionado como parámetro, y con un estilo personalizado que incluye
+     * imágenes para los estados normal y presionado del botón.
+     * Al hacer clic en el botón, se ejecuta la acción proporcionada y se reproduce
+     * un sonido de clic.
+     * </p>
+     *
+     * @param text   El texto que se mostrará en el botón.
+     * @param action Acción que se ejecuta cuando el usuario hace clic en el botón.
+     * @return Un <code>TextButton</code> configurado con el texto y la acción
+     *         proporcionada.
+     */
     private TextButton createTextButton(String text, Runnable action) {
         TextButton.TextButtonStyle estilo = new TextButton.TextButtonStyle();
         estilo.font = font;
@@ -182,7 +262,25 @@ public class SettingMenuScreen implements Screen {
         return button;
     }
 
-    // Método para crear iconos con acción
+    /**
+     * Crea un botón de icono con una imagen normal y una imagen al ser presionado.
+     * <p>
+     * Esta función genera un botón de tipo <code>ImageButton</code> con una imagen
+     * que cambia cuando el usuario lo presiona. Además, el botón se posiciona en la
+     * esquina superior derecha de la pantalla y tiene un tamaño de escala
+     * aumentado. Al hacer clic en el botón, se ejecuta una acción proporcionada
+     * como parámetro y se reproduce un sonido de clic.
+     * </p>
+     *
+     * @param normalPath  Ruta de la imagen que representa el estado normal del
+     *                    botón.
+     * @param pressedPath Ruta de la imagen que representa el estado presionado del
+     *                    botón.
+     * @param action      Acción que se ejecuta cuando el usuario hace clic en el
+     *                    botón.
+     * @return Un <code>ImageButton</code> configurado con las imágenes y la acción
+     *         proporcionada.
+     */
     private ImageButton createIconButton(String normalPath, String pressedPath, Runnable action) {
         TextureRegionDrawable iconoButton = new TextureRegionDrawable(AssetsManager.getTexture(normalPath));
         TextureRegionDrawable iconoButtonMainMenuPulsado = new TextureRegionDrawable(
@@ -204,13 +302,28 @@ public class SettingMenuScreen implements Screen {
         return button;
     }
 
-    // Método para crear Sliders
+    /**
+     * Crea un control deslizante (slider) para ajustar el volumen de música o
+     * efectos de sonido.
+     * <p>
+     * Esta función crea un slider que permite al usuario ajustar el volumen de la
+     * música o los efectos de sonido.Dependiendo del parámetro
+     * <code>isMusic</code>, se ajusta el volumen de la música o de los sonidos.
+     * Cuando el usuario interactúa con el slider, se actualiza el valor del
+     * volumen y se ajusta el botón de mute en consecuencia. Además, se reproduce
+     * un sonido de clic cada vez que el valor del slider cambia.
+     * </p>
+     *
+     * @param initialValue Valor inicial del slider, entre 0 y 1, que representa el
+     *                     volumen inicial.
+     * @param isMusic      Booleano que indica si el slider controla el volumen de
+     *                     la música (true) o de los efectos de sonido (false).
+     * @return Un slider configurado para ajustar el volumen.
+     */
     private Slider createSlider(float initialValue, boolean isMusic) {
         Slider.SliderStyle sliderStyle = new Slider.SliderStyle();
-        
         sliderStyle.background = new TextureRegionDrawable(AssetsManager.getTexture("ui/button/backSlide.png"));
         sliderStyle.knob = new TextureRegionDrawable(AssetsManager.getTexture("ui/button/btnSlide.png"));
-        
 
         Slider slider = new Slider(0, 1, 0.1f, false, sliderStyle);
         slider.setValue(initialValue);
@@ -218,24 +331,60 @@ public class SettingMenuScreen implements Screen {
         slider.addListener(new ChangeListener() {
             @Override
             public void changed(ChangeEvent event, Actor actor) {
-                game.playSound(game.clickSound2);
                 float value = slider.getValue();
+                game.playSound(game.clickSound2);
 
                 if (isMusic) {
                     musicVolume = value;
                     GamePreferences.setMusicVolume(value);
                     game.updateMusicVolume();
+                    actualizarBotonMute(btnMusica, value > 0);
                 } else {
                     soundVolume = value;
                     GamePreferences.setSoundVolume(value);
+                    actualizarBotonMute(btnSonidos, value > 0);
                 }
             }
         });
-
         return slider;
     }
 
-    // Método para cambiar idioma
+    /**
+     * Actualiza la imagen del botón de mute (silenciar) según su estado (activo o
+     * inactivo).
+     * <p>
+     * Dependiendo de si el botón está activo o no, se cambia la imagen mostrada en
+     * el botón. Si el botón corresponde a la música (btnMusica), se usa una imagen
+     * relacionada con la música, de lo contrario, se usa una imagen para los
+     * efectos de sonido.
+     * </p>
+     * 
+     * @param boton  El botón de imagen que se actualizará (puede ser el botón de
+     *               música o de sonido).
+     * @param activo Estado del botón (true si está activo, false si está inactivo).
+     */
+    private void actualizarBotonMute(ImageButton boton, boolean activo) {
+        String path = activo ? "on" : "off";
+        if (boton == btnMusica) {
+            boton.getStyle().imageUp = new TextureRegionDrawable(
+                    AssetsManager.getTexture("ui/button/tglMusic_" + path + ".png"));
+        } else {
+            boton.getStyle().imageUp = new TextureRegionDrawable(
+                    AssetsManager.getTexture("ui/button/tglSound_" + path + ".png"));
+        }
+    }
+
+    /**
+     * Cambia el idioma de la aplicación entre español e inglés.
+     * <p>
+     * Esta función alterna el idioma actual, cambiando entre "es" (español) y "en"
+     * (inglés).
+     * Cuando se cambia el idioma, se actualizan las preferencias de idioma del
+     * juego,se recarga el lenguaje a través del <code>LanguageManager</code> y se
+     * recarga la pantalla con el nuevo idioma aplicado.
+     * </p>
+     * Además, se reproduce un sonido de clic cada vez que se cambia el idioma.
+     */
     private void toggleIdioma() {
         game.playSound(game.clickSound3);
 
@@ -248,7 +397,23 @@ public class SettingMenuScreen implements Screen {
         game.setScreen(new SettingMenuScreen(game));
     }
 
-    // Método para mostrar un pop-up con una imagen
+    /**
+     * Muestra un cuadro de diálogo (popup) con información de ayuda o créditos,
+     * según el parámetro especificado.
+     * <p>
+     * Si el parámetro <code>help</code> es verdadero, se mostrará una serie de
+     * instrucciones de ayuda con imágenes y texto. Si es falso, se mostrarán
+     * los créditos del juego, incluyendo el código, el arte, la música y los
+     * efectos de sonido.
+     * </p>
+     * El contenido se organiza en una tabla con diferentes estilos y se presenta en
+     * un <code>Dialog</code> en la interfaz de usuario. Se proporciona un botón de
+     * salida al final del cuadro de diálogo.
+     * 
+     * @param help booleano que determina el contenido del cuadro de diálogo:
+     *             - <code>true</code> para mostrar la ayuda.
+     *             - <code>false</code> para mostrar los créditos.
+     */
     private void mostrarPopUp(boolean help) {
         Skin skin = new Skin();
         skin.add("default-font", font);
@@ -270,7 +435,7 @@ public class SettingMenuScreen implements Screen {
 
         Dialog dialog = new Dialog("", skin);
 
-        // 🟢 Crear la tabla para el contenido
+        // Crear la tabla para el contenido
         Table table = new Table();
 
         if (help) {
@@ -366,10 +531,10 @@ public class SettingMenuScreen implements Screen {
             cod.setWrap(true);
             cod.setAlignment(Align.center);
             table.add(cod).width(250).padLeft(20);
-            
+
         }
 
-        // 🟢 Agregar la tabla a un ScrollPane
+        // Agregar la tabla a un ScrollPane
         ScrollPane scrollPane = new ScrollPane(table);
         scrollPane.setScrollingDisabled(true, false);
 
@@ -378,38 +543,68 @@ public class SettingMenuScreen implements Screen {
         dialog.show(stage);
     }
 
+    /**
+     * Método encargado de renderizar la pantalla en cada cuadro.
+     * <p>
+     * Este método es llamado por el motor del juego en cada fotograma para
+     * actualizar y dibujar la pantalla. Se encarga de limpiar el buffer de
+     * pantalla, estableciendo un color de fondo negro, luego actualiza los
+     * actores en el escenario (stage) y finalmente dibuja todos los elementos
+     * del escenario en pantalla.
+     * </p>
+     *
+     * @param delta El tiempo transcurrido (en segundos) desde el último fotograma.
+     *              Este parámetro se utiliza para actualizar las animaciones y la
+     *              lógica de la pantalla.
+     */
     @Override
     public void render(float delta) {
         Gdx.gl.glClearColor(0, 0, 0, 1);
         Gdx.gl.glClear(GL20.GL_COLOR_BUFFER_BIT);
 
-        game.batch.begin();
-        game.batch.draw(backgroundTexture, 0, 0, FoxGame.V_WIDTH * 2, FoxGame.V_HEIGHT * 2);
-        game.batch.end();
-        
         stage.act(delta);
         stage.draw();
     }
 
+    /**
+     * Método encargado de redimensionar el escenario cuando el tamaño de la ventana
+     * cambia.
+     * <p>
+     * Este método se invoca cuando la ventana del juego es redimensionada.
+     * Actualiza el tamaño del viewport>del escenario para adaptarse a las nuevas
+     * dimensiones de la ventana, garantizando que los elementos
+     * en la pantalla se ajusten correctamente al nuevo tamaño.
+     * </p>
+     *
+     * @param width  El nuevo ancho de la ventana en píxeles.
+     * @param height El nuevo alto de la ventana en píxeles.
+     */
     @Override
     public void resize(int width, int height) {
         stage.getViewport().update(width, height, true);
     }
 
+    /**
+     * Método encargado de liberar los recursos utilizados por la pantalla.
+     * <p>
+     * Este método se invoca cuando la pantalla ya no es necesaria y se está a punto
+     * de destruirla. Se utiliza para liberar memoria y recursos como texturas y
+     * fuentes que ya no serán usados,evitando así posibles fugas de memoria.
+     * En este caso, se eliminan la fuente utilizada y el escenario.
+     * </p>
+     */
     @Override
     public void dispose() {
         font.dispose();
         stage.dispose();
-        backgroundTexture.dispose();
     }
 
-    // Métodos vacíos de la interfaz Screen
     @Override
     public void show() {
         game.playMusic("audio/music/joyful.ogg", true);
-
     }
 
+    // Métodos no utilizados, pero necesarios por la interfaz Screen
     @Override
     public void pause() {
     }

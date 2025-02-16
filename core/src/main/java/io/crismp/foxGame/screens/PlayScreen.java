@@ -51,27 +51,52 @@ public class PlayScreen implements Screen {
 
     private Foxy player;
 
-    VirtualJoystick joystick;
-    float accumulator;
-    float timeStep;
+    private VirtualJoystick joystick;
+    private float accumulator;
+    private float timeStep;
     public boolean colision;
 
-    float mapWidthInUnits, mapHeightInUnits;
-    Sound jump, run;
+    private float mapWidthInUnits, mapHeightInUnits;
+    private Sound jump, run;
+
+    private float stepTimer = 0f;
+    private float stepInterval = 0.3f;
+
+    // getters
+    public FoxGame getGame() {
+        return game;
+    }
+
+    public World getWorld() {
+        return world;
+    }
+
+    public TiledMap getMap() {
+        return map;
+    }
+
+    public int getCherriesCollected() {
+        return cherriesCollected;
+    }
+
+    public int getGemsCollected() {
+        return gemsCollected;
+    }
+
 
     public PlayScreen(FoxGame game, int nivelActual) {
+        this.game = game;
+        this.joystick = new VirtualJoystick(0, 0, 2, 1);
+        gamecam = new OrthographicCamera();
+        // mantiene el ratio de aspecto virtual a pesar de la pantalla
+        gamePort = new FitViewport(FoxGame.V_WIDTH / FoxGame.PPM, FoxGame.V_HEIGHT / FoxGame.PPM, gamecam);
+
         accumulator = 0f;
         timeStep = 1 / 60f;
         cherriesCollected = 0;
         gemsCollected = 0;
         newLife = 6;
         colision = false;
-        this.game = game;
-        this.joystick = new VirtualJoystick(0, 0, 2, 1);
-        gamecam = new OrthographicCamera();
-
-        // mantiene el ratio de aspecto virtual a pesar de la pantalla
-        gamePort = new FitViewport(FoxGame.V_WIDTH / FoxGame.PPM, FoxGame.V_HEIGHT / FoxGame.PPM, gamecam);
 
         // Crea los marcadores de fase y vista
         hud = new Hud(game.batch);
@@ -123,21 +148,8 @@ public class PlayScreen implements Screen {
 
     }
 
-    public int getCherriesCollected() {
-        return cherriesCollected;
-    }
-
-    public int getGemsCollected() {
-        return gemsCollected;
-    }
-
-    @Override
-    public void show() {
-
-    }
-
     public void handleInput(float dt) {
-    
+
         if (player.currenState != Foxy.State.DEAD) {
             player.velX = 0;
             if (Gdx.app.getType() == ApplicationType.Android) {
@@ -159,13 +171,12 @@ public class PlayScreen implements Screen {
                     player.body.setLinearVelocity(0, player.velY = 0.5f);
                 } else if (player.getOnLadder() && joystick.getDirection().y < -0.5f) {
                     player.body.setLinearVelocity(0, player.velY = -0.5f);
-                } else if (player.getOnLadder()){
+                } else if (player.getOnLadder()) {
                     player.body.setLinearVelocity(0, 0);
                 }
 
                 player.body.setLinearVelocity(joystick.getDirection().x * player.speed,
-                Math.min(player.body.getLinearVelocity().y, 15));
-
+                        Math.min(player.body.getLinearVelocity().y, 15));
 
             } else {
                 if (Gdx.input.isKeyPressed(Input.Keys.D)) {
@@ -189,14 +200,13 @@ public class PlayScreen implements Screen {
                 }
 
                 if (player.getOnLadder() && Gdx.input.isKeyPressed(Input.Keys.W)) {
-                        player.body.setLinearVelocity(0, player.velY = 0.5f);
-                    } else if (player.getOnLadder() && Gdx.input.isKeyPressed(Input.Keys.S)) {
-                        player.body.setLinearVelocity(0, player.velY = -0.5f);
-                    } else if (player.getOnLadder()){
-                        player.body.setLinearVelocity(0, 0);
-                        player.velY = 0;
-                    }
-                
+                    player.body.setLinearVelocity(0, player.velY = 0.5f);
+                } else if (player.getOnLadder() && Gdx.input.isKeyPressed(Input.Keys.S)) {
+                    player.body.setLinearVelocity(0, player.velY = -0.5f);
+                } else if (player.getOnLadder()) {
+                    player.body.setLinearVelocity(0, 0);
+                    player.velY = 0;
+                }
 
                 player.body.setLinearVelocity(player.velX * player.speed,
                         Math.min(player.body.getLinearVelocity().y, 15));
@@ -205,11 +215,8 @@ public class PlayScreen implements Screen {
         }
     }
 
-    private float stepTimer = 0f;
-    private float stepInterval = 0.3f;
-
     public void update(float dt) {
-     
+
         // Asegura que las físicas se actualicen con una tasa fija, sin importar la tasa
         // de refresco de la pantalla.
         accumulator += dt;
@@ -218,15 +225,14 @@ public class PlayScreen implements Screen {
             accumulator -= timeStep;
         }
 
-        
         handleInput(dt);
         if (player.getOnLadder()) {
-            world.setGravity(new Vector2(0, 0));  // Desactiva la gravedad mientras está en la escalera
+            world.setGravity(new Vector2(0, 0)); // Desactiva la gravedad mientras está en la escalera
         } else {
-            world.setGravity(new Vector2(0, -9.8f));  // Vuelve a la gravedad normal
+            world.setGravity(new Vector2(0, -9.8f)); // Vuelve a la gravedad normal
         }
 
-        //sonido de pasos
+        // sonido de pasos
         if ((player.body.getLinearVelocity().x != 0 && player.body.getLinearVelocity().y == 0)) {
             stepTimer += dt;
             if (stepTimer >= stepInterval) {
@@ -249,7 +255,7 @@ public class PlayScreen implements Screen {
         for (Gem gem : creator.getGems()) {
             gem.update(dt);
         }
-        if (player.currenState != Foxy.State.DEAD) {
+        if (!player.isDead()) {
             // Ajuste de posición de la cámara en el eje X
             float minX = gamePort.getWorldWidth() / 2;
             float maxX = mapWidthInUnits - gamePort.getWorldWidth() / 2;
@@ -322,7 +328,11 @@ public class PlayScreen implements Screen {
         if (Gdx.app.getType() == ApplicationType.Android)
             joystick.render();
 
-        if (gameOver()) {
+        finalGame();
+    }
+
+    public void finalGame() {
+        if (player.isDead() && player.getStateTimer() > 3) {
             game.setScreen(new GameOverScreen(game));
             dispose();
         }
@@ -332,50 +342,10 @@ public class PlayScreen implements Screen {
         }
     }
 
-    public boolean gameOver() {
-        if (player.currenState == Foxy.State.DEAD && player.getStateTimer() > 3) {
-            return true;
-        }
-        return false;
-    }
-
     @Override
     public void resize(int width, int height) {
         gamePort.update(width, height);
         joystick.resize(width, height);
-    }
-
-    public TiledMap getMap() {
-        return map;
-    }
-
-    public World getWorld() {
-        return world;
-    }
-
-    @Override
-    public void pause() {
-    }
-
-    @Override
-    public void resume() {
-    }
-
-    @Override
-    public void hide() {
-    }
-
-    @Override
-    public void dispose() {
-        map.dispose();
-        renderer.dispose();
-        world.dispose();
-        b2dr.dispose();
-        hud.dispose();
-    }
-
-    public FoxGame getGame() {
-        return game;
     }
 
     // --------- Actualizar HUD--------------
@@ -392,6 +362,32 @@ public class PlayScreen implements Screen {
     public void restLife(int life) {
         this.newLife = life;
         hud.updateHud(newLife, cherriesCollected, gemsCollected);
+    }
+
+    @Override
+    public void dispose() {
+        map.dispose();
+        renderer.dispose();
+        world.dispose();
+        b2dr.dispose();
+        hud.dispose();
+    }
+
+    // Métodos no utilizados, pero necesarios por la interfaz Screen
+    @Override
+    public void show() {
+    }
+
+    @Override
+    public void pause() {
+    }
+
+    @Override
+    public void resume() {
+    }
+
+    @Override
+    public void hide() {
     }
 
 }

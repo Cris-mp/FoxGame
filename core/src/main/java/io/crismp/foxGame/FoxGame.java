@@ -78,7 +78,7 @@ public class FoxGame extends Game {
         // Configurar nueva música
         currentMusic = newMusic;
         currentMusic.setLooping(loop);
-        updateMusicVolume(); // 📌 Aplica el volumen correcto
+        updateMusicVolume(); // Aplica el volumen correcto
 
         if (GamePreferences.getMusicVolume() > 0) {
             currentMusic.play();
