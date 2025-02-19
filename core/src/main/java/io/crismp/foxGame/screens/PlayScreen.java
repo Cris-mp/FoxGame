@@ -83,7 +83,6 @@ public class PlayScreen implements Screen {
         return gemsCollected;
     }
 
-
     public PlayScreen(FoxGame game, int nivelActual) {
         this.game = game;
         this.joystick = new VirtualJoystick(0, 0, 2, 1);
@@ -104,17 +103,22 @@ public class PlayScreen implements Screen {
         // Carga nuestro mapa y configurar nuestro renderizador de mapas
         mapLoader = new TmxMapLoader();
         switch (nivelActual) {
+            case 0:
+                map = mapLoader.load("maps/Tutorial.tmx");
+                game.playMusic("audio/music/world wanderer.ogg", true);
+                break;
             case 1:
                 map = mapLoader.load("maps/Fase1.tmx");
                 game.playMusic("audio/music/exploration.ogg", true);
                 break;
             case 2:
+                map = mapLoader.load("maps/Fase2.tmx");
+                game.playMusic("audio/music/dark-happy-world.ogg", true);
+                break;
+            default:
                 map = mapLoader.load("maps/Tutorial.tmx");
                 game.playMusic("audio/music/world wanderer.ogg", true);
                 break;
-            default:
-                map = mapLoader.load("maps/Fase1.tmx"); // Cargar por defecto si el nivel no es válido
-                game.playMusic("audio/music/exploration.ogg", true);
         }
         renderer = new OrthogonalTiledMapRenderer(map, 1 / FoxGame.PPM);
 

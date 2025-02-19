@@ -20,6 +20,7 @@ public class AssetsManagerAudio {
     public static void load() {
         // ** Música de fondo **
         loadMusic("audio/music/exploration.ogg");
+        loadMusic("audio/music/dark-happy-world.ogg");
         loadMusic("audio/music/joyful.ogg");
         loadMusic("audio/music/world wanderer.ogg");
         loadMusic("audio/music/To Suffer a Loss (Game Over).ogg");

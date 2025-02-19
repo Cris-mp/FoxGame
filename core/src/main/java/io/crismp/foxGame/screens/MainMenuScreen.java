@@ -113,7 +113,8 @@ public class MainMenuScreen implements Screen {
             @Override
             public void clicked(InputEvent event, float x, float y) {
                 game.playSound(game.clickSound);
-                game.setScreen(new PlayScreen(game, 1));
+                //TODO: game.setScreen(new PlayScreen(game, 1));
+                game.setScreen(new PlayScreen(game, 2));
             }
         });
 
@@ -121,7 +122,7 @@ public class MainMenuScreen implements Screen {
             @Override
             public void clicked(InputEvent event, float x, float y) {
                 game.playSound(game.clickSound);
-                game.setScreen(new PlayScreen(game, 2));
+                game.setScreen(new PlayScreen(game, 0));
             }
         });
 
