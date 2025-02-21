@@ -251,6 +251,7 @@ public class B2WorldCreator {
     // Configurar la fixture
     fdef.shape = shape;
     fdef.filter.categoryBits = mask;
+    fdef.filter.maskBits=FoxGame.FOX_BIT;
     fdef.friction = 3;
     body.createFixture(fdef);
 

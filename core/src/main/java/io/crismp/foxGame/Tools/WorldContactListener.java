@@ -28,18 +28,22 @@ public class WorldContactListener implements ContactListener {
         Fixture fixA = contact.getFixtureA();
         Fixture fixB = contact.getFixtureB();
         int cDef = fixA.getFilterData().categoryBits | fixB.getFilterData().categoryBits;
-        System.out.println("Colisión detectada: " + fixA.getFilterData().categoryBits
-                + " con "
-                + fixB.getFilterData().categoryBits);
+        // System.out.println("Colisión detectada: " + fixA.getFilterData().categoryBits
+        //         + " con "
+        //         + fixB.getFilterData().categoryBits);
         switch (cDef) {
             case FoxGame.FOX_BIT | FoxGame.RAMP_BIT:
                 if (fixA.getFilterData().categoryBits == FoxGame.FOX_BIT)
                     ((Foxy) fixA.getUserData()).setOnRamp(true);
                 else
                     ((Foxy) fixB.getUserData()).setOnRamp(true);
+                
+                screen.colision = true;
+                break;
             case FoxGame.FOX_BIT | FoxGame.GROUND_BIT:
             case FoxGame.FOX_BIT | FoxGame.OBSTACLE_BIT:
                 screen.colision = true;
+                ((Foxy) (fixA.getUserData() instanceof Foxy ? fixA.getUserData() : fixB.getUserData())).setOnRamp(false);
                 break;
             case FoxGame.FOX_BIT | FoxGame.ENEMY_HEAD_BIT:
                 if (fixA.getFilterData().categoryBits == FoxGame.ENEMY_HEAD_BIT)
@@ -135,7 +139,6 @@ public class WorldContactListener implements ContactListener {
                 } else {
                     cartelID = (int) fixB.getUserData();
                 }
-                System.out.println("Colisión con cartel " + cartelID);
                 screen.hud.showCartel(cartelID); // Muestra la etiqueta correcta
                 break;
             default:
@@ -162,9 +165,10 @@ public class WorldContactListener implements ContactListener {
             case FoxGame.FOX_BIT | FoxGame.RAMP_BIT:
                 if (fixA.getFilterData().categoryBits == FoxGame.FOX_BIT) {
                     ((Foxy) fixA.getUserData()).setOnRamp(false);
-                    screen.colision = false;
                 } else {
                     ((Foxy) fixB.getUserData()).setOnRamp(false);
+                }
+                if(!screen.colision){
                     screen.colision = false;
                 }
 

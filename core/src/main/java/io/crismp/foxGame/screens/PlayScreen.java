@@ -87,7 +87,7 @@ public class PlayScreen implements Screen {
 
     public PlayScreen(FoxGame game, int nivelActual) {
         this.game = game;
-        this.nivelActual=nivelActual;
+        this.nivelActual = nivelActual;
         this.joystick = new VirtualJoystick(0, 0, 2, 1);
         gamecam = new OrthographicCamera();
         // mantiene el ratio de aspecto virtual a pesar de la pantalla
@@ -199,11 +199,13 @@ public class PlayScreen implements Screen {
                     player.body.setLinearVelocity(0, 0);
                     player.body.applyLinearImpulse(new Vector2(0, 2.5f), player.body.getWorldCenter(), true);
                     player.jumpCounter++;
+                    System.out.println("saltos a 0");
                 }
                 // reseteamos el contador de salto
                 if (player.body.getLinearVelocity().y == 0 && colision) {
                     player.jumpCounter = 0;
                     colision = false;
+                    System.out.println("saltos a 0");
                 }
 
                 if (player.getOnLadder() && Gdx.input.isKeyPressed(Input.Keys.W)) {
@@ -223,7 +225,6 @@ public class PlayScreen implements Screen {
     }
 
     public void update(float dt) {
-
         // Asegura que las físicas se actualicen con una tasa fija, sin importar la tasa
         // de refresco de la pantalla.
         accumulator += dt;
@@ -344,7 +345,7 @@ public class PlayScreen implements Screen {
             dispose();
         }
         if (player.isEndGame()) {
-            game.setScreen(new FinalLevelScreen(nivelActual,game, this));
+            game.setScreen(new FinalLevelScreen(nivelActual, game, this));
             dispose();
         }
     }

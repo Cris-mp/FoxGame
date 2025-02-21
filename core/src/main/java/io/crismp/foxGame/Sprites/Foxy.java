@@ -73,6 +73,7 @@ public class Foxy extends Sprite {
 
 	public void setOnRamp(boolean onRamp) {
 		this.onRamp = onRamp;
+		System.out.println("Foxy está en una rampa: " + onRamp);
 	}
 
 	public Boolean getOnLadder() {
@@ -103,7 +104,7 @@ public class Foxy extends Sprite {
 		enemiesInContact = new ArrayList<>();
 		pinchosInContact = new ArrayList<>();
 		headInLadder = false;
-		onRamp=true;
+		onRamp=false;
 
 		// animaciones
 		currenState = State.STANDING;
