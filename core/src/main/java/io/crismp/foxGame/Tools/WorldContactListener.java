@@ -29,14 +29,18 @@ public class WorldContactListener implements ContactListener {
         Fixture fixB = contact.getFixtureB();
         int cDef = fixA.getFilterData().categoryBits | fixB.getFilterData().categoryBits;
         System.out.println("Colisión detectada: " + fixA.getFilterData().categoryBits
-        + " con "
-        + fixB.getFilterData().categoryBits);
+                + " con "
+                + fixB.getFilterData().categoryBits);
         switch (cDef) {
+            case FoxGame.FOX_BIT | FoxGame.RAMP_BIT:
+                if (fixA.getFilterData().categoryBits == FoxGame.FOX_BIT)
+                    ((Foxy) fixA.getUserData()).setOnRamp(true);
+                else
+                    ((Foxy) fixB.getUserData()).setOnRamp(true);
             case FoxGame.FOX_BIT | FoxGame.GROUND_BIT:
             case FoxGame.FOX_BIT | FoxGame.OBSTACLE_BIT:
                 screen.colision = true;
                 break;
-
             case FoxGame.FOX_BIT | FoxGame.ENEMY_HEAD_BIT:
                 if (fixA.getFilterData().categoryBits == FoxGame.ENEMY_HEAD_BIT)
                     ((Enemy) fixA.getUserData()).hitOnHead();
@@ -124,7 +128,7 @@ public class WorldContactListener implements ContactListener {
                 }
                 break;
             case FoxGame.FOX_BIT | FoxGame.CARTEL_BIT:
-            
+
                 int cartelID = 0;
                 if (fixA.getFilterData().categoryBits == FoxGame.CARTEL_BIT) {
                     cartelID = (int) fixA.getUserData(); // Obtener ID desde Tiled
@@ -153,6 +157,16 @@ public class WorldContactListener implements ContactListener {
                     ((Foxy) fixA.getUserData()).setHeadInLadder(false);
                 else
                     ((Foxy) fixB.getUserData()).setHeadInLadder(false);
+
+                break;
+            case FoxGame.FOX_BIT | FoxGame.RAMP_BIT:
+                if (fixA.getFilterData().categoryBits == FoxGame.FOX_BIT) {
+                    ((Foxy) fixA.getUserData()).setOnRamp(false);
+                    screen.colision = false;
+                } else {
+                    ((Foxy) fixB.getUserData()).setOnRamp(false);
+                    screen.colision = false;
+                }
 
                 break;
             case FoxGame.FOX_BIT | FoxGame.LADDER_BIT:

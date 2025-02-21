@@ -3,8 +3,10 @@ package io.crismp.foxGame.tools;
 import java.util.ArrayList;
 
 import com.badlogic.gdx.maps.MapObject;
+import com.badlogic.gdx.maps.objects.PolygonMapObject;
 import com.badlogic.gdx.maps.objects.RectangleMapObject;
 import com.badlogic.gdx.maps.tiled.TiledMap;
+import com.badlogic.gdx.math.Polygon;
 import com.badlogic.gdx.math.Rectangle;
 import com.badlogic.gdx.physics.box2d.Body;
 import com.badlogic.gdx.physics.box2d.BodyDef;
@@ -52,6 +54,7 @@ public class B2WorldCreator {
         createStaticBodies("techos", FoxGame.FLOOR_BIT);
         createStaticBodies("obstaculos", FoxGame.OBSTACLE_BIT);
         createStaticBodies("puerta", FoxGame.END_GAME_BIT);
+        createStaticBodies("rampas", FoxGame.RAMP_BIT);
 
         // Crear objetos interactivos
         createLadders(screen);
@@ -74,6 +77,10 @@ public class B2WorldCreator {
         if (map.getLayers().get(layerName) != null) {
             for (MapObject object : map.getLayers().get(layerName).getObjects().getByType(RectangleMapObject.class)) {
                 defineStaticBody(object, mask);
+            }
+            // Manejar polígonos
+            for (MapObject object : map.getLayers().get(layerName).getObjects().getByType(PolygonMapObject.class)) {
+                definePolygonBody(object, mask);
             }
         }
     }
@@ -216,4 +223,38 @@ public class B2WorldCreator {
         fdef.friction = 0;
         body.createFixture(fdef);
     }
+
+    private void definePolygonBody(MapObject object, short mask) {
+    PolygonMapObject polygonObject = (PolygonMapObject) object;
+    Polygon polygon = polygonObject.getPolygon();
+    
+    // Definir cuerpo
+    BodyDef bdef = new BodyDef();
+    bdef.type = BodyDef.BodyType.StaticBody;
+    bdef.position.set(polygon.getX() / FoxGame.PPM, polygon.getY() / FoxGame.PPM);
+    
+    Body body = world.createBody(bdef);
+
+    // Crear la forma del polígono
+    FixtureDef fdef = new FixtureDef();
+    PolygonShape shape = new PolygonShape();
+
+    float[] vertices = polygon.getVertices();
+    float[] worldVertices = new float[vertices.length];
+
+    // Convertir las coordenadas a Box2D (dividir por PPM)
+    for (int i = 0; i < vertices.length; i++) {
+        worldVertices[i] = vertices[i] / FoxGame.PPM;
+    }
+    shape.set(worldVertices);
+
+    // Configurar la fixture
+    fdef.shape = shape;
+    fdef.filter.categoryBits = mask;
+    fdef.friction = 3;
+    body.createFixture(fdef);
+
+    // Liberar la memoria de la forma
+    shape.dispose();
+}
 }

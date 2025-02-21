@@ -1,6 +1,5 @@
 package io.crismp.foxGame.screens;
 
-import com.badlogic.gdx.Game;
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.Screen;
 import com.badlogic.gdx.graphics.GL20;
@@ -24,12 +23,14 @@ public class FinalLevelScreen implements Screen {
     private Stage stage;
     private BitmapFont font;
 
-    private Game game;
+    private FoxGame game;
+    private int nivelActual;
 
-    public FinalLevelScreen(FoxGame game, PlayScreen screen) {
+    public FinalLevelScreen(int nivelActual, FoxGame game, PlayScreen screen) {
         this.game = game;
+        this.nivelActual = nivelActual;
         viewport = new FitViewport(FoxGame.V_WIDTH, FoxGame.V_HEIGHT, new OrthographicCamera());
-        stage = new Stage(viewport, ((FoxGame) game).batch);
+        stage = new Stage(viewport, (game).batch);
         game.playMusic("audio/music/Victorious.ogg", false);
 
         font = new BitmapFont(Gdx.files.internal("fonts/wood.fnt"));
@@ -70,7 +71,15 @@ public class FinalLevelScreen implements Screen {
     @Override
     public void render(float delta) {
         if (Gdx.input.justTouched()) {
-            game.setScreen(new MainMenuScreen((FoxGame) game));
+            switch (nivelActual) {
+                case 1:
+                game.setScreen(new PlayScreen(game, nivelActual+1));
+                    break;
+                default:
+                game.setScreen(new MainMenuScreen(game));
+                    break;
+            }
+            
             dispose();
         }
         Gdx.gl.glClearColor(0, 0, 0, 1);

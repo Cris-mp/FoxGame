@@ -62,6 +62,8 @@ public class PlayScreen implements Screen {
     private float stepTimer = 0f;
     private float stepInterval = 0.3f;
 
+    int nivelActual;
+
     // getters
     public FoxGame getGame() {
         return game;
@@ -85,6 +87,7 @@ public class PlayScreen implements Screen {
 
     public PlayScreen(FoxGame game, int nivelActual) {
         this.game = game;
+        this.nivelActual=nivelActual;
         this.joystick = new VirtualJoystick(0, 0, 2, 1);
         gamecam = new OrthographicCamera();
         // mantiene el ratio de aspecto virtual a pesar de la pantalla
@@ -341,7 +344,7 @@ public class PlayScreen implements Screen {
             dispose();
         }
         if (player.isEndGame()) {
-            game.setScreen(new FinalLevelScreen(game, this));
+            game.setScreen(new FinalLevelScreen(nivelActual,game, this));
             dispose();
         }
     }

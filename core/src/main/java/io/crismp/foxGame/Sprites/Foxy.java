@@ -69,6 +69,11 @@ public class Foxy extends Sprite {
 	public Texture img;
 
 	public boolean endGame;
+	public boolean onRamp;
+
+	public void setOnRamp(boolean onRamp) {
+		this.onRamp = onRamp;
+	}
 
 	public Boolean getOnLadder() {
 		return onLadder;
@@ -98,6 +103,7 @@ public class Foxy extends Sprite {
 		enemiesInContact = new ArrayList<>();
 		pinchosInContact = new ArrayList<>();
 		headInLadder = false;
+		onRamp=true;
 
 		// animaciones
 		currenState = State.STANDING;
@@ -226,10 +232,10 @@ public class Foxy extends Sprite {
 		if (foxyIsHurt) {
 			return State.HURT;
 		}
-		if (body.getLinearVelocity().y > 0 && !onLadder) {
+		if (body.getLinearVelocity().y > 0 && !onLadder && !onRamp) {
 			return State.JUMPING;
 		}
-		if (body.getLinearVelocity().y < 0 && !onLadder) {
+		if (body.getLinearVelocity().y < 0 && !onLadder && !onRamp) {
 			return State.FALLING;
 		}
 		if (body.getLinearVelocity().x != 0 && !onLadder) {
@@ -264,7 +270,7 @@ public class Foxy extends Sprite {
 			screen.restLife(life);
 			if (life <= 0) {
 				foxyIsDead = true;
-				stateTimer=0;//para el tiempo se espra de game over
+				stateTimer = 0;// para el tiempo se espra de game over
 				Filter filter = new Filter();
 				filter.maskBits = FoxGame.NOTHING_BIT;
 				for (Fixture fix : body.getFixtureList())
@@ -289,7 +295,7 @@ public class Foxy extends Sprite {
 				FoxGame.ENEMY_BIT | FoxGame.SPIKES_BIT |
 				FoxGame.LADDER_BIT | FoxGame.ITEM_BIT |
 				FoxGame.ENEMY_HEAD_BIT | FoxGame.END_GAME_BIT |
-				FoxGame.CARTEL_BIT;
+				FoxGame.CARTEL_BIT|FoxGame.RAMP_BIT;
 		fdef.shape = shape;
 		body.createFixture(fdef).setUserData(this);
 		shape.setPosition(new Vector2(0, 8 / FoxGame.PPM));
