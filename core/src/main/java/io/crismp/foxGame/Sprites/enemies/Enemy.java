@@ -16,12 +16,22 @@ public abstract class Enemy extends Sprite{
     public Body body;
     public Vector2 velocity;
     public Rectangle rect;
+    private boolean active;
+
+    public boolean isActive() {
+        return active;
+    }
+
+    public void setActive(boolean active) {
+        this.active = active;
+    }
 
     public Enemy(PlayScreen screen,Rectangle rect){
         this.screen = screen;
         this.rect =rect;
         this.world = screen.getWorld();
         this.map = screen.getMap();
+        this.active=true;
         defineEnenmy();
         velocity=new Vector2(0.5f,0);
     }

@@ -7,8 +7,10 @@ import com.badlogic.gdx.Screen;
 import com.badlogic.gdx.audio.Sound;
 import com.badlogic.gdx.graphics.GL20;
 import com.badlogic.gdx.graphics.OrthographicCamera;
+import com.badlogic.gdx.maps.MapLayer;
 import com.badlogic.gdx.maps.MapProperties;
 import com.badlogic.gdx.maps.tiled.TiledMap;
+import com.badlogic.gdx.maps.tiled.TiledMapTileLayer;
 import com.badlogic.gdx.maps.tiled.TmxMapLoader;
 import com.badlogic.gdx.maps.tiled.renderers.OrthogonalTiledMapRenderer;
 import com.badlogic.gdx.math.Vector2;
@@ -21,6 +23,7 @@ import io.crismp.foxGame.managers.AssetsManagerAudio;
 import io.crismp.foxGame.scenes.Hud;
 import io.crismp.foxGame.sprites.Foxy;
 import io.crismp.foxGame.sprites.enemies.Enemy;
+import io.crismp.foxGame.sprites.enemies.Zarigueya;
 import io.crismp.foxGame.sprites.items.Cherry;
 import io.crismp.foxGame.sprites.items.Gem;
 import io.crismp.foxGame.tools.B2WorldCreator;
@@ -43,6 +46,7 @@ public class PlayScreen implements Screen {
     private TmxMapLoader mapLoader;
     private TiledMap map;
     private OrthogonalTiledMapRenderer renderer;
+    TiledMapTileLayer secretRoomLayer;
 
     // Creacion de mundo (Fisicas y cuerpos)
     private World world;
@@ -123,6 +127,7 @@ public class PlayScreen implements Screen {
                 game.playMusic("audio/music/world wanderer.ogg", true);
                 break;
         }
+
         renderer = new OrthogonalTiledMapRenderer(map, 1 / FoxGame.PPM);
 
         // Situa la camara para que se centre correctamente el el punto 0
@@ -199,13 +204,11 @@ public class PlayScreen implements Screen {
                     player.body.setLinearVelocity(0, 0);
                     player.body.applyLinearImpulse(new Vector2(0, 2.5f), player.body.getWorldCenter(), true);
                     player.jumpCounter++;
-                    System.out.println("saltos a 0");
                 }
                 // reseteamos el contador de salto
                 if (player.body.getLinearVelocity().y == 0 && colision) {
                     player.jumpCounter = 0;
                     colision = false;
-                    System.out.println("saltos a 0");
                 }
 
                 if (player.getOnLadder() && Gdx.input.isKeyPressed(Input.Keys.W)) {
@@ -253,6 +256,12 @@ public class PlayScreen implements Screen {
 
         player.update(dt);
         hud.updateHud(newLife, cherriesCollected, gemsCollected);
+
+        if (player.isInsideSecretRoom()) {
+            toggleSecretRoom(true);
+        } else {
+            toggleSecretRoom(false);
+        }
 
         for (Enemy enemy : creator.getZarigueyas()) {
             enemy.update(dt);
@@ -318,13 +327,17 @@ public class PlayScreen implements Screen {
         player.draw(game.batch);
 
         for (Enemy enemy : creator.getZarigueyas()) {
-            enemy.draw(game.batch);
+            if (enemy.isActive()) {
+                enemy.draw(game.batch);
+            }
         }
         for (Cherry cherry : creator.getCherries()) {
             cherry.draw(game.batch);
         }
         for (Gem gem : creator.getGems()) {
-            gem.draw(game.batch);
+            if (gem.isActive()) {
+                gem.draw(game.batch);
+            }
         }
         game.batch.end();
 
@@ -379,6 +392,35 @@ public class PlayScreen implements Screen {
         world.dispose();
         b2dr.dispose();
         hud.dispose();
+    }
+
+    private void toggleSecretRoom(boolean show) {
+
+        MapLayer decoracionLayer = map.getLayers().get("SecretDecos");
+        MapLayer decoracionLayer2 = map.getLayers().get("SecretDecos2");
+        MapLayer habitacionLayer = map.getLayers().get("SalaSecreta");
+        if (habitacionLayer != null) {
+            if (decoracionLayer != null && habitacionLayer != null) {
+                decoracionLayer.setVisible(show);
+                if (decoracionLayer2 != null) {
+                    decoracionLayer2.setVisible(show);
+                }
+                habitacionLayer.setVisible(show);
+            }
+
+            if (show) {
+                for (Zarigueya enemy : creator.getZarigueyas()) {
+                    if (enemy.isInSecretRoom()) {
+                        enemy.setActive(show);
+                    }
+                }
+                for (Gem gem : creator.getGems()) {
+                    if (gem.isInSecretRoom()) {
+                        gem.setActive(show);
+                    }
+                }
+            }
+        }
     }
 
     // Métodos no utilizados, pero necesarios por la interfaz Screen

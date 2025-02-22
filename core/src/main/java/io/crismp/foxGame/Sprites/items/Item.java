@@ -19,13 +19,24 @@ public abstract class Item extends Sprite{
     protected boolean destroyed;
     protected Body body;
     public Rectangle rect;
+    private boolean active;
+
+    public boolean isActive() {
+        return active;
+    }
+
+    public void setActive(boolean active) {
+        this.active = active;
+    }
 
     public Item(PlayScreen screen, Rectangle rect){
         this.screen = screen;
         this.world = screen.getWorld();
         this.rect=rect;
+        this.active = true;
         toDestroy = false;
         destroyed = false;
+
 
         setPosition(rect.getX(), rect.getY());
         setBounds(getX(), getY(), 16 / FoxGame.PPM, 16 / FoxGame.PPM);

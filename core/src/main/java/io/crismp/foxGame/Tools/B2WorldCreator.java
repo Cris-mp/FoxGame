@@ -22,6 +22,7 @@ import io.crismp.foxGame.sprites.items.Gem;
 import io.crismp.foxGame.sprites.tileObjects.Cartel;
 import io.crismp.foxGame.sprites.tileObjects.Escalera;
 import io.crismp.foxGame.sprites.tileObjects.Pinchos;
+import io.crismp.foxGame.sprites.tileObjects.PuertaSecreta;
 
 /**
  * Clase encargada de generar y configurar los objetos del mundo físico (Box2D)
@@ -30,7 +31,7 @@ import io.crismp.foxGame.sprites.tileObjects.Pinchos;
  * obstáculos y coleccionables.
  */
 public class B2WorldCreator {
-    private World world;  // Referencia al mundo físico (Box2D)
+    private World world; // Referencia al mundo físico (Box2D)
     private TiledMap map; // Mapa del juego (TiledMap)
 
     private ArrayList<Zarigueya> zarigueyas; // Lista de enemigos zarigüeyas
@@ -65,10 +66,15 @@ public class B2WorldCreator {
         zarigueyas = createEnemies(screen);
         cherrys = createCherries(screen);
         gems = createGems(screen);
+        
+        // Zona Secreta
+        createSecretDoor(screen);
+        createSecretRoomObjects(screen);
     }
 
     /**
-     * Crea cuerpos estáticos en el mundo de Box2D para los objetos de una capa específica del mapa.
+     * Crea cuerpos estáticos en el mundo de Box2D para los objetos de una capa
+     * específica del mapa.
      *
      * @param layerName Nombre de la capa en el mapa.
      * @param mask      Máscara de bits que define la colisión del objeto.
@@ -94,6 +100,20 @@ public class B2WorldCreator {
         if (map.getLayers().get("escaleras") != null) {
             for (MapObject object : map.getLayers().get("escaleras").getObjects().getByType(RectangleMapObject.class)) {
                 new Escalera(screen, ((RectangleMapObject) object).getRectangle());
+            }
+        }
+    }
+
+    /**
+     * Crea la puerta secreta en el mundo del juego.
+     *
+     * @param screen Pantalla de juego.
+     */
+    private void createSecretDoor(PlayScreen screen) {
+        if (map.getLayers().get("puertaSecreta") != null) {
+            for (MapObject object : map.getLayers().get("puertaSecreta").getObjects()
+                    .getByType(RectangleMapObject.class)) {
+                new PuertaSecreta(screen, ((RectangleMapObject) object).getRectangle());
             }
         }
     }
@@ -214,7 +234,7 @@ public class B2WorldCreator {
 
         bdef.type = BodyDef.BodyType.StaticBody;
         bdef.position.set((rectangle.getX() + rectangle.getWidth() / 2) / FoxGame.PPM,
-                          (rectangle.getY() + rectangle.getHeight() / 2) / FoxGame.PPM);
+                (rectangle.getY() + rectangle.getHeight() / 2) / FoxGame.PPM);
 
         Body body = world.createBody(bdef);
         shape.setAsBox((rectangle.getWidth() / 2) / FoxGame.PPM, (rectangle.getHeight() / 2) / FoxGame.PPM);
@@ -225,37 +245,72 @@ public class B2WorldCreator {
     }
 
     private void definePolygonBody(MapObject object, short mask) {
-    PolygonMapObject polygonObject = (PolygonMapObject) object;
-    Polygon polygon = polygonObject.getPolygon();
-    
-    // Definir cuerpo
-    BodyDef bdef = new BodyDef();
-    bdef.type = BodyDef.BodyType.StaticBody;
-    bdef.position.set(polygon.getX() / FoxGame.PPM, polygon.getY() / FoxGame.PPM);
-    
-    Body body = world.createBody(bdef);
+        PolygonMapObject polygonObject = (PolygonMapObject) object;
+        Polygon polygon = polygonObject.getPolygon();
 
-    // Crear la forma del polígono
-    FixtureDef fdef = new FixtureDef();
-    PolygonShape shape = new PolygonShape();
+        // Definir cuerpo
+        BodyDef bdef = new BodyDef();
+        bdef.type = BodyDef.BodyType.StaticBody;
+        bdef.position.set(polygon.getX() / FoxGame.PPM, polygon.getY() / FoxGame.PPM);
 
-    float[] vertices = polygon.getVertices();
-    float[] worldVertices = new float[vertices.length];
+        Body body = world.createBody(bdef);
 
-    // Convertir las coordenadas a Box2D (dividir por PPM)
-    for (int i = 0; i < vertices.length; i++) {
-        worldVertices[i] = vertices[i] / FoxGame.PPM;
+        // Crear la forma del polígono
+        FixtureDef fdef = new FixtureDef();
+        PolygonShape shape = new PolygonShape();
+
+        float[] vertices = polygon.getVertices();
+        float[] worldVertices = new float[vertices.length];
+
+        // Convertir las coordenadas a Box2D (dividir por PPM)
+        for (int i = 0; i < vertices.length; i++) {
+            worldVertices[i] = vertices[i] / FoxGame.PPM;
+        }
+        shape.set(worldVertices);
+
+        // Configurar la fixture
+        fdef.shape = shape;
+        fdef.filter.categoryBits = mask;
+        fdef.filter.maskBits = FoxGame.FOX_BIT;
+        fdef.friction = 3;
+        body.createFixture(fdef);
+
+        // Liberar la memoria de la forma
+        shape.dispose();
     }
-    shape.set(worldVertices);
 
-    // Configurar la fixture
-    fdef.shape = shape;
-    fdef.filter.categoryBits = mask;
-    fdef.filter.maskBits=FoxGame.FOX_BIT;
-    fdef.friction = 3;
-    body.createFixture(fdef);
+    private void createSecretRoomObjects(PlayScreen screen) {
+        if (map.getLayers().get("objetosSecretos") != null) {
+            // Agregar enemigos
+            if (map.getLayers().get("objetosSecretos").getObjects().getByType(RectangleMapObject.class) != null) {
+                for (MapObject object : map.getLayers().get("objetosSecretos").getObjects()
+                        .getByType(RectangleMapObject.class)) {
+                    String objectType = object.getName();
 
-    // Liberar la memoria de la forma
-    shape.dispose();
-}
+                    if (objectType != null) {
+                        Rectangle rect = ((RectangleMapObject) object).getRectangle();
+
+                        // Si el objeto es un enemigo (Zarigueya)
+                        if (objectType.equals("zarigueya")) {
+                            Zarigueya aux = new Zarigueya(screen, rect);
+                            aux.setInSecretRoom(true);
+                            aux.setActive(false);
+                            zarigueyas.add(aux);
+
+                        }
+                        // Si el objeto es una gema
+                        else if (objectType.equals("gema")) {
+                            Gem aux = new Gem(screen, rect);
+                            aux.setInSecretRoom(true);
+                            aux.setActive(false);
+                            System.out.println(aux);
+                            gems.add(aux);
+                        }
+
+                    }
+                }
+            }
+        }
+    }
+
 }

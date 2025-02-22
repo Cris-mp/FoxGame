@@ -32,6 +32,8 @@ public class Zarigueya extends Enemy {
 
     private boolean setToDestroy;
     private boolean destroyed;
+    private boolean inSecretRoom;
+    
 
     public Zarigueya(PlayScreen screen, Rectangle rect) {
         super(screen, rect);
@@ -58,19 +60,22 @@ public class Zarigueya extends Enemy {
         runRight = true;
         currenState = State.WALK;
         stateTimer = 0;
+        inSecretRoom=false;
+   
+        
         setBounds(0, 0, 16 / (FoxGame.PPM / 2), 11 / (FoxGame.PPM / 2));
     }
 
     public void update(float dt) {
-        stateTimer += dt;
-        if (setToDestroy && !destroyed) {
-            world.destroyBody(body);
-            destroyed = true;
-            stateTimer = 0;
-        }
-        setRegion(getFrame(dt));
-        body.setLinearVelocity(velocity);
-        setPosition(body.getPosition().x - getWidth() / 2, body.getPosition().y - getHeight() / 3);
+            stateTimer += dt;
+            if (setToDestroy && !destroyed) {
+                world.destroyBody(body);
+                destroyed = true;
+                stateTimer = 0;
+            }
+            setRegion(getFrame(dt));
+            body.setLinearVelocity(velocity);
+            setPosition(body.getPosition().x - getWidth() / 2, body.getPosition().y - getHeight() / 3);
     }
 
     @Override
@@ -149,5 +154,12 @@ public class Zarigueya extends Enemy {
             return State.DEAD;
         }
         return State.WALK;
+    }
+
+    public boolean isInSecretRoom(){
+        return inSecretRoom;
+    }
+    public void setInSecretRoom(boolean inSecretRoom) {
+        this.inSecretRoom = inSecretRoom;
     }
 }

@@ -17,17 +17,27 @@ import io.crismp.foxGame.managers.AssetsManagerAudio;
 import io.crismp.foxGame.screens.PlayScreen;
 import io.crismp.foxGame.sprites.Foxy;
 
-public class Gem extends Item{
+public class Gem extends Item {
     private Animation<TextureRegion> gemAnimation;
     private Texture gemTexture;
     private float stateTime;
     private Fixture fixture;
-        private Sound itemSound;
-        private boolean collected;
+    private Sound itemSound;
+    private boolean collected;
+    private boolean inSecretRoom;
+
+    public boolean isInSecretRoom() {
+        return inSecretRoom;
+    }
+
+    public void setInSecretRoom(boolean inSecretRoom) {
+        this.inSecretRoom = inSecretRoom;
+    }
 
     public Gem(PlayScreen screen, Rectangle rect) {
         super(screen, rect);
         collected = false;
+        inSecretRoom = false;
         gemTexture = AssetsManager.getTexture("items/gem.png");
         Array<TextureRegion> frames = new Array<TextureRegion>();
         for (int i = 0; i < 5; i++) {
@@ -37,7 +47,7 @@ public class Gem extends Item{
         gemAnimation = new Animation<>(0.1f, frames);
 
         stateTime = 0;
-        itemSound=AssetsManagerAudio.getSound("audio/sounds/item/gem.ogg");
+        itemSound = AssetsManagerAudio.getSound("audio/sounds/item/gem.ogg");
 
     }
 
@@ -54,10 +64,10 @@ public class Gem extends Item{
         PolygonShape shape = new PolygonShape();
         shape.setAsBox(5 / FoxGame.PPM, 5 / FoxGame.PPM);
         fdef.filter.categoryBits = FoxGame.ITEM_BIT;
-        fdef.filter.maskBits = FoxGame.FOX_BIT| FoxGame.FOX_HEAD_BIT;
+        fdef.filter.maskBits = FoxGame.FOX_BIT | FoxGame.FOX_HEAD_BIT;
 
         fdef.shape = shape;
-        fixture=body.createFixture(fdef);
+        fixture = body.createFixture(fdef);
         fixture.setUserData(this);
         fixture.setSensor(true);
     }
@@ -65,11 +75,11 @@ public class Gem extends Item{
     @Override
     public void use(Foxy foxy) {
         if (!collected) { // Asegura que solo se recoja una vez
-            collected = true; 
-        System.out.println("Gem Collected");
-        screen.addGem();
-        screen.game.playSound(itemSound);
-        destroy();
+            collected = true;
+            System.out.println("Gem Collected");
+            screen.addGem();
+            screen.game.playSound(itemSound);
+            destroy();
         }
     }
 

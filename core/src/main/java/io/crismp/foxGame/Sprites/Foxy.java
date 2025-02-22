@@ -7,6 +7,7 @@ import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.graphics.g2d.Animation;
 import com.badlogic.gdx.graphics.g2d.Sprite;
 import com.badlogic.gdx.graphics.g2d.TextureRegion;
+import com.badlogic.gdx.maps.MapLayer;
 import com.badlogic.gdx.maps.objects.RectangleMapObject;
 import com.badlogic.gdx.maps.tiled.TiledMap;
 import com.badlogic.gdx.math.Rectangle;
@@ -62,6 +63,7 @@ public class Foxy extends Sprite {
 	private boolean foxyIsHurt;
 	private float hurtTimer;
 	private boolean foxyIsDead;
+	private boolean insideSecretRoom;
 	public int life;
 	public ArrayList<Enemy> enemiesInContact;
 	public ArrayList<Pinchos> pinchosInContact;
@@ -73,7 +75,6 @@ public class Foxy extends Sprite {
 
 	public void setOnRamp(boolean onRamp) {
 		this.onRamp = onRamp;
-		System.out.println("Foxy está en una rampa: " + onRamp);
 	}
 
 	public Boolean getOnLadder() {
@@ -86,6 +87,12 @@ public class Foxy extends Sprite {
 
 	public void setHeadInLadder(Boolean inLadder) {
 		headInLadder = inLadder;
+	}
+	public boolean isInsideSecretRoom() {
+		return insideSecretRoom;
+	}
+	public void setInsideSecretRoom(boolean inside) {
+		insideSecretRoom = inside;
 	}
 
 	public Foxy(PlayScreen screen) {
@@ -104,7 +111,8 @@ public class Foxy extends Sprite {
 		enemiesInContact = new ArrayList<>();
 		pinchosInContact = new ArrayList<>();
 		headInLadder = false;
-		onRamp=false;
+		onRamp = false;
+		insideSecretRoom = false;
 
 		// animaciones
 		currenState = State.STANDING;
@@ -296,7 +304,7 @@ public class Foxy extends Sprite {
 				FoxGame.ENEMY_BIT | FoxGame.SPIKES_BIT |
 				FoxGame.LADDER_BIT | FoxGame.ITEM_BIT |
 				FoxGame.ENEMY_HEAD_BIT | FoxGame.END_GAME_BIT |
-				FoxGame.CARTEL_BIT|FoxGame.RAMP_BIT;
+				FoxGame.CARTEL_BIT | FoxGame.RAMP_BIT;
 		fdef.shape = shape;
 		body.createFixture(fdef).setUserData(this);
 		shape.setPosition(new Vector2(0, 8 / FoxGame.PPM));
@@ -306,9 +314,26 @@ public class Foxy extends Sprite {
 		fdef.filter.maskBits = FoxGame.ENEMY_BIT | FoxGame.SPIKES_BIT |
 				FoxGame.ITEM_BIT | FoxGame.OBSTACLE_BIT |
 				FoxGame.FLOOR_BIT | FoxGame.LADDER_BIT | FoxGame.WALL_BIT |
-				FoxGame.GROUND_BIT;
+				FoxGame.GROUND_BIT | FoxGame.SECRET_DOOR_BIT;
 		Fixture headFixture = body.createFixture(fdef);
 		headFixture.setUserData(this);
+	}
+
+	public void toggleSecretRoom(boolean show) {
+		MapLayer decoracionLayer = map.getLayers().get("SecretDecos");
+		MapLayer decoracionLayer2 = map.getLayers().get("SecretDecos2");
+		MapLayer habitacionLayer = map.getLayers().get("SalaSecreta");
+		if (show) {
+			decoracionLayer.setVisible(true);
+			decoracionLayer2.setVisible(true);
+			habitacionLayer.setVisible(true);
+			// Activar los enemigos en la zona secreta
+		} else {
+			decoracionLayer.setVisible(false);
+			decoracionLayer2.setVisible(false);
+			habitacionLayer.setVisible(false);
+			
+		}
 	}
 
 }

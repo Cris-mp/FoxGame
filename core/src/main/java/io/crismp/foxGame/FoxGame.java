@@ -38,6 +38,7 @@ public class FoxGame extends Game {
     public static final short END_GAME_BIT = 2048;  // 0000100000000000
     public static final short CARTEL_BIT = 4096;    // 0001000000000000
     public static final short RAMP_BIT = 8192;      // 0010000000000000
+    public static final short SECRET_DOOR_BIT=16384;
 
     public SpriteBatch batch;
     private Music currentMusic; // Para evitar reinicios innecesarios de la música
