@@ -54,7 +54,8 @@ public class FinalLevelScreen implements Screen {
         int totalScore = ((screen.getCherriesCollected() * 25) + (screen.getGemsCollected() * 100));
         Label lblTotal = new Label(String.format(LanguageManager.get("total_score"),
                 totalScore), labelStyle);
-        GamePreferences.saveScore(totalScore);
+        //GamePreferences.saveScore(totalScore);
+        GamePreferences.saveScore(totalScore, false);
 
         table.add(levelCompletedLbl);
         table.row();
@@ -76,6 +77,7 @@ public class FinalLevelScreen implements Screen {
                 game.setScreen(new PlayScreen(game, nivelActual+1));
                     break;
                 default:
+                GamePreferences.resetAccumulatedScore();
                 game.setScreen(new MainMenuScreen(game));
                     break;
             }

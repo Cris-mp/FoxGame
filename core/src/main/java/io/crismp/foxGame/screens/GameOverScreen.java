@@ -17,6 +17,7 @@ import com.badlogic.gdx.utils.viewport.Viewport;
 import io.crismp.foxGame.FoxGame;
 import io.crismp.foxGame.managers.AssetsManager;
 import io.crismp.foxGame.managers.LanguageManager;
+import io.crismp.foxGame.tools.GamePreferences;
 
 /**
  * Pantalla de Game Over.
@@ -76,6 +77,8 @@ public class GameOverScreen implements Screen {
 
         // Permitir cambio de pantalla solo después de 1.5 segundos
         if (elapsedTime > 1.5f && Gdx.input.justTouched()) {
+            GamePreferences.saveScore(0, true);
+            GamePreferences.resetAccumulatedScore();
             game.setScreen(new MainMenuScreen(game));
             dispose();
         }
