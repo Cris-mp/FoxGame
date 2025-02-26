@@ -46,229 +46,202 @@ public class WorldContactListener implements ContactListener {
         // + fixB.getFilterData().categoryBits);
         switch (collisionDef) {
             case FoxGame.FOX_HEAD_BIT | FoxGame.SECRET_DOOR_BIT:
-                ((fixA.getFilterData().categoryBits == FoxGame.FOX_BIT) ? (Foxy) fixA.getUserData()
-                        : (Foxy) fixB.getUserData()).setInsideSecretRoom(true);
+                getFoxy(fixA, fixB).setInsideSecretRoom(true);
                 break;
-            case FoxGame.FOX_BIT | FoxGame.RAMP_BIT:
-                if (fixA.getFilterData().categoryBits == FoxGame.FOX_BIT)
-                    ((Foxy) fixA.getUserData()).setOnRamp(true);
-                else
-                    ((Foxy) fixB.getUserData()).setOnRamp(true);
 
+            case FoxGame.FOX_BIT | FoxGame.RAMP_BIT:
+                getFoxy(fixA, fixB).setOnRamp(true);
                 screen.colision = true;
                 break;
+
             case FoxGame.FOX_BIT | FoxGame.GROUND_BIT:
             case FoxGame.FOX_BIT | FoxGame.OBSTACLE_BIT:
                 screen.colision = true;
-                ((Foxy) (fixA.getUserData() instanceof Foxy ? fixA.getUserData() : fixB.getUserData()))
-                        .setOnRamp(false);
+                getFoxy(fixA, fixB).setOnRamp(false);
                 break;
+
             case FoxGame.FOX_BIT | FoxGame.ENEMY_HEAD_BIT:
-                if (fixA.getFilterData().categoryBits == FoxGame.ENEMY_HEAD_BIT)
-                    ((Enemy) fixA.getUserData()).hitOnHead();
-                else
-                    ((Enemy) fixB.getUserData()).hitOnHead();
+                getEnemy(fixA, fixB).hitOnHead();
                 break;
+
             case FoxGame.ENEMY_BIT | FoxGame.OBSTACLE_BIT:
             case FoxGame.ENEMY_BIT | FoxGame.WALL_BIT:
             case FoxGame.ENEMY_BIT | FoxGame.SPIKES_BIT:
-                if (fixA.getFilterData().categoryBits == FoxGame.ENEMY_BIT)
-                    ((Enemy) fixA.getUserData()).reverseVelocity(true, false);
-                else
-                    ((Enemy) fixB.getUserData()).reverseVelocity(true, false);
+                getEnemy(fixA, fixB).reverseVelocity(true, false);
                 break;
+
             case FoxGame.FOX_HEAD_BIT | FoxGame.ITEM_BIT:
             case FoxGame.FOX_BIT | FoxGame.ITEM_BIT:
-                if (fixA.getFilterData().categoryBits == FoxGame.ITEM_BIT)
-                    ((Item) fixA.getUserData()).use((Foxy) fixB.getUserData());
-                else
-                    ((Item) fixB.getUserData()).use((Foxy) fixA.getUserData());
+                getItem(fixA, fixB).use(getFoxy(fixA, fixB));
                 break;
 
             case FoxGame.FOX_BIT | FoxGame.SPIKES_BIT:
                 screen.colision = true;
             case FoxGame.FOX_HEAD_BIT | FoxGame.SPIKES_BIT:
             case FoxGame.FOX_BIT | FoxGame.ENEMY_BIT:
-                Foxy foxy = null;
-                Enemy enemy = null;
-                Pinchos pinchos = null;
-                if (fixA.getFilterData().categoryBits == FoxGame.FOX_BIT
-                        || fixA.getFilterData().categoryBits == FoxGame.FOX_HEAD_BIT) {
-                    foxy = (Foxy) fixA.getUserData();
-                    if (fixB.getFilterData().categoryBits == FoxGame.ENEMY_BIT) {
-                        enemy = (Enemy) fixB.getUserData();
-                    } else {
-                        pinchos = (Pinchos) fixB.getUserData();
-                    }
-                } else {
-                    foxy = (Foxy) fixB.getUserData();
-                    if (fixA.getFilterData().categoryBits == FoxGame.ENEMY_BIT) {
-                        enemy = (Enemy) fixA.getUserData();
-                    } else {
-                        pinchos = (Pinchos) fixA.getUserData();
-                    }
-                }
-                if (enemy != null && !foxy.enemiesInContact.contains(enemy)) {
-                    foxy.enemiesInContact.add(enemy); // Añadir enemigo a la lista de colisiones
-                }
-                if (pinchos != null && !foxy.pinchosInContact.contains(pinchos)) {
-                    foxy.pinchosInContact.add(pinchos); // Añadir pinchos a la lista de colisiones
-                }
-
-                foxy.hit();
-
-                if (fixA.getFilterData().categoryBits == FoxGame.ENEMY_BIT)
-                    ((Enemy) fixA.getUserData()).reverseVelocity(true, false);
-                else if (fixB.getFilterData().categoryBits == FoxGame.ENEMY_BIT)
-                    ((Enemy) fixB.getUserData()).reverseVelocity(true, false);
+                handleDamageCollision(fixA, fixB);
                 break;
 
             case FoxGame.FOX_BIT | FoxGame.LADDER_BIT:
-                if (fixA.getFilterData().categoryBits == FoxGame.LADDER_BIT ||
-                        fixB.getFilterData().categoryBits == FoxGame.LADDER_BIT) {
-                    if (fixA.getFilterData().categoryBits == FoxGame.FOX_BIT)
-                        ((Foxy) fixA.getUserData()).setOnLadder(true);
-                    else
-                        ((Foxy) fixB.getUserData()).setOnLadder(true);
-                }
+                getFoxy(fixA, fixB).setOnLadder(true);
                 break;
-            case FoxGame.FOX_HEAD_BIT | FoxGame.LADDER_BIT:
-                if (fixA.getFilterData().categoryBits == FoxGame.FOX_HEAD_BIT)
-                    ((Foxy) fixA.getUserData()).setHeadInLadder(true);
-                else
-                    ((Foxy) fixB.getUserData()).setHeadInLadder(true);
 
+            case FoxGame.FOX_HEAD_BIT | FoxGame.LADDER_BIT:
+                getFoxy(fixA, fixB).setHeadInLadder(true);
                 break;
 
             case FoxGame.FOX_BIT | FoxGame.END_GAME_BIT:
-                if (fixA.getFilterData().categoryBits == FoxGame.END_GAME_BIT ||
-                        fixB.getFilterData().categoryBits == FoxGame.END_GAME_BIT) {
-                    if (fixA.getFilterData().categoryBits == FoxGame.FOX_BIT)
-                        ((Foxy) fixA.getUserData()).setEndGame(true);
-                    else
-                        ((Foxy) fixB.getUserData()).setEndGame(true);
-                }
+                getFoxy(fixA, fixB).setEndGame(true);
                 break;
-            case FoxGame.FOX_BIT | FoxGame.CARTEL_BIT:
 
-                int cartelID = 0;
-                if (fixA.getFilterData().categoryBits == FoxGame.CARTEL_BIT) {
-                    cartelID = (int) fixA.getUserData(); // Obtener ID desde Tiled
-                } else {
-                    cartelID = (int) fixB.getUserData();
-                }
-                screen.hud.showCartel(cartelID); // Muestra la etiqueta correcta
+            case FoxGame.FOX_BIT | FoxGame.CARTEL_BIT:
+                screen.hud.showCartel(getCartelID(fixA, fixB));
                 break;
             default:
                 break;
         }
     }
 
-    // desconexion
+    /**
+     * Método llamado cuando dos objetos terminan su colisión.
+     *
+     * @param contact Información sobre la colisión terminada.
+     */
     @Override
     public void endContact(Contact contact) {
         Fixture fixA = contact.getFixtureA();
         Fixture fixB = contact.getFixtureB();
 
-        int cDef = fixA.getFilterData().categoryBits | fixB.getFilterData().categoryBits;
+        int collisionDef = fixA.getFilterData().categoryBits | fixB.getFilterData().categoryBits;
 
-        switch (cDef) {
+        switch (collisionDef) {
             case FoxGame.FOX_HEAD_BIT | FoxGame.SECRET_DOOR_BIT:
-                ((fixA.getFilterData().categoryBits == FoxGame.FOX_BIT) ? (Foxy) fixA.getUserData()
-                        : (Foxy) fixB.getUserData()).setInsideSecretRoom(false);
+                getFoxy(fixA, fixB).setInsideSecretRoom(false);
+                break;
+
+            case FoxGame.FOX_BIT | FoxGame.RAMP_BIT:
+                getFoxy(fixA, fixB).setOnRamp(false);
+                screen.colision = false;
+                break;
+
+            case FoxGame.FOX_BIT | FoxGame.LADDER_BIT:
+                getFoxy(fixA, fixB).setOnLadder(false);
                 break;
             case FoxGame.FOX_HEAD_BIT | FoxGame.LADDER_BIT:
-                if (fixA.getFilterData().categoryBits == FoxGame.FOX_HEAD_BIT)
-                    ((Foxy) fixA.getUserData()).setHeadInLadder(false);
-                else
-                    ((Foxy) fixB.getUserData()).setHeadInLadder(false);
-
-                break;
-            case FoxGame.FOX_BIT | FoxGame.RAMP_BIT:
-                if (fixA.getFilterData().categoryBits == FoxGame.FOX_BIT) {
-                    ((Foxy) fixA.getUserData()).setOnRamp(false);
-                } else {
-                    ((Foxy) fixB.getUserData()).setOnRamp(false);
-                }
-                if (!screen.colision) {
-                    screen.colision = false;
-                }
-
-                break;
-            case FoxGame.FOX_BIT | FoxGame.LADDER_BIT:
-                if (fixA.getFilterData().categoryBits == FoxGame.FOX_BIT)
-                    ((Foxy) fixA.getUserData()).setOnLadder(false);
-                else
-                    ((Foxy) fixB.getUserData()).setOnLadder(false);
+                getFoxy(fixA, fixB).setHeadInLadder(false);
                 break;
 
             case FoxGame.FOX_BIT | FoxGame.SPIKES_BIT:
             case FoxGame.FOX_BIT | FoxGame.ENEMY_BIT:
             case FoxGame.FOX_HEAD_BIT | FoxGame.SPIKES_BIT:
             case FoxGame.FOX_HEAD_BIT | FoxGame.ENEMY_BIT:
-                Foxy foxy;
-                Enemy enemy;
-                Pinchos pinchos;
-                if (fixA.getFilterData().categoryBits == FoxGame.FOX_BIT
-                        || fixA.getFilterData().categoryBits == FoxGame.FOX_HEAD_BIT) {
-                    foxy = (Foxy) fixA.getUserData();
-                    if (fixB.getFilterData().categoryBits == FoxGame.ENEMY_BIT) {
-                        enemy = (Enemy) fixB.getUserData();
-                        foxy.enemiesInContact.remove(enemy);
-                    } else {
-                        pinchos = (Pinchos) fixB.getUserData();
-                        foxy.pinchosInContact.remove(pinchos);
-                    }
-                } else {
-                    foxy = (Foxy) fixB.getUserData();
-                    if (fixA.getFilterData().categoryBits == FoxGame.ENEMY_BIT) {
-                        enemy = (Enemy) fixA.getUserData();
-                        foxy.enemiesInContact.remove(enemy);
-                    } else {
-                        pinchos = (Pinchos) fixA.getUserData();
-                        foxy.pinchosInContact.remove(pinchos);
-                    }
-                }
+                handleEndDamageCollision(fixA, fixB);
                 break;
+
             case FoxGame.FOX_BIT | FoxGame.CARTEL_BIT:
-                int cartelID = 0;
-
-                if (fixA.getFilterData().categoryBits == FoxGame.CARTEL_BIT) {
-                    cartelID = (int) fixA.getUserData();
-                } else {
-                    cartelID = (int) fixB.getUserData();
-                }
-
-                screen.hud.hideCartel(cartelID); // Oculta la etiqueta correcta
+                screen.hud.hideCartel(getCartelID(fixA, fixB));
                 break;
             default:
                 break;
         }
     }
 
-    // Una vez ha chocado puede cambiar las caracteristicas
     @Override
     public void preSolve(Contact contact, Manifold oldManifold) {
-
     }
 
-    // resultado de la colision
     @Override
     public void postSolve(Contact contact, ContactImpulse impulse) {
-
     }
 
+    /**
+     * Obtiene el objeto Foxy de la colisión.
+     */
+    private Foxy getFoxy(Fixture fixA, Fixture fixB) {
+        return (Foxy) ((fixA.getFilterData().categoryBits == FoxGame.FOX_BIT
+                || fixA.getFilterData().categoryBits == FoxGame.FOX_HEAD_BIT)
+                        ? fixA.getUserData()
+                        : fixB.getUserData());
+    }
 
+    /**
+     * Obtiene el enemigo de la colisión.
+     */
+    private Enemy getEnemy(Fixture fixA, Fixture fixB) {
+        return (Enemy) ((fixA.getFilterData().categoryBits == FoxGame.ENEMY_BIT
+                || fixA.getFilterData().categoryBits == FoxGame.ENEMY_HEAD_BIT)
+                        ? fixA.getUserData()
+                        : fixB.getUserData());
+    }
 
+    /**
+     * Obtiene el objeto de tipo Item de la colisión.
+     */
+    private Item getItem(Fixture fixA, Fixture fixB) {
+        return (Item) ((fixA.getFilterData().categoryBits == FoxGame.ITEM_BIT) ? fixA.getUserData()
+                : fixB.getUserData());
+    }
 
+    /**
+     * Obtiene el ID del cartel en la colisión.
+     */
+    private int getCartelID(Fixture fixA, Fixture fixB) {
+        return (int) ((fixA.getFilterData().categoryBits == FoxGame.CARTEL_BIT) ? fixA.getUserData()
+                : fixB.getUserData());
+    }
 
+    /**
+     * Maneja las colisiones que dañan al jugador, como enemigos y pinchos.
+     */
+    private void handleDamageCollision(Fixture fixA, Fixture fixB) {
+        Foxy foxy = getFoxy(fixA, fixB);
+        Enemy enemy = null;
+        Pinchos pinchos = null;
 
+        if (fixA.getFilterData().categoryBits == FoxGame.ENEMY_BIT) {
+            enemy = (Enemy) fixA.getUserData();
+        } else if (fixB.getFilterData().categoryBits == FoxGame.ENEMY_BIT) {
+            enemy = (Enemy) fixB.getUserData();
+        } else {
+            pinchos = (Pinchos) ((fixA.getFilterData().categoryBits == FoxGame.SPIKES_BIT) ? fixA.getUserData()
+                    : fixB.getUserData());
+        }
 
+        if (enemy != null && !foxy.enemiesInContact.contains(enemy)) {
+            foxy.enemiesInContact.add(enemy);
+        }
+        if (pinchos != null && !foxy.pinchosInContact.contains(pinchos)) {
+            foxy.pinchosInContact.add(pinchos);
+        }
 
+        foxy.hit();
+        if (enemy != null)
+            enemy.reverseVelocity(true, false);
+    }
 
+    /**
+     * Maneja la finalización del contacto con objetos dañinos, eliminándolos de las
+     * listas de colisión.
+     */
+    private void handleEndDamageCollision(Fixture fixA, Fixture fixB) {
+        Foxy foxy = getFoxy(fixA, fixB);
+        Enemy enemy = null;
+        Pinchos pinchos = null;
 
+        if (fixA.getFilterData().categoryBits == FoxGame.ENEMY_BIT) {
+            enemy = (Enemy) fixA.getUserData();
+        } else if (fixB.getFilterData().categoryBits == FoxGame.ENEMY_BIT) {
+            enemy = (Enemy) fixB.getUserData();
+        } else {
+            pinchos = (Pinchos) ((fixA.getFilterData().categoryBits == FoxGame.SPIKES_BIT) ? fixA.getUserData()
+                    : fixB.getUserData());
+        }
 
-
-    
-
+        if (enemy != null && foxy.enemiesInContact.contains(enemy)) {
+            foxy.enemiesInContact.remove(enemy);
+        }
+        if (pinchos != null && foxy.pinchosInContact.contains(pinchos)) {
+            foxy.pinchosInContact.remove(pinchos);
+        }
+    }
 }

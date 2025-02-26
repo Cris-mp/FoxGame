@@ -363,9 +363,9 @@
   <object id="185" name="gema" x="912" y="320"/>
  </objectgroup>
  <objectgroup color="#ff5500" id="15" name="cherries">
-  <object id="114" x="484.167" y="70"/>
-  <object id="115" x="517" y="85.5"/>
-  <object id="116" x="551.833" y="102.833"/>
+  <object id="114" x="472.167" y="102.333"/>
+  <object id="115" x="505.667" y="122.167"/>
+  <object id="116" x="538.166" y="144.833"/>
   <object id="117" x="186.5" y="490"/>
   <object id="160" x="151" y="86"/>
   <object id="161" x="192.5" y="95.5"/>

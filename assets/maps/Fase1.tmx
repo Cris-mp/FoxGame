@@ -353,7 +353,7 @@
  </layer>
  <objectgroup id="28" name="puertaSecreta">
   <object id="305" x="532.333" y="336" width="187.667" height="208"/>
-  <object id="306" x="680" y="304" width="0.333333" height="32"/>
+  <object id="306" x="678" y="304" width="0.515151" height="32"/>
  </objectgroup>
  <objectgroup color="#5500ff" id="11" name="zarigueya">
   <object id="226" x="64" y="656" width="16" height="16"/>
