@@ -18,6 +18,11 @@ import io.crismp.foxGame.screens.PlayScreen;
 import io.crismp.foxGame.sprites.Foxy;
 
 public class Cherry extends Item {
+    /**
+     * Representa una cereza que el personaje puede recoger en el juego.
+     * La cereza tiene una animación que se reproduce mientras está activa y puede
+     * ser recolectada.
+     */
 
     private Animation<TextureRegion> cherryAnimation;
 
@@ -27,6 +32,13 @@ public class Cherry extends Item {
     private Sound itemSound;
     private boolean collected;
 
+    /**
+     * Constructor de la clase Cherry.
+     * Inicializa la animación, el sonido y la textura de la cereza.
+     *
+     * @param screen Pantalla del juego donde se encuentra la cereza
+     * @param rect   Rectángulo que define la posición de la cereza
+     */
     public Cherry(PlayScreen screen, Rectangle rect) {
         super(screen, rect);
         collected = false;
@@ -46,6 +58,9 @@ public class Cherry extends Item {
         itemSound = AssetsManagerAudio.getSound("audio/sounds/item/coin.ogg");
     }
 
+    /**
+     * Define el comportamiento físico y de colisiones de la cereza en el mundo.
+     */
     @Override
     public void defineItem() {
         BodyDef bdef = new BodyDef();
@@ -59,7 +74,7 @@ public class Cherry extends Item {
         PolygonShape shape = new PolygonShape();
         shape.setAsBox(5 / FoxGame.PPM, 5 / FoxGame.PPM);
         fdef.filter.categoryBits = FoxGame.ITEM_BIT;
-        fdef.filter.maskBits = FoxGame.FOX_BIT| FoxGame.FOX_HEAD_BIT;
+        fdef.filter.maskBits = FoxGame.FOX_BIT | FoxGame.FOX_HEAD_BIT;
 
         fdef.shape = shape;
         fixture = body.createFixture(fdef);
@@ -67,6 +82,11 @@ public class Cherry extends Item {
         fixture.setSensor(true);
     }
 
+    /**
+     * Realiza la acción de recoger la cereza y destruirla.
+     *
+     * @param foxy El personaje que interactúa con la cereza
+     */
     @Override
     public void use(Foxy foxy) {
         if (!collected) { // Asegura que solo se recoja una vez
@@ -77,6 +97,11 @@ public class Cherry extends Item {
         }
     }
 
+    /**
+     * Actualiza el estado de la cereza, incluyendo la animación y la posición.
+     *
+     * @param dt El tiempo transcurrido desde la última actualización
+     */
     @Override
     public void update(float dt) {
         super.update(dt);

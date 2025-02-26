@@ -111,61 +111,65 @@ public class GamePreferences {
     }
 
     /**
-     * Guarda una nueva puntuación en la lista de récords, manteniendo solo las 5
-     * mejores puntuaciones.
-     *
-     * @param newScore La nueva puntuación a evaluar y almacenar si es
-     *                 suficientemente alta.
+     * Guarda la puntuación del jugador según el nivel alcanzado.
+     * 
+     * <p>
+     * Reglas de guardado:
+     * </p>
+     * <ul>
+     * <li>Si el jugador muere en el nivel 1, NO se guarda nada.</li>
+     * <li>Si completa un nivel sin morir, la puntuación se acumula pero NO se
+     * guarda aún.</li>
+     * <li>Si el jugador muere en el nivel 2 o superior, se guarda la puntuación
+     * acumulada.</li>
+     * <li>Si completa el último nivel, se guarda la puntuación total.</li>
+     * <li>Siempre se mantienen solo las 5 mejores puntuaciones.</li>
+     * </ul>
+     * 
+     * @param nivel      Nivel actual en el que se encuentra el jugador.
+     * @param newScore   Puntuación obtenida en el nivel actual.
+     * @param playerDied Indica si el jugador murió en este nivel.
      */
-    // public static void saveScore(int newScore) {
-    //     List<Integer> scores = getHighScoresList();
-
-    //     // Agregar la nueva puntuación
-    //     scores.add(newScore);
-
-    //     // Ordenar en orden descendente
-    //     scores.sort(Collections.reverseOrder());
-
-    //     // Mantener solo las 5 mejores
-    //     if (scores.size() > MAX_SCORES) {
-    //         scores = scores.subList(0, MAX_SCORES);
-    //     }
-
-    //     // Convertir la lista a String y guardar en preferencias
-    //     String scoresString = scores.toString().replaceAll("[\\[\\] ]", ""); // Formato "100,90,80,70,60"
-    //     getPreferences().putString(HIGH_SCORES, scoresString).flush();
-    // }
-    public static void saveScore(int newScore, boolean playerDied) {
+    public static void saveScore(int nivel, int newScore, boolean playerDied) {
         Preferences prefs = getPreferences();
         int accumulatedScore = prefs.getInteger(ACCUMULATED_SCORE, 0);
-        
-        // Si el jugador murió y la puntuación acumulada es menor, restablecer al mejor puntaje previo
-        if (playerDied) {
-            int bestScore = prefs.getInteger("bestScore", 0);
-            accumulatedScore = Math.max(accumulatedScore, bestScore); 
-        } else {
-            accumulatedScore += newScore; // Acumular la puntuación del nivel actual
+
+        // Determinar si es el último nivel (aquí asumimos que nivel 2 es el último)
+        boolean isLastLevel = (nivel == 2);
+
+        // Si muere en el nivel 1, no se guarda nada
+        if (nivel == 1 && playerDied) {
+            return;
         }
-    
-        // Obtener las puntuaciones guardadas
+
+        // Si sigue avanzando sin morir, solo acumula pero no guarda todavía
+        accumulatedScore += newScore;
+
+        if (!playerDied && !isLastLevel) {
+            // Si no es el último nivel y sigue jugando, solo acumulamos
+            prefs.putInteger(ACCUMULATED_SCORE, accumulatedScore);
+            prefs.flush();
+            return;
+        }
+
+        // Si muere o termina el último nivel, guardamos la mejor puntuación final
         List<Integer> scores = getHighScoresList();
         scores.add(accumulatedScore);
-        System.out.println("Guardando puntuación: " + newScore);
-        scores.sort(Collections.reverseOrder()); // Ordenar de mayor a menor
-    
-        // Mantener solo las 5 mejores
+        scores.sort(Collections.reverseOrder());
+
+        // Mantener solo las 5 mejores puntuaciones
         if (scores.size() > MAX_SCORES) {
             scores = scores.subList(0, MAX_SCORES);
         }
-    
+
         // Guardar la lista actualizada
         String scoresString = scores.toString().replaceAll("[\\[\\] ]", "");
         prefs.putString(HIGH_SCORES, scoresString);
-        prefs.putInteger(ACCUMULATED_SCORE, accumulatedScore);
-        prefs.flush();
-        System.out.println("Guardando puntuación: " + newScore);
-    }
 
+        // Resetear el acumulado tras guardar
+        prefs.putInteger(ACCUMULATED_SCORE, 0);
+        prefs.flush();
+    }
 
     /**
      * Obtiene las 5 mejores puntuaciones almacenadas.
@@ -194,22 +198,7 @@ public class GamePreferences {
                 scores.add(0); // En caso de error, añadir un 0
             }
         }
-
         return scores;
-    }
-
-    // pruebas
-    /**
-     * Acumula la puntuación obtenida en cada nivel.
-     *
-     * @param newScore Puntuación obtenida en el nivel actual.
-     */
-    public static void addToAccumulatedScore(int newScore) {
-        Preferences prefs = getPreferences();
-        int accumulatedScore = prefs.getInteger(ACCUMULATED_SCORE, 0);
-        accumulatedScore += newScore; // Sumar la nueva puntuación
-        prefs.putInteger(ACCUMULATED_SCORE, accumulatedScore);
-        prefs.flush();
     }
 
     /**

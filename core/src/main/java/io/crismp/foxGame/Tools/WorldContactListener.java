@@ -13,25 +13,38 @@ import io.crismp.foxGame.sprites.enemies.Enemy;
 import io.crismp.foxGame.sprites.items.Item;
 import io.crismp.foxGame.sprites.tileObjects.Pinchos;
 
-//Que ocurre cuando dos accesorios de Box2D chocan entre si
+/**
+ * Clase que maneja la detección de colisiones en el mundo del juego.
+ * Implementa la interfaz {@link ContactListener} para gestionar eventos de
+ * colisión y separación entre objetos.
+ */
 public class WorldContactListener implements ContactListener {
     PlayScreen screen;
 
+    /**
+     * Constructor de WorldContactListener.
+     *
+     * @param screen Pantalla del juego donde ocurren las colisiones.
+     */
     public WorldContactListener(PlayScreen screen) {
         this.screen = screen;
     }
 
-    // inicio de conexion o colision
+    /**
+     * Método llamado cuando dos objetos comienzan a colisionar.
+     *
+     * @param contact Información sobre la colisión.
+     */
     @Override
     public void beginContact(Contact contact) {
         // No sabemos quien es A y B en una colision
         Fixture fixA = contact.getFixtureA();
         Fixture fixB = contact.getFixtureB();
-        int cDef = fixA.getFilterData().categoryBits | fixB.getFilterData().categoryBits;
-        System.out.println("Colisión detectada: " + fixA.getFilterData().categoryBits
-                + " con "
-                + fixB.getFilterData().categoryBits);
-        switch (cDef) {
+        int collisionDef = fixA.getFilterData().categoryBits | fixB.getFilterData().categoryBits;
+        // System.out.println("Colisión detectada: " + fixA.getFilterData().categoryBits
+        // + " con "
+        // + fixB.getFilterData().categoryBits);
+        switch (collisionDef) {
             case FoxGame.FOX_HEAD_BIT | FoxGame.SECRET_DOOR_BIT:
                 ((fixA.getFilterData().categoryBits == FoxGame.FOX_BIT) ? (Foxy) fixA.getUserData()
                         : (Foxy) fixB.getUserData()).setInsideSecretRoom(true);
@@ -244,5 +257,18 @@ public class WorldContactListener implements ContactListener {
     public void postSolve(Contact contact, ContactImpulse impulse) {
 
     }
+
+
+
+
+
+
+
+
+
+
+
+
+    
 
 }

@@ -17,6 +17,10 @@ import io.crismp.foxGame.managers.AssetsManagerAudio;
 import io.crismp.foxGame.screens.PlayScreen;
 import io.crismp.foxGame.sprites.Foxy;
 
+/**
+ * Representa una gema que el personaje puede recoger en el juego.
+ * La gema tiene una animación que se reproduce mientras está activa y puede ser recolectada.
+ */
 public class Gem extends Item {
     private Animation<TextureRegion> gemAnimation;
     private Texture gemTexture;
@@ -34,6 +38,13 @@ public class Gem extends Item {
         this.inSecretRoom = inSecretRoom;
     }
 
+    /**
+     * Constructor de la gema. Inicializa la animación, el sonido y el estado de la
+     * gema.
+     * 
+     * @param screen Pantalla actual del juego.
+     * @param rect   Rectángulo que define la posición y tamaño de la gema.
+     */
     public Gem(PlayScreen screen, Rectangle rect) {
         super(screen, rect);
         collected = false;
@@ -51,6 +62,9 @@ public class Gem extends Item {
 
     }
 
+    /**
+     * Define el comportamiento físico y de colisiones de la gema en el mundo.
+     */
     @Override
     public void defineItem() {
         BodyDef bdef = new BodyDef();
@@ -72,17 +86,26 @@ public class Gem extends Item {
         fixture.setSensor(true);
     }
 
+    /**
+     * Realiza la acción de recoger la gema y destruirla.
+     *
+     * @param foxy El personaje que interactúa con la gema
+     */
     @Override
     public void use(Foxy foxy) {
         if (!collected) { // Asegura que solo se recoja una vez
             collected = true;
-            System.out.println("Gem Collected");
             screen.addGem();
             screen.game.playSound(itemSound);
             destroy();
         }
     }
 
+    /**
+     * Actualiza el estado de la gema, incluyendo la animación y la posición.
+     *
+     * @param dt El tiempo transcurrido desde la última actualización
+     */
     @Override
     public void update(float dt) {
         super.update(dt);

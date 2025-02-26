@@ -29,6 +29,13 @@ public abstract class Item extends Sprite{
         this.active = active;
     }
 
+    /**
+     * Constructor de la clase Item.
+     * Inicializa el ítem y lo coloca en la pantalla.
+     * 
+     * @param screen Pantalla actual del juego.
+     * @param rect Rectángulo que define la posición y tamaño del ítem.
+     */
     public Item(PlayScreen screen, Rectangle rect){
         this.screen = screen;
         this.world = screen.getWorld();
@@ -43,9 +50,25 @@ public abstract class Item extends Sprite{
         defineItem();
     }
 
+     /**
+     * Método abstracto que debe ser implementado por las subclases 
+     * para definir las propiedades físicas del ítem.
+     */
     public abstract void defineItem();
+
+    /**
+     * Método abstracto que debe ser implementado por las subclases 
+     * para definir la acción que realiza el ítem al ser utilizado.
+     * 
+     * @param foxy El personaje que usa el ítem.
+     */
     public abstract void use(Foxy foxy);
 
+    /**
+     * Actualiza el estado del ítem, como su destrucción si es necesario.
+     * 
+     * @param dt El tiempo transcurrido desde la última actualización.
+     */
     public void update(float dt){
         if(toDestroy && !destroyed){
             world.destroyBody(body);
@@ -53,11 +76,19 @@ public abstract class Item extends Sprite{
         }
     }
 
+     /**
+     * Dibuja el ítem en la pantalla.
+     * 
+     * @param batch El lote de dibujos donde se renderiza el ítem.
+     */
     public void draw(Batch batch){
         if(!destroyed)
             super.draw(batch);
     }
 
+     /**
+     * Marca el ítem para ser destruido.
+     */
     public void destroy(){
         toDestroy = true;
     }

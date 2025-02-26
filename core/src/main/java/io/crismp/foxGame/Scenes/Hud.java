@@ -212,7 +212,6 @@ public class Hud implements Disposable {
         Label label = new Label(text, style);
         label.setSize(label.getPrefWidth() + 40, label.getPrefHeight());
         label.setAlignment(1);
-        System.out.println(label.getPrefWidth());
         return label;
     }
 }

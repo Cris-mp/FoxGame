@@ -28,6 +28,7 @@ import io.crismp.foxGame.tools.GamePreferences;
 public class GameOverScreen implements Screen {
     private Viewport viewport;
     private Stage stage;
+    private int nivelActual;
     private BitmapFont font;
     private FoxGame game;
     private float elapsedTime = 0;
@@ -37,8 +38,9 @@ public class GameOverScreen implements Screen {
      * 
      * @param game Instancia principal del juego.
      */
-    public GameOverScreen(FoxGame game) {
+    public GameOverScreen(FoxGame game,int nivelActual) {
         this.game = game;
+        this.nivelActual=nivelActual;
 
         // Configurar la cámara y el viewport
         viewport = new FitViewport(FoxGame.V_WIDTH, FoxGame.V_HEIGHT, new OrthographicCamera());
@@ -77,7 +79,7 @@ public class GameOverScreen implements Screen {
 
         // Permitir cambio de pantalla solo después de 1.5 segundos
         if (elapsedTime > 1.5f && Gdx.input.justTouched()) {
-            GamePreferences.saveScore(0, true);
+            GamePreferences.saveScore(nivelActual,0, true);
             GamePreferences.resetAccumulatedScore();
             game.setScreen(new MainMenuScreen(game));
             dispose();

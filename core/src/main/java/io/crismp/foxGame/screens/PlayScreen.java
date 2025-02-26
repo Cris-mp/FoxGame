@@ -10,7 +10,6 @@ import com.badlogic.gdx.graphics.OrthographicCamera;
 import com.badlogic.gdx.maps.MapLayer;
 import com.badlogic.gdx.maps.MapProperties;
 import com.badlogic.gdx.maps.tiled.TiledMap;
-import com.badlogic.gdx.maps.tiled.TiledMapTileLayer;
 import com.badlogic.gdx.maps.tiled.TmxMapLoader;
 import com.badlogic.gdx.maps.tiled.renderers.OrthogonalTiledMapRenderer;
 import com.badlogic.gdx.math.Vector2;
@@ -30,43 +29,42 @@ import io.crismp.foxGame.tools.B2WorldCreator;
 import io.crismp.foxGame.tools.VirtualJoystick;
 import io.crismp.foxGame.tools.WorldContactListener;
 
+/**
+ * Esta clase representa la pantalla de juego, donde el jugador interactúa con
+ * el mundo, recolecta objetos, y avanza a través de niveles.
+ * Implementa la interfaz `Screen` para manejar los eventos del ciclo de vida de
+ * la pantalla.
+ */
 public class PlayScreen implements Screen {
     public FoxGame game;
-
     private OrthographicCamera gamecam;
-
-    // HUD
     private Viewport gamePort;
     public Hud hud;
+    private VirtualJoystick joystick;
+
     private int cherriesCollected;
     private int gemsCollected;
     private int newLife;
+    private int nivelActual;
 
-    // Variables de creacion de mapa y situacion de camara
     private TmxMapLoader mapLoader;
     private TiledMap map;
     private OrthogonalTiledMapRenderer renderer;
-    TiledMapTileLayer secretRoomLayer;
 
-    // Creacion de mundo (Fisicas y cuerpos)
     private World world;
     private Box2DDebugRenderer b2dr;
     private B2WorldCreator creator;
-
     private Foxy player;
 
-    private VirtualJoystick joystick;
+    private Sound jump, run;
+    private float stepTimer = 0f;
+    private float stepInterval = 0.3f;
+
+    private float mapWidthInUnits, mapHeightInUnits;
     private float accumulator;
     private float timeStep;
     public boolean colision;
 
-    private float mapWidthInUnits, mapHeightInUnits;
-    private Sound jump, run;
-
-    private float stepTimer = 0f;
-    private float stepInterval = 0.3f;
-
-    int nivelActual;
 
     // getters
     public FoxGame getGame() {
@@ -89,14 +87,23 @@ public class PlayScreen implements Screen {
         return gemsCollected;
     }
 
+
+    /**
+     * Constructor de la clase PlayScreen.
+     * Inicializa los elementos esenciales del juego como el mapa, cámara, jugador,
+     * física y HUD.
+     *
+     * @param game        El juego principal.
+     * @param nivelActual El nivel actual en el que se encuentra el jugador.
+     */
     public PlayScreen(FoxGame game, int nivelActual) {
         this.game = game;
         this.nivelActual = nivelActual;
+
+        // Inicialización de variables
         this.joystick = new VirtualJoystick(0, 0, 2, 1);
         gamecam = new OrthographicCamera();
-        // mantiene el ratio de aspecto virtual a pesar de la pantalla
         gamePort = new FitViewport(FoxGame.V_WIDTH / FoxGame.PPM, FoxGame.V_HEIGHT / FoxGame.PPM, gamecam);
-
         accumulator = 0f;
         timeStep = 1 / 60f;
         cherriesCollected = 0;
@@ -104,11 +111,39 @@ public class PlayScreen implements Screen {
         newLife = 6;
         colision = false;
 
-        // Crea los marcadores de fase y vista
+        // Inicialización de HUD
         hud = new Hud(game.batch);
 
-        // Carga nuestro mapa y configurar nuestro renderizador de mapas
+        // Carga de mapa y música
         mapLoader = new TmxMapLoader();
+        loadMapAndMusic();
+
+        renderer = new OrthogonalTiledMapRenderer(map, 1 / FoxGame.PPM);
+
+        // Inicialización de la cámara
+        gamecam.position.set(gamePort.getWorldWidth() / 2, gamePort.getWorldHeight() / 2, 0);
+
+        // Inicialización del mundo y física
+        world = new World(new Vector2(0, -9.8f), true);
+        b2dr = new Box2DDebugRenderer();
+
+        // Creación de elementos del mundo (jugador, enemigos, etc.)
+        creator = new B2WorldCreator(this);
+        player = new Foxy(this);
+        world.setContactListener(new WorldContactListener(this));
+
+        // Inicialización de las dimensiones del mapa
+        initializeMapDimensions();
+
+        // Carga de sonido
+        loadSounds();
+
+    }
+
+    /**
+     * Carga el mapa y la música correspondiente según el nivel actual.
+     */
+    private void loadMapAndMusic() {
         switch (nivelActual) {
             case 0:
                 map = mapLoader.load("maps/Tutorial.tmx");
@@ -127,142 +162,147 @@ public class PlayScreen implements Screen {
                 game.playMusic("audio/music/world wanderer.ogg", true);
                 break;
         }
+    }
 
-        renderer = new OrthogonalTiledMapRenderer(map, 1 / FoxGame.PPM);
-
-        // Situa la camara para que se centre correctamente el el punto 0
-        gamecam.position.set(gamePort.getWorldWidth() / 2, gamePort.getWorldHeight() / 2, 0);
-
-        // fisicas (world) y los cuerpos (brd2)
-        world = new World(new Vector2(0, -9.8f), true);
-        b2dr = new Box2DDebugRenderer();
-
-        // Pasamos al creador de mundo el mundo y el mapa
-        creator = new B2WorldCreator(this);
-
-        // creamos a foxy
-        player = new Foxy(this);
-
-        world.setContactListener(new WorldContactListener(this));
-
-        // Obtenemos las propiedades del mapa
+    /**
+     * Inicializa las dimensiones del mapa en unidades del mundo.
+     */
+    private void initializeMapDimensions() {
         MapProperties prop = map.getProperties();
         int mapWidth = prop.get("width", Integer.class);
         int mapHeight = prop.get("height", Integer.class);
         int tileSize = prop.get("tilewidth", Integer.class);
 
-        // Calcular el tamaño total del mapa en unidades del mundo
         mapWidthInUnits = (mapWidth * tileSize) / FoxGame.PPM;
         mapHeightInUnits = (mapHeight * tileSize) / FoxGame.PPM;
+    }
 
+    /**
+     * Carga los sonidos necesarios para el juego.
+     */
+    private void loadSounds() {
         jump = AssetsManagerAudio.getSound("audio/sounds/player/jump.ogg");
         run = AssetsManagerAudio.getSound("audio/sounds/player/Step_rock.ogg");
-
     }
 
     public void handleInput(float dt) {
-
         if (player.currenState != Foxy.State.DEAD) {
             player.velX = 0;
             if (Gdx.app.getType() == ApplicationType.Android) {
-                if (joystick.isJumpPressed() && player.jumpCounter < 2) {
-                    game.playSound(jump);
-                    player.body.setLinearVelocity(0, 0);
-                    player.body.applyLinearImpulse(new Vector2(0, 2.5f), player.body.getWorldCenter(), true);
-                    player.jumpCounter++;
-                    joystick.setJumpPressed(false);
-                }
-
-                // reseteamos el contador de salto
-                if (player.body.getLinearVelocity().y == 0 && colision) {
-                    player.jumpCounter = 0;
-                    colision = false;
-                }
-
-                if (player.getOnLadder() && joystick.getDirection().y > 0.5f) {
-                    player.body.setLinearVelocity(0, player.velY = 0.5f);
-                } else if (player.getOnLadder() && joystick.getDirection().y < -0.5f) {
-                    player.body.setLinearVelocity(0, player.velY = -0.5f);
-                } else if (player.getOnLadder()) {
-                    player.body.setLinearVelocity(0, 0);
-                }
-
-                player.body.setLinearVelocity(joystick.getDirection().x * player.speed,
-                        Math.min(player.body.getLinearVelocity().y, 15));
-
+                handleAndroidInput(dt);
             } else {
-                if (Gdx.input.isKeyPressed(Input.Keys.D)) {
-
-                    player.velX = 1f;
-                }
-                if (Gdx.input.isKeyPressed(Input.Keys.A)) {
-                    player.velX = -1f;
-                }
-
-                if (Gdx.input.isKeyJustPressed(Input.Keys.SPACE) && player.jumpCounter < 2) {
-                    game.playSound(jump);
-                    player.body.setLinearVelocity(0, 0);
-                    player.body.applyLinearImpulse(new Vector2(0, 2.5f), player.body.getWorldCenter(), true);
-                    player.jumpCounter++;
-                }
-                // reseteamos el contador de salto
-                if (player.body.getLinearVelocity().y == 0 && colision) {
-                    player.jumpCounter = 0;
-                    colision = false;
-                }
-
-                if (player.getOnLadder() && Gdx.input.isKeyPressed(Input.Keys.W)) {
-                    player.body.setLinearVelocity(0, player.velY = 0.5f);
-                } else if (player.getOnLadder() && Gdx.input.isKeyPressed(Input.Keys.S)) {
-                    player.body.setLinearVelocity(0, player.velY = -0.5f);
-                } else if (player.getOnLadder()) {
-                    player.body.setLinearVelocity(0, 0);
-                    player.velY = 0;
-                }
-
-                player.body.setLinearVelocity(player.velX * player.speed,
-                        Math.min(player.body.getLinearVelocity().y, 15));
-
+                handleDesktopInput(dt);
             }
         }
     }
 
+    /**
+     * Maneja la entrada en dispositivos Android.
+     * 
+     * @param dt El tiempo delta.
+     */
+    private void handleAndroidInput(float dt) {
+        if (joystick.isJumpPressed() && player.jumpCounter < 2) {
+            game.playSound(jump);
+            player.body.setLinearVelocity(0, 0);
+            player.body.applyLinearImpulse(new Vector2(0, 2.5f), player.body.getWorldCenter(), true);
+            player.jumpCounter++;
+            joystick.setJumpPressed(false);
+        }
+
+        // reseteamos el contador de salto
+        if (player.body.getLinearVelocity().y == 0 && colision) {
+            player.jumpCounter = 0;
+            colision = false;
+        }
+
+        if (player.getOnLadder() && joystick.getDirection().y > 0.5f) {
+            player.body.setLinearVelocity(0, player.velY = 0.5f);
+        } else if (player.getOnLadder() && joystick.getDirection().y < -0.5f) {
+            player.body.setLinearVelocity(0, player.velY = -0.5f);
+        } else if (player.getOnLadder()) {
+            player.body.setLinearVelocity(0, 0);
+        }
+
+        player.body.setLinearVelocity(joystick.getDirection().x * player.speed,
+                Math.min(player.body.getLinearVelocity().y, 15));
+    }
+
+    /**
+     * Maneja la entrada en dispositivos de escritorio.
+     * 
+     * @param dt El tiempo delta.
+     */
+    private void handleDesktopInput(float dt) {
+        if (Gdx.input.isKeyPressed(Input.Keys.D)) {
+
+            player.velX = 1f;
+        }
+        if (Gdx.input.isKeyPressed(Input.Keys.A)) {
+            player.velX = -1f;
+        }
+
+        if (Gdx.input.isKeyJustPressed(Input.Keys.SPACE) && player.jumpCounter < 2) {
+            game.playSound(jump);
+            player.body.setLinearVelocity(0, 0);
+            player.body.applyLinearImpulse(new Vector2(0, 2.5f), player.body.getWorldCenter(), true);
+            player.jumpCounter++;
+        }
+        // reseteamos el contador de salto
+        if (player.body.getLinearVelocity().y == 0 && colision) {
+            player.jumpCounter = 0;
+            colision = false;
+        }
+
+        if (player.getOnLadder() && Gdx.input.isKeyPressed(Input.Keys.W)) {
+            player.body.setLinearVelocity(0, player.velY = 0.5f);
+        } else if (player.getOnLadder() && Gdx.input.isKeyPressed(Input.Keys.S)) {
+            player.body.setLinearVelocity(0, player.velY = -0.5f);
+        } else if (player.getOnLadder()) {
+            player.body.setLinearVelocity(0, 0);
+            player.velY = 0;
+        }
+
+        player.body.setLinearVelocity(player.velX * player.speed,
+                Math.min(player.body.getLinearVelocity().y, 15));
+    }
+
+    /**
+     * Actualiza el estado del juego, incluyendo la física, la posición del jugador
+     * y los objetos.
+     * 
+     * @param dt El tiempo delta para la actualización.
+     */
     public void update(float dt) {
-        // Asegura que las físicas se actualicen con una tasa fija, sin importar la tasa
-        // de refresco de la pantalla.
+        // Asegura que las físicas se actualicen con una tasa fija,
+        // sin importar la tasa de refresco de la pantalla.
         accumulator += dt;
         while (accumulator >= timeStep) {
-            world.step(timeStep, 6, 2); // Actualiza el mundo con un paso de tiempo fijo
+            // Actualiza el mundo con un paso de tiempo fijo
+            world.step(timeStep, 6, 2);
             accumulator -= timeStep;
         }
 
         handleInput(dt);
+
+        // Control de gravedad en función del jugador
         if (player.getOnLadder()) {
-            world.setGravity(new Vector2(0, 0)); // Desactiva la gravedad mientras está en la escalera
+            world.setGravity(new Vector2(0, 0));
         } else {
-            world.setGravity(new Vector2(0, -9.8f)); // Vuelve a la gravedad normal
+            world.setGravity(new Vector2(0, -9.8f));
         }
 
-        // sonido de pasos
-        if ((player.body.getLinearVelocity().x != 0 && player.body.getLinearVelocity().y == 0)) {
-            stepTimer += dt;
-            if (stepTimer >= stepInterval) {
-                stepTimer = 0;
-                game.playSound(run);
-            }
-        } else {
-            stepTimer = 0; // Reiniciar cuando no se mueve
-        }
+        // Actualización de sonidos de pasos
+        updateSounds(dt);
 
+        // Actualización de los objetos del juego
         player.update(dt);
         hud.updateHud(newLife, cherriesCollected, gemsCollected);
 
-        if (player.isInsideSecretRoom()) {
-            toggleSecretRoom(true);
-        } else {
-            toggleSecretRoom(false);
-        }
+        // Manejo de la sala secreta
+        handleSecretRoom();
 
+        // Actualización de enemigos y objetos
         for (Enemy enemy : creator.getZarigueyas()) {
             enemy.update(dt);
         }
@@ -272,39 +312,92 @@ public class PlayScreen implements Screen {
         for (Gem gem : creator.getGems()) {
             gem.update(dt);
         }
+
+        // Actualización de la cámara
         if (!player.isDead()) {
-            // Ajuste de posición de la cámara en el eje X
-            float minX = gamePort.getWorldWidth() / 2;
-            float maxX = mapWidthInUnits - gamePort.getWorldWidth() / 2;
-
-            if (player.body.getPosition().x < minX) {
-                gamecam.position.x = minX;
-            } else if (player.body.getPosition().x > maxX) {
-                gamecam.position.x = maxX;
-            } else {
-                gamecam.position.x = player.body.getPosition().x;
-            }
-
-            // Ajuste de posición de la cámara en el eje Y
-            float minY = gamePort.getWorldHeight() / 2;
-            float maxY = mapHeightInUnits - gamePort.getWorldHeight() / 2;
-
-            if (player.body.getPosition().y < minY) {
-                gamecam.position.y = minY;
-            } else if (player.body.getPosition().y > maxY) {
-                gamecam.position.y = maxY;
-            } else {
-                gamecam.position.y = player.body.getPosition().y;
-            }
+            updateCameraPosition();
         }
-        // actualiza a las nuevas coordenadas
         gamecam.update();
-        // llama al rederer para que se muestre solo el trozo que queremos ver del mundo
         renderer.setView(gamecam);
+    }
+
+    /**
+     * Actualiza los sonidos de los pasos del jugador.
+     * 
+     * @param dt El tiempo delta.
+     */
+    private void updateSounds(float dt) {
+        if ((player.body.getLinearVelocity().x != 0 && player.body.getLinearVelocity().y == 0)) {
+            stepTimer += dt;
+            if (stepTimer >= stepInterval) {
+                stepTimer = 0;
+                game.playSound(run);
+            }
+        } else {
+            stepTimer = 0;
+        }
+    }
+
+    /**
+     * Maneja la visibilidad de la sala secreta en el mapa.
+     */
+    private void handleSecretRoom() {
+        if (player.isInsideSecretRoom()) {
+            toggleSecretRoom(true);
+        } else {
+            toggleSecretRoom(false);
+        }
+    }
+
+    /**
+     * Actualiza la posición de la cámara para que siga al jugador.
+     */
+    private void updateCameraPosition() {
+        float minX = gamePort.getWorldWidth() / 2;
+        float maxX = mapWidthInUnits - gamePort.getWorldWidth() / 2;
+
+        if (player.body.getPosition().x < minX) {
+            gamecam.position.x = minX;
+        } else if (player.body.getPosition().x > maxX) {
+            gamecam.position.x = maxX;
+        } else {
+            gamecam.position.x = player.body.getPosition().x;
+        }
+
+        float minY = gamePort.getWorldHeight() / 2;
+        float maxY = mapHeightInUnits - gamePort.getWorldHeight() / 2;
+
+        if (player.body.getPosition().y < minY) {
+            gamecam.position.y = minY;
+        } else if (player.body.getPosition().y > maxY) {
+            gamecam.position.y = maxY;
+        } else {
+            gamecam.position.y = player.body.getPosition().y;
+        }
+    }
+
+    /**
+     * Finaliza el juego si el jugador está muerto o ha terminado el nivel.
+     */
+    public void finalGame() {
+        if (player.isDead() && player.getStateTimer() > 3) {
+            game.setScreen(new GameOverScreen(game, nivelActual));
+            dispose();
+        }
+        if (player.isEndGame()) {
+            game.setScreen(new FinalLevelScreen(nivelActual, game, this));
+            dispose();
+        }
     }
 
     private int[] pinchos = { 1 };
 
+    /**
+     * Renderiza todos los elementos en pantalla, incluyendo los gráficos, la física
+     * y el HUD.
+     * 
+     * @param delta El tiempo delta para la renderización.
+     */
     @Override
     public void render(float delta) {
         // lo primero que debe hacer es actualizarse
@@ -316,16 +409,13 @@ public class PlayScreen implements Screen {
 
         // renderizador del juego
         renderer.render();
-
         // renderizamos el Box2DDebugLines
         b2dr.render(world, gamecam.combined);
 
+        // Dibuja los elementos del juego
         game.batch.setProjectionMatrix(gamecam.combined);
-
         game.batch.begin();
-
         player.draw(game.batch);
-
         for (Enemy enemy : creator.getZarigueyas()) {
             if (enemy.isActive()) {
                 enemy.draw(game.batch);
@@ -340,65 +430,29 @@ public class PlayScreen implements Screen {
             }
         }
         game.batch.end();
-
         renderer.render(pinchos);
+
         // Configura el batch para centrar la camara del HUD
         game.batch.setProjectionMatrix(hud.stage.getCamera().combined);
         hud.stage.draw();
 
+        // Dibuja el joystick en Android
         if (Gdx.app.getType() == ApplicationType.Android)
             joystick.render();
 
         finalGame();
     }
 
-    public void finalGame() {
-        if (player.isDead() && player.getStateTimer() > 3) {
-            game.setScreen(new GameOverScreen(game));
-            dispose();
-        }
-        if (player.isEndGame()) {
-            game.setScreen(new FinalLevelScreen(nivelActual, game, this));
-            dispose();
-        }
-    }
-
-    @Override
-    public void resize(int width, int height) {
-        gamePort.update(width, height);
-        joystick.resize(width, height);
-    }
-
-    // --------- Actualizar HUD--------------
-    public void addCherry() {
-        cherriesCollected++;
-        hud.updateHud(newLife, cherriesCollected, gemsCollected);
-    }
-
-    public void addGem() {
-        gemsCollected++;
-        hud.updateHud(newLife, cherriesCollected, gemsCollected);
-    }
-
-    public void restLife(int life) {
-        this.newLife = life;
-        hud.updateHud(newLife, cherriesCollected, gemsCollected);
-    }
-
-    @Override
-    public void dispose() {
-        map.dispose();
-        renderer.dispose();
-        world.dispose();
-        b2dr.dispose();
-        hud.dispose();
-    }
-
+    /**
+     * Cambia la visibilidad de la sala secreta.
+     * 
+     * @param show Si debe mostrar la sala secreta o no.
+     */
     private void toggleSecretRoom(boolean show) {
-
         MapLayer decoracionLayer = map.getLayers().get("SecretDecos");
         MapLayer decoracionLayer2 = map.getLayers().get("SecretDecos2");
         MapLayer habitacionLayer = map.getLayers().get("SalaSecreta");
+
         if (habitacionLayer != null) {
             if (decoracionLayer != null && habitacionLayer != null) {
                 decoracionLayer.setVisible(show);
@@ -421,6 +475,58 @@ public class PlayScreen implements Screen {
                 }
             }
         }
+    }
+
+    
+    // --------- Actualizar HUD--------------
+     /**
+     * Incrementa la cantidad de cerezas recolectadas.
+     */
+    public void addCherry() {
+        cherriesCollected++;
+        hud.updateHud(newLife, cherriesCollected, gemsCollected);
+    }
+
+    /**
+     * Incrementa la cantidad de gemas recolectadas.
+     */
+    public void addGem() {
+        gemsCollected++;
+        hud.updateHud(newLife, cherriesCollected, gemsCollected);
+    }
+
+     /**
+     * Actualiza la cantidad de vidas restantes.
+     * 
+     * @param life Nuevas vidas restantes.
+     */
+    public void restLife(int life) {
+        this.newLife = life;
+        hud.updateHud(newLife, cherriesCollected, gemsCollected);
+    }
+
+    /**
+     * Redimensiona la pantalla.
+     * 
+     * @param width  Nuevo ancho de la pantalla.
+     * @param height Nuevo alto de la pantalla.
+     */
+    @Override
+    public void resize(int width, int height) {
+        gamePort.update(width, height);
+        joystick.resize(width, height);
+    }
+
+    /**
+     * Libera todos los recursos utilizados por esta pantalla.
+     */
+    @Override
+    public void dispose() {
+        map.dispose();
+        renderer.dispose();
+        world.dispose();
+        b2dr.dispose();
+        hud.dispose();
     }
 
     // Métodos no utilizados, pero necesarios por la interfaz Screen

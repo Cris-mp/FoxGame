@@ -29,7 +29,16 @@ import io.crismp.foxGame.sprites.enemies.Enemy;
 import io.crismp.foxGame.sprites.tileObjects.Pinchos;
 import io.crismp.foxGame.tools.GamePreferences;
 
+/**
+ * Clase que representa al personaje principal del juego, Foxy.
+ * Maneja el movimiento, las animaciones, las interacciones físicas y el estado
+ * del personaje.
+ */
 public class Foxy extends Sprite {
+
+	/**
+	 * Enum que representa los posibles estados de Foxy.
+	 */
 	public enum State {
 		FALLING, JUMPING, STANDING, RUNNING, CLIMBING, CLIMB, HURT, DEAD
 	}
@@ -69,10 +78,10 @@ public class Foxy extends Sprite {
 	public ArrayList<Pinchos> pinchosInContact;
 
 	public Texture img;
-
 	public boolean endGame;
 	public boolean onRamp;
 
+	// Getters y setters para los estados y variables
 	public void setOnRamp(boolean onRamp) {
 		this.onRamp = onRamp;
 	}
@@ -88,13 +97,37 @@ public class Foxy extends Sprite {
 	public void setHeadInLadder(Boolean inLadder) {
 		headInLadder = inLadder;
 	}
+
 	public boolean isInsideSecretRoom() {
 		return insideSecretRoom;
 	}
+
 	public void setInsideSecretRoom(boolean inside) {
 		insideSecretRoom = inside;
 	}
 
+	public boolean isEndGame() {
+		return endGame;
+	}
+
+	public void setEndGame(boolean endGame) {
+		this.endGame = endGame;
+	}
+
+	public boolean isDead() {
+		return foxyIsDead;
+	}
+
+	public float getStateTimer() {
+		return stateTimer;
+	}
+
+	/**
+	 * Constructor de Foxy, inicializa el personaje con valores predeterminados y
+	 * carga las animaciones.
+	 * 
+	 * @param screen La pantalla donde se encuentra Foxy.
+	 */
 	public Foxy(PlayScreen screen) {
 		super(AssetsManager.getTexture("player/zorrito.png"), 16, 16);
 		this.screen = screen;
@@ -114,15 +147,14 @@ public class Foxy extends Sprite {
 		onRamp = false;
 		insideSecretRoom = false;
 
-		// animaciones
+		// Inicializar animaciones
 		currenState = State.STANDING;
 		previoState = State.STANDING;
 		stateTimer = 0;
 		runRight = true;
 
-		// RUN
 		Array<TextureRegion> frames = new Array<TextureRegion>();
-
+		// RUN (animación de correr)
 		for (int i = 1; i < 6; i++) {
 			frames.add(new TextureRegion(getTexture(), i * 16 * 2, 16 * 2, getTexture().getWidth() / 6,
 					getTexture().getHeight() / 12));
@@ -130,7 +162,7 @@ public class Foxy extends Sprite {
 		foxRun = new Animation<>(0.1f, frames);
 		frames.clear();
 
-		// CLIMB
+		// CLIMB (animación de escalar)
 		for (int i = 0; i < 4; i++) {
 			frames.add(new TextureRegion(getTexture(), i * 16 * 2, 16 * 4, getTexture().getWidth() / 6,
 					getTexture().getHeight() / 12));
@@ -139,7 +171,7 @@ public class Foxy extends Sprite {
 		foxClimb = frames.get(0);
 		frames.clear();
 
-		// STAND
+		// STAND (animación de estar parado)
 		for (int i = 0; i < 4; i++) {
 			frames.add(new TextureRegion(getTexture(), i * 16 * 2, 0, getTexture().getWidth() / 6,
 					getTexture().getHeight() / 12));
@@ -147,7 +179,7 @@ public class Foxy extends Sprite {
 		foxSt = new Animation<>(0.1f, frames);
 		frames.clear();
 
-		// HURT
+		// HURT (animación de herido)
 		for (int i = 0; i < 2; i++) {
 			frames.add(new TextureRegion(getTexture(), i * 16 * 2, 16 * 8, getTexture().getWidth() / 6,
 					getTexture().getHeight() / 12));
@@ -155,43 +187,51 @@ public class Foxy extends Sprite {
 		foxHurt = new Animation<>(0.1f, frames);
 		frames.clear();
 
+		// Texturas no animadas
 		foxDead = new TextureRegion(getTexture(), 0, 16 * 14, getTexture().getWidth() / 6,
 				getTexture().getHeight() / 12);
 		foxJump = new TextureRegion(getTexture(), 0, 16 * 10, getTexture().getWidth() / 6,
 				getTexture().getHeight() / 12);
 		foxFall = new TextureRegion(getTexture(), 16 * 2, 16 * 10, getTexture().getWidth() / 6,
 				getTexture().getHeight() / 12);
+
 		defineFoxy();
 		setBounds(0, 0, 16 / (FoxGame.PPM / 2), 16 / (FoxGame.PPM / 2));
-
 	}
 
-	public boolean isEndGame() {
-		return endGame;
-	}
-
-	public void setEndGame(boolean endGame) {
-		this.endGame = endGame;
-	}
+	/**
+	 * Actualiza el estado y posición de Foxy en cada frame.
+	 * 
+	 * @param dt El tiempo transcurrido entre frames.
+	 */
 
 	public void update(float dt) {
+		// Actualiza la posición en pantalla de Foxy
 		setPosition(body.getPosition().x - getWidth() / 2, body.getPosition().y - getHeight() / 6);
 		setRegion(getFrame(dt));
 
+		// Lógica para manejar el estado de herido
 		if (foxyIsHurt) {
 			hurtTimer += dt; // Aumenta el tiempo en estado HURT
 			if (hurtTimer >= HURT_DURATION) {
 				foxyIsHurt = false; // Después de 1 segundos, vuelve a la normalidad
 				if ((!enemiesInContact.isEmpty() || !pinchosInContact.isEmpty())) {
-					hit();
+					hit(); // Si hay enemigos o pinchos en contacto, recibe daño
 				}
 			}
 		}
 	}
 
+	/**
+	 * Obtiene el frame de la animación correspondiente al estado actual.
+	 * 
+	 * @param delta El tiempo transcurrido en cada frame.
+	 * @return El frame de la animación.
+	 */
 	public TextureRegion getFrame(float delta) {
 		currenState = getState();
 		TextureRegion region;
+		// Determina qué animación mostrar según el estado actual
 		switch (currenState) {
 			case JUMPING:
 				region = foxJump;
@@ -220,6 +260,7 @@ public class Foxy extends Sprite {
 				break;
 		}
 
+		// Voltea la imagen dependiendo de la dirección
 		if ((body.getLinearVelocity().x < 0 || !runRight) && !region.isFlipX()) {
 			region.flip(true, false);
 			runRight = false;
@@ -234,6 +275,12 @@ public class Foxy extends Sprite {
 
 	}
 
+	/**
+	 * Determina el estado actual de Foxy basado en las condiciones físicas y el
+	 * comportamiento.
+	 * 
+	 * @return El estado actual de Foxy.
+	 */
 	public State getState() {
 		if (foxyIsDead) {
 			return State.DEAD;
@@ -259,14 +306,10 @@ public class Foxy extends Sprite {
 		return State.STANDING;
 	}
 
-	public boolean isDead() {
-		return foxyIsDead;
-	}
-
-	public float getStateTimer() {
-		return stateTimer;
-	}
-
+	/**
+	 * Maneja la colisión del personaje con enemigos o pinchos, causando daño a
+	 * Foxy.
+	 */
 	public void hit() {
 		if (!foxyIsHurt && !foxyIsDead) {
 			foxyIsHurt = true;
@@ -279,7 +322,7 @@ public class Foxy extends Sprite {
 			screen.restLife(life);
 			if (life <= 0) {
 				foxyIsDead = true;
-				stateTimer = 0;// para el tiempo se espra de game over
+				stateTimer = 0; // Para el tiempo de espera de "game over"
 				Filter filter = new Filter();
 				filter.maskBits = FoxGame.NOTHING_BIT;
 				for (Fixture fix : body.getFixtureList())
@@ -289,6 +332,9 @@ public class Foxy extends Sprite {
 		}
 	}
 
+	/**
+	 * Define el cuerpo físico de Foxy dentro del mundo del juego.
+	 */
 	public void defineFoxy() {
 		BodyDef bdef = new BodyDef();
 		Rectangle rectangle = ((RectangleMapObject) map.getLayers().get("player").getObjects().get(0)).getRectangle();
@@ -309,7 +355,7 @@ public class Foxy extends Sprite {
 		body.createFixture(fdef).setUserData(this);
 		shape.setPosition(new Vector2(0, 8 / FoxGame.PPM));
 
-		// Cabeza
+		// Cabeza de Foxy
 		fdef.filter.categoryBits = FoxGame.FOX_HEAD_BIT;
 		fdef.filter.maskBits = FoxGame.ENEMY_BIT | FoxGame.SPIKES_BIT |
 				FoxGame.ITEM_BIT | FoxGame.OBSTACLE_BIT |
@@ -319,6 +365,12 @@ public class Foxy extends Sprite {
 		headFixture.setUserData(this);
 	}
 
+	/**
+	 * Activa o desactiva la visibilidad de la habitación secreta y sus elementos.
+	 * 
+	 * @param show Si es verdadero, muestra la habitación secreta, de lo contrario,
+	 *             la oculta.
+	 */
 	public void toggleSecretRoom(boolean show) {
 		MapLayer decoracionLayer = map.getLayers().get("SecretDecos");
 		MapLayer decoracionLayer2 = map.getLayers().get("SecretDecos2");
@@ -332,8 +384,6 @@ public class Foxy extends Sprite {
 			decoracionLayer.setVisible(false);
 			decoracionLayer2.setVisible(false);
 			habitacionLayer.setVisible(false);
-			
 		}
 	}
-
 }

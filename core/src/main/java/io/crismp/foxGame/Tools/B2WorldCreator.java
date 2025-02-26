@@ -66,7 +66,7 @@ public class B2WorldCreator {
         zarigueyas = createEnemies(screen);
         cherrys = createCherries(screen);
         gems = createGems(screen);
-        
+
         // Zona Secreta
         createSecretDoor(screen);
         createSecretRoomObjects(screen);
@@ -244,6 +244,17 @@ public class B2WorldCreator {
         body.createFixture(fdef);
     }
 
+    /**
+     * Define un cuerpo estático en el mundo del juego a partir de un objeto de tipo
+     * PolygonMapObject.
+     * El cuerpo es creado en la posición del polígono, y se establece su forma a
+     * partir de los vértices del polígono.
+     * 
+     * @param object El objeto de tipo MapObject, que se espera que sea un
+     *               PolygonMapObject.
+     * @param mask   El valor de la máscara que define la categoría del objeto en la
+     *               física del juego.
+     */
     private void definePolygonBody(MapObject object, short mask) {
         PolygonMapObject polygonObject = (PolygonMapObject) object;
         Polygon polygon = polygonObject.getPolygon();
@@ -279,6 +290,19 @@ public class B2WorldCreator {
         shape.dispose();
     }
 
+    /**
+     * Crea los objetos secretos en el mapa, como enemigos y gemas, que están
+     * definidos en la capa "objetosSecretos".
+     * Los objetos son creados a partir de los objetos de tipo RectangleMapObject en
+     * el mapa.
+     * 
+     * Si el tipo de objeto es "zarigueya", se crea una instancia de un enemigo
+     * "Zarigueya".
+     * Si el tipo de objeto es "gema", se crea una instancia de un objeto "Gem".
+     * 
+     * @param screen La pantalla del juego (PlayScreen) en la que se agregarán los
+     *               objetos.
+     */
     private void createSecretRoomObjects(PlayScreen screen) {
         if (map.getLayers().get("objetosSecretos") != null) {
             // Agregar enemigos
@@ -303,7 +327,6 @@ public class B2WorldCreator {
                             Gem aux = new Gem(screen, rect);
                             aux.setInSecretRoom(true);
                             aux.setActive(false);
-                            System.out.println(aux);
                             gems.add(aux);
                         }
 
