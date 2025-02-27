@@ -41,7 +41,7 @@
    git clone https://github.com/tuusuario/FoxGame.git
    cd FoxGame
 
-🛠️ Desarrollo y arquitectura
+## 🛠️ Desarrollo y arquitectura
 ### Estructura del proyecto
 FoxGame/
 │── android/         # Versión para Android
@@ -51,43 +51,47 @@ FoxGame/
 │── sql/             # Esquemas y scripts para la base de datos
 │── README.md        # Este archivo
 │── build.gradle     # Configuración del proyecto
-### Principales clases y funcionalidades
-## 🎮 Lógica del juego
+## Principales clases y funcionalidades
+### 🎮 Lógica del juego
 Foxy.java → Control del personaje principal (movimiento, animaciones, colisiones).
 Enemy.java → Base para enemigos con detección de colisiones.
 Pinchos.java → Obstáculos que dañan a Foxy.
 Item.java → Sistema de coleccionables (Gemas, cerezas, etc.).
-## 🗺️ Gestión de niveles
+### 🗺️ Gestión de niveles
 PlayScreen.java → Carga de niveles y HUD.
 B2WorldCreator.java → Generación del mundo a partir del mapa de Tiled.
 WorldContactListener.java → Manejo de colisiones entre objetos.
-## 💾 Sistema de puntuación y guardado
+### 💾 Sistema de puntuación y guardado
 GamePreferences.java → Manejo de puntuaciones, configuración y progresos.
 FinalLevelScreen.java → Pantalla de fin de nivel y guardado de récords.
+
 ---
-### 🔥 Mecánicas avanzadas
-## 🌟 Puntuación acumulada
+## 🔥 Mecánicas avanzadas
+### 🌟 Puntuación acumulada
 ✔️ Se guarda solo si completas un nivel.
 ✔️ Evita duplicaciones de puntuación.
 ✔️ Si mueres en el segundo nivel, solo se guarda la del primero.
 
-## 🔑 Habitaciones secretas
+### 🔑 Habitaciones secretas
 ✔️ Se activan y desactivan dinámicamente.
 ✔️ Pueden contener enemigos y coleccionables.
 
-## ⚖️ Física de rampas y escaleras
+### ⚖️ Física de rampas y escaleras
 ✔️ Implementada con Box2D para movimiento realista.
 ✔️ Se gestiona en WorldContactListener.java.
 
-## 🆚 IA básica de enemigos
+### 🆚 IA básica de enemigos
 ✔️ Cambian de dirección al chocar con paredes u obstáculos.
 ✔️ Se invoca en Enemy.java con la función reverseVelocity().
+
 ---
 ## 🚀 Planes futuros
 🔹 Más niveles y enemigos
+
 ---
 ## 📧 Contacto: 
 krismipi@gmail.com
+
 ---
 
 A [libGDX](https://libgdx.com/) project generated with [gdx-liftoff](https://github.com/libgdx/gdx-liftoff).
