@@ -99,6 +99,7 @@ GameOverScreen.java → Pantalla muerte del jugador y guardado de récords.
 krismipi@gmail.com
 
 
+# LibGDX
 
 A [libGDX](https://libgdx.com/) project generated with [gdx-liftoff](https://github.com/libgdx/gdx-liftoff).
 

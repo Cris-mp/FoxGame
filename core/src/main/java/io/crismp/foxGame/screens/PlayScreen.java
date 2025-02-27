@@ -390,7 +390,6 @@ public class PlayScreen implements Screen {
         }
     }
 
-    private int[] pinchos = { 1 };
 
     /**
      * Renderiza todos los elementos en pantalla, incluyendo los gráficos, la física
@@ -409,8 +408,8 @@ public class PlayScreen implements Screen {
 
         // renderizador del juego
         renderer.render();
-        // renderizamos el Box2DDebugLines
-        b2dr.render(world, gamecam.combined);
+        // TODO: renderizamos el Box2DDebugLines (comentar para que no se vean las lineas de debug)
+        //b2dr.render(world, gamecam.combined);
 
         // Dibuja los elementos del juego
         game.batch.setProjectionMatrix(gamecam.combined);
@@ -430,7 +429,6 @@ public class PlayScreen implements Screen {
             }
         }
         game.batch.end();
-        renderer.render(pinchos);
 
         // Configura el batch para centrar la camara del HUD
         game.batch.setProjectionMatrix(hud.stage.getCamera().combined);
