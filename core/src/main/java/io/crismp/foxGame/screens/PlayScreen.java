@@ -65,7 +65,6 @@ public class PlayScreen implements Screen {
     private float timeStep;
     public boolean colision;
 
-
     // getters
     public FoxGame getGame() {
         return game;
@@ -86,7 +85,6 @@ public class PlayScreen implements Screen {
     public int getGemsCollected() {
         return gemsCollected;
     }
-
 
     /**
      * Constructor de la clase PlayScreen.
@@ -390,7 +388,6 @@ public class PlayScreen implements Screen {
         }
     }
 
-
     /**
      * Renderiza todos los elementos en pantalla, incluyendo los gráficos, la física
      * y el HUD.
@@ -408,8 +405,9 @@ public class PlayScreen implements Screen {
 
         // renderizador del juego
         renderer.render();
-        // TODO: renderizamos el Box2DDebugLines (comentar para que no se vean las lineas de debug)
-        //b2dr.render(world, gamecam.combined);
+        // TODO: renderizamos el Box2DDebugLines (comentar para que no se vean las
+        // lineas de debug)
+        // b2dr.render(world, gamecam.combined);
 
         // Dibuja los elementos del juego
         game.batch.setProjectionMatrix(gamecam.combined);
@@ -459,25 +457,22 @@ public class PlayScreen implements Screen {
                 }
                 habitacionLayer.setVisible(show);
             }
-
-            if (show) {
-                for (Zarigueya enemy : creator.getZarigueyas()) {
-                    if (enemy.isInSecretRoom()) {
-                        enemy.setActive(show);
-                    }
-                }
-                for (Gem gem : creator.getGems()) {
-                    if (gem.isInSecretRoom()) {
-                        gem.setActive(show);
-                    }
+            for (Zarigueya enemy : creator.getZarigueyas()) {
+                if (enemy.isInSecretRoom()) {
+                    enemy.setActive(show);
                 }
             }
+            for (Gem gem : creator.getGems()) {
+                if (gem.isInSecretRoom()) {
+                    gem.setActive(show);
+                }
+            }
+
         }
     }
 
-    
     // --------- Actualizar HUD--------------
-     /**
+    /**
      * Incrementa la cantidad de cerezas recolectadas.
      */
     public void addCherry() {
@@ -493,7 +488,7 @@ public class PlayScreen implements Screen {
         hud.updateHud(newLife, cherriesCollected, gemsCollected);
     }
 
-     /**
+    /**
      * Actualiza la cantidad de vidas restantes.
      * 
      * @param life Nuevas vidas restantes.
